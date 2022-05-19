@@ -82,6 +82,8 @@ jar {
 	}
 }
 
+def ENV = System.getenv()
+
 // configure the maven publication
 publishing {
 	publications {
