@@ -15,6 +15,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.util.Identifier;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -35,6 +36,8 @@ public class CondensedCreative implements ModInitializer, ClientModInitializer, 
     public static Function<ItemGroup, Integer> getTabIndexFromOwoGroup = o -> -1;
 
     public static ConfigHolder<CondensedCreativeConfig> MAIN_CONFIG;
+
+    private static boolean DEBUG = Boolean.getBoolean("cci.debug");
 
     //---------------------------------------------------------------------------------------------------------
 
@@ -65,7 +68,7 @@ public class CondensedCreative implements ModInitializer, ClientModInitializer, 
     //---------------------------------------------------------------------------------------------------------
 
     public static boolean isDeveloperMode(){
-        return true;
+        return FabricLoader.getInstance().isDevelopmentEnvironment() || DEBUG;
     }
 
     public void onInitializeCondensedEntries() {
