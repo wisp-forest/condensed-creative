@@ -1,4 +1,4 @@
-# CondensedCreativeItems
+# Condensed Creative Items
 
 [![curseforge](https://img.shields.io/badge/-CurseForge-gray?style=for-the-badge&logo=curseforge&labelColor=orange)](https://www.curseforge.com/minecraft/mc-mods/jello)
 [![modrinth](https://img.shields.io/badge/-modrinth-gray?style=for-the-badge&labelColor=green&labelWidth=15&logo=appveyor&logoColor=white)]([https://modrinth.com/mod/jello](https://modrinth.com/mod/condensed-creative))
