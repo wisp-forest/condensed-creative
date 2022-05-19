@@ -24,6 +24,9 @@
     "client": [
       "io.wispforest.condensedCreative.CondensedCreative"
     ],
+    "condensed_creative": [
+      "io.wispforest.condensedCreative.CondensedCreative"
+    ],
     "modmenu": [
       "io.wispforest.condensedCreative.compat.CondensedCreativeModMenu"
     ]

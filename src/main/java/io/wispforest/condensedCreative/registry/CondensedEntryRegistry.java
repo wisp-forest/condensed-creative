@@ -1,6 +1,8 @@
-package io.wispforest.condensedCreative;
+package io.wispforest.condensedCreative.registry;
 
+import io.wispforest.condensedCreative.entry.Entry;
 import io.wispforest.condensedCreative.entry.impl.CondensedItemEntry;
+import io.wispforest.condensedCreative.util.ItemGroupHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemGroup;
@@ -27,7 +29,7 @@ public class CondensedEntryRegistry {
      *
      * <p>For owo ItemGroup with certain tabs use {@link CondensedItemEntry#addItemGroup(ItemGroup, int)} to specify a certain tab index.</p>
      */
-    public static final Map<CondensedItemEntry.ItemGroupHelper, List<CondensedItemEntry>> ALL_CONDENSED_ENTRIES = new HashMap<>();
+    public static final Map<ItemGroupHelper, List<CondensedItemEntry>> ALL_CONDENSED_ENTRIES = new HashMap<>();
 
     /**
      * Method to create A {@link CondensedItemEntry} using a Predicate

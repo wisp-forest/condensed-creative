@@ -2,6 +2,8 @@ package io.wispforest.condensedCreative;
 
 import io.wispforest.condensedCreative.compat.CondensedCreativeConfig;
 import io.wispforest.condensedCreative.compat.owo.OwoCompat;
+import io.wispforest.condensedCreative.registry.CondensedCreativeInitializer;
+import io.wispforest.condensedCreative.registry.CondensedEntryRegistry;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
@@ -13,11 +15,12 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.util.Identifier;
 
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public class CondensedCreative implements ModInitializer, ClientModInitializer {
+public class CondensedCreative implements ModInitializer, ClientModInitializer, CondensedCreativeInitializer {
 
     public static final String MODID = "condensed_creative";
 
@@ -52,6 +55,20 @@ public class CondensedCreative implements ModInitializer, ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        List<CondensedCreativeInitializer> allCondensedEntrypoints = FabricLoader.getInstance().getEntrypoints("condensed_creative", CondensedCreativeInitializer.class);
+
+        for(CondensedCreativeInitializer initializer : allCondensedEntrypoints){
+            initializer.onInitializeCondensedEntries();
+        }
+    }
+
+    //---------------------------------------------------------------------------------------------------------
+
+    public static boolean isDeveloperMode(){
+        return true;
+    }
+
+    public void onInitializeCondensedEntries() {
         if(CondensedCreative.isDeveloperMode()) {
             CondensedEntryRegistry.fromTag(CondensedCreative.createID("test1"), Blocks.OAK_LOG, ItemTags.LOGS)
                     .addItemGroup(ItemGroup.BUILDING_BLOCKS)
@@ -67,11 +84,5 @@ public class CondensedCreative implements ModInitializer, ClientModInitializer {
                         .setTitleStringFromTagKey();
             }
         }
-    }
-
-    //---------------------------------------------------------------------------------------------------------
-
-    public static boolean isDeveloperMode(){
-        return true;
     }
 }

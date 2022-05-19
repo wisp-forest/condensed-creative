@@ -2,15 +2,18 @@ package io.wispforest.condensedCreative.mixins.client;
 
 import io.wispforest.condensedCreative.CondensedCreative;
 import io.wispforest.condensedCreative.ducks.CreativeInventoryScreenHandlerDuck;
-import io.wispforest.condensedCreative.CondensedEntryRegistry;
+import io.wispforest.condensedCreative.registry.CondensedEntryRegistry;
 import io.wispforest.condensedCreative.entry.impl.CondensedItemEntry;
 import io.wispforest.condensedCreative.entry.Entry;
+import io.wispforest.condensedCreative.registry.CustomItemGroupOrderHelper;
 import io.wispforest.condensedCreative.util.CondensedInventory;
+import io.wispforest.condensedCreative.util.ItemGroupHelper;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
@@ -107,36 +110,42 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
 
     @Inject(method = "setSelectedTab", at = @At(value = "JUMP", opcode = Opcodes.IF_ACMPNE, ordinal = 1))
     private void filterEntriesAndAddCondensedEntries(ItemGroup group, CallbackInfo ci){
-        CondensedItemEntry.ItemGroupHelper itemGroupHelper;
+        ItemGroupHelper itemGroupHelper = ItemGroupHelper.of(group,
+                CondensedCreative.isOwoItemGroup.test(group) ? CondensedCreative.getTabIndexFromOwoGroup.apply(group) : -1);
 
-        if(CondensedCreative.isOwoItemGroup.test(group)){
-            itemGroupHelper = CondensedItemEntry.ItemGroupHelper.ofOwoTab(group, CondensedCreative.getTabIndexFromOwoGroup.apply(group));
-        }else{
-            itemGroupHelper = CondensedItemEntry.ItemGroupHelper.of(group);
-        }
+        if(CustomItemGroupOrderHelper.CUSTOM_ITEM_GROUP_ORDER.containsKey(itemGroupHelper)){
+            for (Entry entry : CustomItemGroupOrderHelper.CUSTOM_ITEM_GROUP_ORDER.get(itemGroupHelper)) {
+                this.getHandlerDuck().getDefaultEntryList().add(entry);
 
-        if(validItemGroupForCondensedEntries && CondensedEntryRegistry.ALL_CONDENSED_ENTRIES.containsKey(itemGroupHelper)){
-            for(CondensedItemEntry condensedItemEntry : CondensedEntryRegistry.ALL_CONDENSED_ENTRIES.get(itemGroupHelper)){
-                int i = this.getHandlerDuck().getDefaultEntryList().indexOf(Entry.of(condensedItemEntry.getEntryStack()));
-
-                condensedItemEntry.createChildren();
-
-                List<CondensedItemEntry> allGroupedEntries = new ArrayList<>(condensedItemEntry.childrenEntry);
-
-                allGroupedEntries.add(0, condensedItemEntry);
-
-                if(i >= 0){
-                    this.getHandlerDuck().getDefaultEntryList().addAll(i, allGroupedEntries);
-                }else{
-                    this.getHandlerDuck().getDefaultEntryList().addAll(allGroupedEntries);
+                if (entry instanceof CondensedItemEntry condensedItemEntry) {
+                    condensedItemEntry.createChildren();
+                    this.getHandlerDuck().getDefaultEntryList().addAll(condensedItemEntry.childrenEntry);
                 }
+            }
+        }else {
+            if (validItemGroupForCondensedEntries && CondensedEntryRegistry.ALL_CONDENSED_ENTRIES.containsKey(itemGroupHelper)) {
+                for (CondensedItemEntry condensedItemEntry : CondensedEntryRegistry.ALL_CONDENSED_ENTRIES.get(itemGroupHelper)) {
+                    int i = this.getHandlerDuck().getDefaultEntryList().indexOf(Entry.of(condensedItemEntry.getEntryStack()));
 
-                List<Integer> allEntryHashes = condensedItemEntry.childrenEntry.stream().map(CondensedItemEntry::getItemEntryHashCode).toList();
+                    condensedItemEntry.createChildren();
 
-                this.getHandlerDuck().getDefaultEntryList().removeIf(entry -> !(entry instanceof CondensedItemEntry) && allEntryHashes.contains(entry.hashCode()));
+                    List<CondensedItemEntry> allGroupedEntries = new ArrayList<>(condensedItemEntry.childrenEntry);
 
-                LOGGER.info("[AddingCondensedEntries]: Adding " + condensedItemEntry.asString() + " to " + group.toString());
-                LOGGER.info("[AddingCondensedEntries]: Hash List " + allEntryHashes.toString());
+                    allGroupedEntries.add(0, condensedItemEntry);
+
+                    if (i >= 0) {
+                        this.getHandlerDuck().getDefaultEntryList().addAll(i, allGroupedEntries);
+                    } else {
+                        this.getHandlerDuck().getDefaultEntryList().addAll(allGroupedEntries);
+                    }
+
+                    List<Integer> allEntryHashes = condensedItemEntry.childrenEntry.stream().map(CondensedItemEntry::getItemEntryHashCode).toList();
+
+                    this.getHandlerDuck().getDefaultEntryList().removeIf(entry -> !(entry instanceof CondensedItemEntry) && allEntryHashes.contains(entry.hashCode()));
+
+                    LOGGER.info("[AddingCondensedEntries]: Adding " + condensedItemEntry.asString() + " to " + group.toString());
+                    LOGGER.info("[AddingCondensedEntries]: Hash List " + allEntryHashes.toString());
+                }
             }
         }
     }

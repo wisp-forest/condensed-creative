@@ -29,6 +29,8 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> {
 
     @Shadow @Nullable protected Slot focusedSlot;
 
+    @Shadow public abstract T getScreenHandler();
+
     @Unique private static final Identifier PLUS_ICON = CondensedCreative.createID("textures/gui/plus_logo.png");
     @Unique private static final Identifier MINUS_ICON = CondensedCreative.createID("textures/gui/minus_logo.png");
 
@@ -63,7 +65,24 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> {
                 int maxY = minY + 16;
 
                 if(CondensedItemEntry.CHILD_VISIBILITY.get(condensedItemEntry.condensedID)) {
-                    DrawableHelper.fill(new MatrixStack(),  minX - 1, minY - 1, maxX + 1, maxY + 1, 0x7F111111); //0x22222222
+
+
+                    if(isSlotAbovePartOfCondensedEntry(slot, condensedItemEntry.condensedID))
+                        minY = minY - 1;
+
+
+                    if(isSlotBelowPartOfCondensedEntry(slot, condensedItemEntry.condensedID))
+                        maxY = maxY + 1;
+
+                    if(isSlotRightPartOfCondensedEntry(slot, condensedItemEntry.condensedID))
+                        maxX = maxX + 1;
+
+                    if(isSlotLeftPartOfCondensedEntry(slot, condensedItemEntry.condensedID))
+                        minX = minX - 1;
+
+                    DrawableHelper.fill(new MatrixStack(),  minX, minY, maxX, maxY, 0x7F111111);
+
+                    //DrawableHelper.fill(new MatrixStack(),  minX - 1, minY - 1, maxX + 1, maxY + 1, 0x7F111111); //0x22222222
                 }
 
                 if(!condensedItemEntry.isChild) {
@@ -76,6 +95,58 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> {
                     DrawableHelper.drawTexture(new MatrixStack(), minX, minY, ((HandledScreen)(Object)this).getZOffset() + 160, 0, 0, 16, 16, 16, 16);
                 }
             }
+        }
+    }
+
+    @Unique
+    public boolean isSlotAbovePartOfCondensedEntry(Slot slot, Identifier condensedID){
+        int topSlotIndex = slot.getIndex() - 9;
+
+        if(topSlotIndex > 0 && ((CondensedInventory)slot.inventory).getEntryStack(topSlotIndex) instanceof CondensedItemEntry condensedItemEntry && condensedID == condensedItemEntry.condensedID){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    @Unique
+    public boolean isSlotBelowPartOfCondensedEntry(Slot slot, Identifier condensedID){
+        int topSlotIndex = slot.getIndex() + 9;
+
+        if(topSlotIndex < slot.inventory.size() && ((CondensedInventory)slot.inventory).getEntryStack(topSlotIndex) instanceof CondensedItemEntry condensedItemEntry && condensedID == condensedItemEntry.condensedID){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    @Unique
+    public boolean isSlotLeftPartOfCondensedEntry(Slot slot, Identifier condensedID){
+        if(slot.getIndex() % 9 == 0){ //((slot.id + 1) % 9 == 0) ||
+            return false;
+        }
+
+        int topSlotIndex = slot.getIndex() - 1;
+
+        if(topSlotIndex < slot.inventory.size() && ((CondensedInventory)slot.inventory).getEntryStack(topSlotIndex) instanceof CondensedItemEntry condensedItemEntry && condensedID == condensedItemEntry.condensedID){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    @Unique
+    public boolean isSlotRightPartOfCondensedEntry(Slot slot, Identifier condensedID){
+        if(((slot.id + 2) % 9 == 0)){
+            return false;
+        }
+
+        int topSlotIndex = slot.getIndex() + 1;
+
+        if(topSlotIndex < slot.inventory.size() && ((CondensedInventory)slot.inventory).getEntryStack(topSlotIndex) instanceof CondensedItemEntry condensedItemEntry && condensedID == condensedItemEntry.condensedID){
+            return true;
+        }else{
+            return false;
         }
     }
 }

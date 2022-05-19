@@ -1,8 +1,9 @@
 package io.wispforest.condensedCreative.entry.impl;
 
 import io.wispforest.condensedCreative.CondensedCreative;
-import io.wispforest.condensedCreative.CondensedEntryRegistry;
+import io.wispforest.condensedCreative.registry.CondensedEntryRegistry;
 import io.wispforest.condensedCreative.entry.Entry;
+import io.wispforest.condensedCreative.util.ItemGroupHelper;
 import net.fabricmc.loader.impl.util.StringUtil;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
@@ -14,10 +15,7 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.StringHelper;
 import net.minecraft.util.registry.Registry;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.jetbrains.annotations.ApiStatus;
 
 import javax.annotation.Nullable;
@@ -61,7 +59,7 @@ public class CondensedItemEntry extends ItemEntry{
      * Used to add the {@link CondensedItemEntry} to a certain {@link ItemGroup} with tab index support if using a {@link io.wispforest.owo.itemgroup.OwoItemGroup} with tabs
      */
     public CondensedItemEntry addItemGroup(ItemGroup itemGroup, int tabIndex){
-        ItemGroupHelper itemGroupId = CondensedCreative.isOwoItemGroup.test(itemGroup) ? ItemGroupHelper.ofOwoTab(itemGroup, tabIndex) : ItemGroupHelper.of(itemGroup);
+        ItemGroupHelper itemGroupId = ItemGroupHelper.of(itemGroup, tabIndex);
 
         if (CondensedEntryRegistry.ALL_CONDENSED_ENTRIES.containsKey(itemGroupId)) {
             CondensedEntryRegistry.ALL_CONDENSED_ENTRIES.get(itemGroupId).add(this);
@@ -243,14 +241,4 @@ public class CondensedItemEntry extends ItemEntry{
         return isChild ? super.toString() : (this.condensedID + this.childrenEntry.toString());
     }
 
-    public record ItemGroupHelper(ItemGroup group, int tab){
-
-        public static ItemGroupHelper of(ItemGroup group){
-            return new ItemGroupHelper(group, -1);
-        }
-
-        public static ItemGroupHelper ofOwoTab(ItemGroup group, int tab){
-            return new ItemGroupHelper(group, tab);
-        }
-    }
 }
