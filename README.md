@@ -1,7 +1,7 @@
 # Condensed Creative Items
 
-[![curseforge](https://img.shields.io/badge/-CurseForge-gray?style=for-the-badge&logo=curseforge&labelColor=orange)](https://www.curseforge.com/minecraft/mc-mods/jello)
-[![modrinth](https://img.shields.io/badge/-modrinth-gray?style=for-the-badge&labelColor=green&labelWidth=15&logo=appveyor&logoColor=white)]([https://modrinth.com/mod/jello](https://modrinth.com/mod/condensed-creative))
+[![curseforge](https://img.shields.io/badge/-CurseForge-gray?style=for-the-badge&logo=curseforge&labelColor=orange)](https://www.curseforge.com/minecraft/mc-mods/cci)
+[![modrinth](https://img.shields.io/badge/-modrinth-gray?style=for-the-badge&labelColor=green&labelWidth=15&logo=appveyor&logoColor=white)]([https://modrinth.com/mod/condensed-creative])
 [![release](https://img.shields.io/github/v/release/wisp-forest/CondensedCreativeItems?logo=github&style=for-the-badge)](https://github.com/wisp-forest/CondensedCreativeItems/releases)
 [![discord](https://img.shields.io/discord/825828008644313089?label=wisp%20forest&logo=discord&logoColor=white&style=for-the-badge)](https://discord.gg/xrwHKktV2d)
 
