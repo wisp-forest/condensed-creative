@@ -34,15 +34,13 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> {
     @Unique private static final Identifier PLUS_ICON = CondensedCreative.createID("textures/gui/plus_logo.png");
     @Unique private static final Identifier MINUS_ICON = CondensedCreative.createID("textures/gui/minus_logo.png");
 
-    @Unique private long lastTick = 0;
-
     @ModifyVariable(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/slot/Slot;getStack()Lnet/minecraft/item/ItemStack;", ordinal = 0, shift = At.Shift.BY, by = 2))
     private ItemStack changeDisplayedStackIfParent(ItemStack stack, MatrixStack matrices, Slot slot){
         if(slot.inventory instanceof CondensedInventory condensedInventory){
             if(condensedInventory.getEntryStack(slot.id) instanceof CondensedItemEntry condensedItemEntry && !condensedItemEntry.isChild){
-                if (MinecraftClient.getInstance().world.getTime() - lastTick > 40) {
+                if (MinecraftClient.getInstance().world.getTime() - condensedItemEntry.lastTick > 40) {
                     condensedItemEntry.getNextValue();
-                    lastTick = MinecraftClient.getInstance().world.getTime();
+                    condensedItemEntry.lastTick = MinecraftClient.getInstance().world.getTime();
                 }
 
                 return condensedItemEntry.getDisplayStack();

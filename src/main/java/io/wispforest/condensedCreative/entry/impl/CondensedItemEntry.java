@@ -160,6 +160,8 @@ public class CondensedItemEntry extends ItemEntry{
 
     //------------------------------------------------------------------------------------------------------------------------------------------
 
+    public long lastTick = 0;
+
     public void getNextValue(){
         int index = new Random().nextInt(childrenEntry.size());
         Iterator<CondensedItemEntry> iter = childrenEntry.iterator();
