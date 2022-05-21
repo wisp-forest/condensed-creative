@@ -111,7 +111,7 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
     @Inject(method = "setSelectedTab", at = @At(value = "JUMP", opcode = Opcodes.IF_ACMPNE, ordinal = 1))
     private void filterEntriesAndAddCondensedEntries(ItemGroup group, CallbackInfo ci){
         ItemGroupHelper itemGroupHelper = ItemGroupHelper.of(group,
-                CondensedCreative.isOwoItemGroup.test(group) ? CondensedCreative.getTabIndexFromOwoGroup.apply(group) : -1);
+                CondensedCreative.isOwoItemGroup.test(group) ? CondensedCreative.getTabIndexFromOwoGroup.apply(group) : 0);
 
         if(CustomItemGroupOrderHelper.CUSTOM_ITEM_GROUP_ORDER.containsKey(itemGroupHelper)){
             for (Entry entry : CustomItemGroupOrderHelper.CUSTOM_ITEM_GROUP_ORDER.get(itemGroupHelper)) {
