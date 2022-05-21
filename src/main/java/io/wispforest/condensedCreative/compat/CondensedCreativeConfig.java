@@ -10,9 +10,15 @@ public class CondensedCreativeConfig implements ConfigData {
 
     @ConfigEntry.Category("common")
     @ConfigEntry.Gui.Tooltip
+    public boolean enableDefaultCCIGroups = false;
+
+    //------------------------------------------------
+
+    @ConfigEntry.Category("info")
+    @ConfigEntry.Gui.Tooltip
     public boolean enableTagPreviewForEntries = true;
 
-    @ConfigEntry.Category("common")
+    @ConfigEntry.Category("info")
     @ConfigEntry.Gui.Tooltip
     public boolean enableDebugIdentifiersForEntries = false;
 }

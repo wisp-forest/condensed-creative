@@ -2,6 +2,7 @@ package io.wispforest.condensedCreative;
 
 import io.wispforest.condensedCreative.compat.CondensedCreativeConfig;
 import io.wispforest.condensedCreative.compat.owo.OwoCompat;
+import io.wispforest.condensedCreative.entry.BuiltinEntries;
 import io.wispforest.condensedCreative.registry.CondensedCreativeInitializer;
 import io.wispforest.condensedCreative.registry.CondensedEntryRegistry;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -13,9 +14,9 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.tag.ItemTags;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -48,16 +49,30 @@ public class CondensedCreative implements ModInitializer, ClientModInitializer, 
         }
 
         testGroup = createOwoItemGroup.get();
-
-        AutoConfig.register(CondensedCreativeConfig.class, GsonConfigSerializer::new);
-
-        MAIN_CONFIG = AutoConfig.getConfigHolder(CondensedCreativeConfig.class);
     }
 
     //---------------------------------------------------------------------------------------------------------
 
     @Override
     public void onInitializeClient() {
+        AutoConfig.register(CondensedCreativeConfig.class, GsonConfigSerializer::new);
+
+        MAIN_CONFIG = AutoConfig.getConfigHolder(CondensedCreativeConfig.class);
+
+        MAIN_CONFIG.registerSaveListener((configHolder, condensedCreativeConfig) -> {
+            if(condensedCreativeConfig.enableDefaultCCIGroups) {
+                if(!BuiltinEntries.builtinEntriesAdded) {
+                    BuiltinEntries.addDefaultEntries();
+                }
+            }else{
+                if(BuiltinEntries.builtinEntriesAdded) {
+                    BuiltinEntries.removeDefaultEntries();
+                }
+            }
+
+            return ActionResult.SUCCESS;
+        });
+
         List<CondensedCreativeInitializer> allCondensedEntrypoints = FabricLoader.getInstance().getEntrypoints("condensed_creative", CondensedCreativeInitializer.class);
 
         for(CondensedCreativeInitializer initializer : allCondensedEntrypoints){
@@ -73,19 +88,19 @@ public class CondensedCreative implements ModInitializer, ClientModInitializer, 
 
     public void onInitializeCondensedEntries() {
         if(CondensedCreative.isDeveloperMode()) {
-            CondensedEntryRegistry.fromTag(CondensedCreative.createID("test1"), Blocks.OAK_LOG, ItemTags.LOGS)
-                    .addItemGroup(ItemGroup.BUILDING_BLOCKS)
-                    .setTitleStringFromTagKey();
-
             if(CondensedCreative.testGroup != null) {
-                CondensedEntryRegistry.fromTag(CondensedCreative.createID("test2"), Blocks.OAK_LOG, ItemTags.LOGS)
+                CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("test2"), Blocks.OAK_LOG, ItemTags.LOGS)
                         .addItemGroup(CondensedCreative.testGroup, 0)
                         .setTitleStringFromTagKey();
 
-                CondensedEntryRegistry.fromTag(CondensedCreative.createID("test3"), Blocks.WHITE_CARPET, ItemTags.CARPETS)
+                CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("test3"), Blocks.WHITE_CARPET, ItemTags.CARPETS)
                         .addItemGroup(CondensedCreative.testGroup, 1)
                         .setTitleStringFromTagKey();
             }
+        }
+
+        if(MAIN_CONFIG.getConfig().enableDefaultCCIGroups){
+            BuiltinEntries.addDefaultEntries();
         }
     }
 }

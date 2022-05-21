@@ -3,17 +3,13 @@ package io.wispforest.condensedCreative.registry;
 import io.wispforest.condensedCreative.entry.Entry;
 import io.wispforest.condensedCreative.entry.impl.CondensedItemEntry;
 import io.wispforest.condensedCreative.util.ItemGroupHelper;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.block.Block;
+import net.minecraft.item.*;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.ApiStatus;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -62,11 +58,11 @@ public class CondensedEntryRegistry {
      *
      * @param identifier The Entries identifier
      * @param itemConvertible The {@link ItemConvertible} being used to place the Entry within registered {@link ItemGroup}
-     * @param tagKey The {@link Item} {@link TagKey} used to find all the children items for the created {@link CondensedItemEntry}
+     * @param itemTagKey The {@link Item} {@link TagKey} used to find all the children items for the created {@link CondensedItemEntry}
      * @return The created {@link CondensedItemEntry}
      */
-    public static CondensedItemEntry fromTag(Identifier identifier, ItemConvertible itemConvertible, TagKey<Item> tagKey){
-        return CondensedItemEntry.createParent(identifier, itemConvertible.asItem().getDefaultStack(), item -> item.getRegistryEntry().isIn(tagKey)).setTagKey(tagKey);
+    public static CondensedItemEntry fromItemTag(Identifier identifier, ItemConvertible itemConvertible, TagKey<Item> itemTagKey){
+        return CondensedItemEntry.createParent(identifier, itemConvertible.asItem().getDefaultStack(), item -> item.getRegistryEntry().isIn(itemTagKey)).setTagKey(itemTagKey);
     }
 
     /**
@@ -74,11 +70,47 @@ public class CondensedEntryRegistry {
      *
      * @param identifier The Entries identifier
      * @param stack The {@link ItemStack} being used to place the Entry within the {@link ItemGroup}
-     * @param tagKey The {@link Item} {@link TagKey} used to find all the children items for the created {@link CondensedItemEntry}
+     * @param itemTagKey The {@link Item} {@link TagKey} used to find all the children items for the created {@link CondensedItemEntry}
      * @return The created {@link CondensedItemEntry}
      */
-    public static CondensedItemEntry fromTag(Identifier identifier, ItemStack stack, TagKey<Item> tagKey){
-        return CondensedItemEntry.createParent(identifier, stack, item -> item.getRegistryEntry().isIn(tagKey)).setTagKey(tagKey);
+    public static CondensedItemEntry fromItemTag(Identifier identifier, ItemStack stack, TagKey<Item> itemTagKey){
+        return CondensedItemEntry.createParent(identifier, stack, item -> item.getRegistryEntry().isIn(itemTagKey)).setTagKey(itemTagKey);
+    }
+
+    /**
+     * Method to create A {@link CondensedItemEntry} using a Predicate
+     *
+     * @param identifier The Entries identifier
+     * @param itemConvertible The {@link ItemConvertible} being used to place the Entry within registered {@link ItemGroup}
+     * @param blockTagKey The {@link Item} {@link TagKey} used to find all the children items for the created {@link CondensedItemEntry}
+     * @return The created {@link CondensedItemEntry}
+     */
+    public static CondensedItemEntry fromBlockTag(Identifier identifier, ItemConvertible itemConvertible, TagKey<Block> blockTagKey){
+        return CondensedItemEntry.createParent(identifier, itemConvertible.asItem().getDefaultStack(), item -> {
+            if(item instanceof BlockItem blockItem){
+                return blockItem.getBlock().getRegistryEntry().isIn(blockTagKey);
+            }else{
+                return false;
+            }
+        }).setTagKey(blockTagKey);
+    }
+
+    /**
+     * Method to create A {@link CondensedItemEntry} using a Predicate
+     *
+     * @param identifier The Entries identifier
+     * @param stack The {@link ItemStack} being used to place the Entry within the {@link ItemGroup}
+     * @param blockTagKey The {@link Item} {@link TagKey} used to find all the children items for the created {@link CondensedItemEntry}
+     * @return The created {@link CondensedItemEntry}
+     */
+    public static CondensedItemEntry fromBlockTag(Identifier identifier, ItemStack stack, TagKey<Block> blockTagKey){
+        return CondensedItemEntry.createParent(identifier, stack, item -> {
+            if(item instanceof BlockItem blockItem){
+                return blockItem.getBlock().getRegistryEntry().isIn(blockTagKey);
+            } else {
+                return false;
+            }
+        }).setTagKey(blockTagKey);
     }
 
     //----------
@@ -131,5 +163,32 @@ public class CondensedEntryRegistry {
      */
     public static CondensedItemEntry fromItemStacks(Identifier identifier, ItemStack stack, Collection<ItemStack> collection){
         return CondensedItemEntry.createParent(identifier, stack, collection);
+    }
+
+    //-----------------------------------------------
+
+    @ApiStatus.Internal
+    @ApiStatus.Experimental
+    public static void addCondensedEntryToMainList(CondensedItemEntry condensedItemEntry){
+        if(condensedItemEntry.getItemGroupInfo() != null) {
+            if (ALL_CONDENSED_ENTRIES.containsKey(condensedItemEntry.getItemGroupInfo())) {
+                ALL_CONDENSED_ENTRIES.get(condensedItemEntry.getItemGroupInfo()).add(condensedItemEntry);
+            } else {
+                ArrayList<CondensedItemEntry> list = new ArrayList<>();
+                list.add(condensedItemEntry);
+
+                CondensedEntryRegistry.ALL_CONDENSED_ENTRIES.put(condensedItemEntry.getItemGroupInfo(), list);
+            }
+        }
+    }
+
+    @ApiStatus.Internal
+    @ApiStatus.Experimental
+    public static void removeCondensedEntryToMainList(CondensedItemEntry condensedItemEntry){
+        if(condensedItemEntry.getItemGroupInfo() != null) {
+            if (ALL_CONDENSED_ENTRIES.containsKey(condensedItemEntry.getItemGroupInfo())) {
+                ALL_CONDENSED_ENTRIES.get(condensedItemEntry.getItemGroupInfo()).remove(condensedItemEntry);
+            }
+        }
     }
 }

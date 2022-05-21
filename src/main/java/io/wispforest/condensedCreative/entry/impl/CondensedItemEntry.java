@@ -30,7 +30,9 @@ public class CondensedItemEntry extends ItemEntry{
     private CondensedItemEntry currentlyDisplayedEntry;
 
     private Text condensedEntryTitle = null;
-    private TagKey<Item> itemTagKey = null;
+    private TagKey<?> itemTagKey = null;
+
+    private ItemGroupHelper itemGroupInfo = null;
 
     private boolean compareItemRatherThanStack = false;
 
@@ -59,18 +61,7 @@ public class CondensedItemEntry extends ItemEntry{
      * Used to add the {@link CondensedItemEntry} to a certain {@link ItemGroup} with tab index support if using a {@link io.wispforest.owo.itemgroup.OwoItemGroup} with tabs
      */
     public CondensedItemEntry addItemGroup(ItemGroup itemGroup, int tabIndex){
-        ItemGroupHelper itemGroupId = ItemGroupHelper.of(itemGroup, tabIndex);
-
-        if (CondensedEntryRegistry.ALL_CONDENSED_ENTRIES.containsKey(itemGroupId)) {
-            CondensedEntryRegistry.ALL_CONDENSED_ENTRIES.get(itemGroupId).add(this);
-        } else {
-            ArrayList<CondensedItemEntry> list = new ArrayList<>();
-            list.add(this);
-
-            CondensedEntryRegistry.ALL_CONDENSED_ENTRIES.put(itemGroupId, list);
-        }
-
-        return this;
+        return addItemGroup(itemGroup, tabIndex, true);
     }
 
     /**
@@ -133,7 +124,23 @@ public class CondensedItemEntry extends ItemEntry{
     }
 
     @ApiStatus.Internal
-    public CondensedItemEntry setTagKey(TagKey<Item> tagkey){
+    public CondensedItemEntry addItemGroup(ItemGroup itemGroup, boolean addToMainEntriesMap){
+        return addItemGroup(itemGroup, 0, addToMainEntriesMap);
+    }
+
+    @ApiStatus.Internal
+    public CondensedItemEntry addItemGroup(ItemGroup itemGroup, int tabIndex, boolean addToMainEntriesMap){
+        this.itemGroupInfo = ItemGroupHelper.of(itemGroup, tabIndex);
+
+        if(addToMainEntriesMap) {
+            CondensedEntryRegistry.addCondensedEntryToMainList(this);
+        }
+
+        return this;
+    }
+
+    @ApiStatus.Internal
+    public CondensedItemEntry setTagKey(TagKey<?> tagkey){
         this.itemTagKey = tagkey;
 
         return this;
@@ -159,6 +166,10 @@ public class CondensedItemEntry extends ItemEntry{
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
+
+    public ItemGroupHelper getItemGroupInfo() {
+        return itemGroupInfo;
+    }
 
     public long lastTick = 0;
 
