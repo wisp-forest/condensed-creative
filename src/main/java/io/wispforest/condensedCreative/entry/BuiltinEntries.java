@@ -3,8 +3,7 @@ package io.wispforest.condensedCreative.entry;
 import io.wispforest.condensedCreative.CondensedCreative;
 import io.wispforest.condensedCreative.entry.impl.CondensedItemEntry;
 import io.wispforest.condensedCreative.registry.CondensedEntryRegistry;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.OreBlock;
+import net.minecraft.block.*;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.Items;
@@ -14,6 +13,7 @@ import net.minecraft.tag.ItemTags;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class BuiltinEntries {
 
@@ -38,14 +38,22 @@ public class BuiltinEntries {
                         .setTitleStringFromTagKey());
 
         BUILTIN_ENTRIES.add(
-                CondensedEntryRegistry.of(CondensedCreative.createID("ores"), Blocks.IRON_ORE, item -> {
-                            if(item instanceof BlockItem blockItem){
-                                return blockItem.getBlock() instanceof OreBlock;
-                            } else {
-                                return false;
-                            }
-                        }).addItemGroup(ItemGroup.BUILDING_BLOCKS, false)
-                        .setTitleStringFromTagKey());
+                CondensedEntryRegistry.fromItems(CondensedCreative.createID("ores"), Blocks.IRON_ORE,
+                        Stream.of(Blocks.COAL_ORE, Blocks.DEEPSLATE_COAL_ORE,
+                                Blocks.IRON_ORE, Blocks.DEEPSLATE_IRON_ORE,
+                                Blocks.COPPER_ORE, Blocks.DEEPSLATE_COPPER_ORE,
+                                Blocks.GOLD_ORE, Blocks.DEEPSLATE_GOLD_ORE,
+                                Blocks.REDSTONE_ORE, Blocks.DEEPSLATE_REDSTONE_ORE,
+                                Blocks.EMERALD_ORE, Blocks.DEEPSLATE_EMERALD_ORE,
+                                Blocks.LAPIS_ORE, Blocks.DEEPSLATE_LAPIS_ORE,
+                                Blocks.DIAMOND_ORE, Blocks.DEEPSLATE_DIAMOND_ORE,
+                                Blocks.NETHER_GOLD_ORE, Blocks.NETHER_QUARTZ_ORE
+                        ).map(Block::asItem).toList()).addItemGroup(ItemGroup.BUILDING_BLOCKS, false));
+
+        BUILTIN_ENTRIES.add(
+                CondensedEntryRegistry.of(CondensedCreative.createID("glass"), Blocks.IRON_ORE,
+                                item -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof StainedGlassBlock)
+                        .addItemGroup(ItemGroup.BUILDING_BLOCKS, false));
 
         //-------------------------------
 

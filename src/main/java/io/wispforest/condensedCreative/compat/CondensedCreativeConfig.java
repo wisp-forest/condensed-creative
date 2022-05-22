@@ -14,11 +14,11 @@ public class CondensedCreativeConfig implements ConfigData {
 
     //------------------------------------------------
 
-    @ConfigEntry.Category("info")
+    @ConfigEntry.Category("debug_info")
     @ConfigEntry.Gui.Tooltip
     public boolean enableTagPreviewForEntries = true;
 
-    @ConfigEntry.Category("info")
+    @ConfigEntry.Category("debug_info")
     @ConfigEntry.Gui.Tooltip
     public boolean enableDebugIdentifiersForEntries = false;
 }
