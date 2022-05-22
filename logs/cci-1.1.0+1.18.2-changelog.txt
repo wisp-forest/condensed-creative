@@ -1,0 +1,8 @@
+Features:
+    - Added some default Entries(More will come in the future) with a config option to enable such
+
+BugFix:
+    - Set base index for Creative Item Groups to be 0 encase an Itemgroup becomes an owo Itemgroup by someone else
+    - Fix Rotating Item Render only working for one Condensed Entrie
+
+
