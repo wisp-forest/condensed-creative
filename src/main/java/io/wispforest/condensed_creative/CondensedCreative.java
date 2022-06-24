@@ -1,10 +1,10 @@
-package io.wispforest.condensedCreative;
+package io.wispforest.condensed_creative;
 
-import io.wispforest.condensedCreative.compat.CondensedCreativeConfig;
-import io.wispforest.condensedCreative.compat.owo.OwoCompat;
-import io.wispforest.condensedCreative.entry.BuiltinEntries;
-import io.wispforest.condensedCreative.registry.CondensedCreativeInitializer;
-import io.wispforest.condensedCreative.registry.CondensedEntryRegistry;
+import io.wispforest.condensed_creative.compat.CondensedCreativeConfig;
+import io.wispforest.condensed_creative.compat.owo.OwoCompat;
+import io.wispforest.condensed_creative.entry.BuiltinEntries;
+import io.wispforest.condensed_creative.registry.CondensedCreativeInitializer;
+import io.wispforest.condensed_creative.registry.CondensedEntryRegistry;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
@@ -76,7 +76,7 @@ public class CondensedCreative implements ModInitializer, ClientModInitializer, 
         List<CondensedCreativeInitializer> allCondensedEntrypoints = FabricLoader.getInstance().getEntrypoints("condensed_creative", CondensedCreativeInitializer.class);
 
         for(CondensedCreativeInitializer initializer : allCondensedEntrypoints){
-            initializer.onInitializeCondensedEntries();
+            initializer.onInitializeCondensedEntries(false);
         }
     }
 
@@ -86,18 +86,21 @@ public class CondensedCreative implements ModInitializer, ClientModInitializer, 
         return FabricLoader.getInstance().isDevelopmentEnvironment() || DEBUG;
     }
 
-    public void onInitializeCondensedEntries() {
+    public void onInitializeCondensedEntries(boolean refreshed) {
         if(CondensedCreative.isDeveloperMode()) {
             if(CondensedCreative.testGroup != null) {
                 CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("test2"), Blocks.OAK_LOG, ItemTags.LOGS)
                         .addItemGroup(CondensedCreative.testGroup, 0)
                         .setTitleStringFromTagKey();
 
-                CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("test3"), Blocks.WHITE_CARPET, ItemTags.CARPETS)
+                CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("test3"), Blocks.WHITE_CARPET, ItemTags.WOOL_CARPETS)
                         .addItemGroup(CondensedCreative.testGroup, 1)
                         .setTitleStringFromTagKey();
             }
         }
+
+
+        BuiltinEntries.addEntriesToList();
 
         if(MAIN_CONFIG.getConfig().enableDefaultCCIGroups){
             BuiltinEntries.addDefaultEntries();

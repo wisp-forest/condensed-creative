@@ -1,14 +1,8 @@
-package io.wispforest.condensedCreative.entry;
+package io.wispforest.condensed_creative.entry;
 
-import io.wispforest.condensedCreative.entry.impl.CondensedItemEntry;
-import io.wispforest.condensedCreative.entry.impl.ItemEntry;
-import io.wispforest.condensedCreative.util.NbtTagHasher;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.player.PlayerEntity;
+import io.wispforest.condensed_creative.entry.impl.ItemEntry;
+import io.wispforest.condensed_creative.util.NbtTagHasher;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-
-import java.util.List;
 
 public interface Entry {
 

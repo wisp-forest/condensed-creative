@@ -1,8 +1,8 @@
-package io.wispforest.condensedCreative.registry;
+package io.wispforest.condensed_creative.registry;
 
-import io.wispforest.condensedCreative.CondensedCreative;
-import io.wispforest.condensedCreative.entry.Entry;
-import io.wispforest.condensedCreative.util.ItemGroupHelper;
+import io.wispforest.condensed_creative.CondensedCreative;
+import io.wispforest.condensed_creative.entry.Entry;
+import io.wispforest.condensed_creative.util.ItemGroupHelper;
 import net.minecraft.item.ItemGroup;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

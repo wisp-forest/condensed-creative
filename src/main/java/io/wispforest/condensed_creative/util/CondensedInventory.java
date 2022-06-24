@@ -1,6 +1,6 @@
-package io.wispforest.condensedCreative.util;
+package io.wispforest.condensed_creative.util;
 
-import io.wispforest.condensedCreative.entry.Entry;
+import io.wispforest.condensed_creative.entry.Entry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.SimpleInventory;

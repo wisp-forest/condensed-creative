@@ -19,16 +19,16 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "io.wispforest.condensedCreative.CondensedCreative"
+      "io.wispforest.condensed_creative.CondensedCreative"
     ],
     "client": [
-      "io.wispforest.condensedCreative.CondensedCreative"
+      "io.wispforest.condensed_creative.CondensedCreative"
     ],
     "condensed_creative": [
-      "io.wispforest.condensedCreative.CondensedCreative"
+      "io.wispforest.condensed_creative.CondensedCreative"
     ],
     "modmenu": [
-      "io.wispforest.condensedCreative.compat.CondensedCreativeModMenu"
+      "io.wispforest.condensed_creative.compat.CondensedCreativeModMenu"
     ]
   },
   "mixins": [

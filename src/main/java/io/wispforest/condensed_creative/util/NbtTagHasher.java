@@ -1,6 +1,7 @@
-package io.wispforest.condensedCreative.util;
+package io.wispforest.condensed_creative.util;
 
 import com.google.common.base.Predicates;
+import io.wispforest.condensed_creative.mixins.NbtCompoundAccessor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -92,7 +93,7 @@ public class NbtTagHasher {
 
     private int hashCompoundTag(NbtCompound tag) {
         int i = 1;
-        for (Map.Entry<String, NbtElement> entry : tag.entries.entrySet()) {
+        for (Map.Entry<String, NbtElement> entry : ((NbtCompoundAccessor)tag).getEntries().entrySet()) {
             if (shouldHash(entry.getKey())) {
                 i = i * 31 + (Objects.hashCode(entry.getKey()) ^ hashTag(entry.getValue()));
             }

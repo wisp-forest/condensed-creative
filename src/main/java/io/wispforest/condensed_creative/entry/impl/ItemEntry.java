@@ -1,13 +1,7 @@
-package io.wispforest.condensedCreative.entry.impl;
+package io.wispforest.condensed_creative.entry.impl;
 
-import io.wispforest.condensedCreative.entry.Entry;
-import io.wispforest.condensedCreative.util.NbtTagHasher;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.player.PlayerEntity;
+import io.wispforest.condensed_creative.entry.Entry;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-
-import java.util.List;
 
 public class ItemEntry implements Entry {
 

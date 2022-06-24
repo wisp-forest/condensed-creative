@@ -1,8 +1,8 @@
-package io.wispforest.condensedCreative.entry;
+package io.wispforest.condensed_creative.entry;
 
-import io.wispforest.condensedCreative.CondensedCreative;
-import io.wispforest.condensedCreative.entry.impl.CondensedItemEntry;
-import io.wispforest.condensedCreative.registry.CondensedEntryRegistry;
+import io.wispforest.condensed_creative.CondensedCreative;
+import io.wispforest.condensed_creative.entry.impl.CondensedItemEntry;
+import io.wispforest.condensed_creative.registry.CondensedEntryRegistry;
 import net.minecraft.block.*;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemGroup;
@@ -10,6 +10,7 @@ import net.minecraft.item.Items;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.ItemTags;
+import net.minecraft.util.registry.Registry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,11 +18,11 @@ import java.util.stream.Stream;
 
 public class BuiltinEntries {
 
-    private static List<CondensedItemEntry> BUILTIN_ENTRIES = new ArrayList<>();
+    private static final List<CondensedItemEntry> BUILTIN_ENTRIES = new ArrayList<>();
 
     public static boolean builtinEntriesAdded = false;
 
-    static{
+    public static void addEntriesToList(){
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("logs"), Blocks.OAK_LOG, ItemTags.LOGS)
                         .addItemGroup(ItemGroup.BUILDING_BLOCKS, false)
@@ -36,6 +37,7 @@ public class BuiltinEntries {
                 CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("terracotta"), Blocks.TERRACOTTA, ItemTags.TERRACOTTA)
                         .addItemGroup(ItemGroup.BUILDING_BLOCKS, false)
                         .setTitleStringFromTagKey());
+
 
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.fromItems(CondensedCreative.createID("ores"), Blocks.IRON_ORE,
@@ -58,7 +60,7 @@ public class BuiltinEntries {
         //-------------------------------
 
         BUILTIN_ENTRIES.add(
-                CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("carpets"), Blocks.WHITE_CARPET, ItemTags.CARPETS)
+                CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("carpets"), Blocks.WHITE_CARPET, ItemTags.WOOL_CARPETS)
                         .addItemGroup(ItemGroup.DECORATIONS, false)
                         .setTitleStringFromTagKey());
 
@@ -81,6 +83,7 @@ public class BuiltinEntries {
                 CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("walls"), Blocks.COBBLESTONE_WALL, ItemTags.WALLS)
                         .addItemGroup(ItemGroup.DECORATIONS, false)
                         .setTitleStringFromTagKey());
+
 
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.fromBlockTag(CondensedCreative.createID("shulkers"), Blocks.SHULKER_BOX, BlockTags.SHULKER_BOXES)
@@ -109,6 +112,7 @@ public class BuiltinEntries {
                         .addItemGroup(ItemGroup.REDSTONE, false)
                         .setTitleStringFromTagKey());
 
+
         //-------------------------------
 
         BUILTIN_ENTRIES.add(
@@ -120,6 +124,10 @@ public class BuiltinEntries {
                 CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("music_discs"), Items.MUSIC_DISC_13, ItemTags.MUSIC_DISCS)
                         .addItemGroup(ItemGroup.MISC, false)
                         .setTitleStringFromTagKey());
+    }
+
+    public static void clearEntriesFromList(){
+        BUILTIN_ENTRIES.clear();
     }
 
     public static void addDefaultEntries(){

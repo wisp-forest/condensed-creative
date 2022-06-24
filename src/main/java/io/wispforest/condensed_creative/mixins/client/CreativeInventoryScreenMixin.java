@@ -1,24 +1,26 @@
-package io.wispforest.condensedCreative.mixins.client;
+package io.wispforest.condensed_creative.mixins.client;
 
-import io.wispforest.condensedCreative.CondensedCreative;
-import io.wispforest.condensedCreative.ducks.CreativeInventoryScreenHandlerDuck;
-import io.wispforest.condensedCreative.registry.CondensedEntryRegistry;
-import io.wispforest.condensedCreative.entry.impl.CondensedItemEntry;
-import io.wispforest.condensedCreative.entry.Entry;
-import io.wispforest.condensedCreative.registry.CustomItemGroupOrderHelper;
-import io.wispforest.condensedCreative.util.CondensedInventory;
-import io.wispforest.condensedCreative.util.ItemGroupHelper;
+import io.wispforest.condensed_creative.CondensedCreative;
+import io.wispforest.condensed_creative.ducks.CreativeInventoryScreenHandlerDuck;
+import io.wispforest.condensed_creative.entry.Entry;
+import io.wispforest.condensed_creative.entry.impl.CondensedItemEntry;
+import io.wispforest.condensed_creative.registry.CondensedEntryRegistry;
+import io.wispforest.condensed_creative.registry.CustomItemGroupOrderHelper;
+import io.wispforest.condensed_creative.util.CondensedInventory;
+import io.wispforest.condensed_creative.util.ItemGroupHelper;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
+import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.ScreenTexts;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.MathHelper;
 import org.apache.logging.log4j.LogManager;
@@ -39,17 +41,24 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
 
     @Shadow @Final @Mutable public static SimpleInventory INVENTORY;
 
+    @Shadow private static int selectedTab;
+
     @Shadow private float scrollPosition;
 
     @Shadow protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY){}
 
+    @Shadow protected abstract void setSelectedTab(ItemGroup group);
+
     //-------------
+
+    @Unique private static final Identifier refreshButtonIcon = CondensedCreative.createID("textures/gui/refresh_button.png");
 
     @Unique private static final Logger LOGGER = LogManager.getLogger("CondensedCreative");
 
     @Unique private boolean validItemGroupForCondensedEntries = false;
 
     @Unique private int currentRowPosition = 0;
+
 
     //-------------
 
@@ -61,6 +70,7 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
     private static void setupInventory(CallbackInfo ci){
         INVENTORY = new CondensedInventory(INVENTORY.size());
     }
+
 
     //------------------------------------------------------------------------------------------------------------------------------------------------------//
 
@@ -122,7 +132,7 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
                     this.getHandlerDuck().getDefaultEntryList().addAll(condensedItemEntry.childrenEntry);
                 }
             }
-        }else {
+        } else {
             if (validItemGroupForCondensedEntries && CondensedEntryRegistry.ALL_CONDENSED_ENTRIES.containsKey(itemGroupHelper)) {
                 for (CondensedItemEntry condensedItemEntry : CondensedEntryRegistry.ALL_CONDENSED_ENTRIES.get(itemGroupHelper)) {
                     int i = this.getHandlerDuck().getDefaultEntryList().indexOf(Entry.of(condensedItemEntry.getEntryStack()));
@@ -143,8 +153,10 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
 
                     this.getHandlerDuck().getDefaultEntryList().removeIf(entry -> !(entry instanceof CondensedItemEntry) && allEntryHashes.contains(entry.hashCode()));
 
-                    LOGGER.info("[AddingCondensedEntries]: Adding " + condensedItemEntry.asString() + " to " + group.toString());
-                    LOGGER.info("[AddingCondensedEntries]: Hash List " + allEntryHashes.toString());
+                    if(CondensedCreative.isDeveloperMode()) {
+                        LOGGER.info("[AddingCondensedEntries]: Adding " + condensedItemEntry.asString() + " to " + group.toString());
+                        LOGGER.info("[AddingCondensedEntries]: Hash List " + allEntryHashes.toString());
+                    }
                 }
             }
         }
@@ -159,7 +171,9 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
                 condensedItemEntry.toggleVisibility();
 
                 this.getHandlerDuck().markEntryListDirty();
+
                 this.getHandlerDuck().scrollItems(this.currentRowPosition);
+
 
                 ci.cancel();
             }
@@ -217,6 +231,8 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
     public static abstract class CreativeInventoryScreenHandlerMixin implements CreativeInventoryScreenHandlerDuck {
 
         @Shadow public abstract boolean shouldShowScrollbar();
+
+        //----------------------------------------
 
         @Unique private static final Logger LOGGER = LogManager.getLogger("CondensedCreative");
 

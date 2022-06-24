@@ -1,9 +1,8 @@
-package io.wispforest.condensedCreative.ducks;
+package io.wispforest.condensed_creative.ducks;
 
-import io.wispforest.condensedCreative.entry.Entry;
+import io.wispforest.condensed_creative.entry.Entry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.MathHelper;
 
 public interface CreativeInventoryScreenHandlerDuck {
 

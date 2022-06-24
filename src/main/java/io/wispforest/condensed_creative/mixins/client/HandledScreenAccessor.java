@@ -1,4 +1,4 @@
-package io.wispforest.condensedCreative.mixins.client;
+package io.wispforest.condensed_creative.mixins.client;
 
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.screen.slot.Slot;

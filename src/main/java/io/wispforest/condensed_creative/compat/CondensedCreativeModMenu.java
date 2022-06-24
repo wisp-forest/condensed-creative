@@ -1,4 +1,4 @@
-package io.wispforest.condensedCreative.compat;
+package io.wispforest.condensed_creative.compat;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;

@@ -1,8 +1,8 @@
-package io.wispforest.condensedCreative.registry;
+package io.wispforest.condensed_creative.registry;
 
-import io.wispforest.condensedCreative.entry.Entry;
-import io.wispforest.condensedCreative.entry.impl.CondensedItemEntry;
-import io.wispforest.condensedCreative.util.ItemGroupHelper;
+import io.wispforest.condensed_creative.entry.impl.CondensedItemEntry;
+import io.wispforest.condensed_creative.util.ItemGroupHelper;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.item.*;
 import net.minecraft.tag.TagKey;
@@ -18,13 +18,14 @@ import java.util.stream.Collectors;
  * 
  * Create {@link CondensedItemEntry} within your Client-Side Mod Initialization as this will only be seen for the User's side and not the server
  */
-public class CondensedEntryRegistry {
+public final class CondensedEntryRegistry {
 
     /**
      * Register your A Entry's item group using {@link CondensedItemEntry#addItemGroup(ItemGroup)}.
      *
      * <p>For owo ItemGroup with certain tabs use {@link CondensedItemEntry#addItemGroup(ItemGroup, int)} to specify a certain tab index.</p>
      */
+    @ApiStatus.Internal
     public static final Map<ItemGroupHelper, List<CondensedItemEntry>> ALL_CONDENSED_ENTRIES = new HashMap<>();
 
     /**

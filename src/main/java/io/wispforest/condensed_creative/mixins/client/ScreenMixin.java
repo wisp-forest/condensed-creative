@@ -1,8 +1,8 @@
-package io.wispforest.condensedCreative.mixins.client;
+package io.wispforest.condensed_creative.mixins.client;
 
-import io.wispforest.condensedCreative.entry.Entry;
-import io.wispforest.condensedCreative.entry.impl.CondensedItemEntry;
-import io.wispforest.condensedCreative.util.CondensedInventory;
+import io.wispforest.condensed_creative.entry.Entry;
+import io.wispforest.condensed_creative.entry.impl.CondensedItemEntry;
+import io.wispforest.condensed_creative.util.CondensedInventory;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;

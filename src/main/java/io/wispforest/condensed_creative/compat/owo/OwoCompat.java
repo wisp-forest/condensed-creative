@@ -1,6 +1,6 @@
-package io.wispforest.condensedCreative.compat.owo;
+package io.wispforest.condensed_creative.compat.owo;
 
-import io.wispforest.condensedCreative.CondensedCreative;
+import io.wispforest.condensed_creative.CondensedCreative;
 import io.wispforest.owo.itemgroup.OwoItemGroup;
 import net.minecraft.item.ItemGroup;
 

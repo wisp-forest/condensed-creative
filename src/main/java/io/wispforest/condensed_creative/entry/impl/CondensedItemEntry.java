@@ -1,9 +1,9 @@
-package io.wispforest.condensedCreative.entry.impl;
+package io.wispforest.condensed_creative.entry.impl;
 
-import io.wispforest.condensedCreative.CondensedCreative;
-import io.wispforest.condensedCreative.registry.CondensedEntryRegistry;
-import io.wispforest.condensedCreative.entry.Entry;
-import io.wispforest.condensedCreative.util.ItemGroupHelper;
+import io.wispforest.condensed_creative.CondensedCreative;
+import io.wispforest.condensed_creative.entry.Entry;
+import io.wispforest.condensed_creative.registry.CondensedEntryRegistry;
+import io.wispforest.condensed_creative.util.ItemGroupHelper;
 import net.fabricmc.loader.impl.util.StringUtil;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
@@ -12,7 +12,6 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tag.TagKey;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -21,6 +20,7 @@ import org.jetbrains.annotations.ApiStatus;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class CondensedItemEntry extends ItemEntry{
 
@@ -77,7 +77,7 @@ public class CondensedItemEntry extends ItemEntry{
      * Sets the tooltip title text to be based of the given {@link String}
      */
     public CondensedItemEntry setTitleString(String condensedEntryTitle){
-        return setTitleString(new TranslatableText(condensedEntryTitle));
+        return setTitleString(Text.translatable(condensedEntryTitle));
     }
 
     /**
@@ -94,7 +94,7 @@ public class CondensedItemEntry extends ItemEntry{
      */
     public CondensedItemEntry setTitleStringFromTagKey(){
         if(itemTagKey != null){
-            this.condensedEntryTitle = Text.of(StringUtil.capitalize(itemTagKey.id().getPath()));
+            this.condensedEntryTitle = Text.of(Arrays.stream(itemTagKey.id().getPath().split("_")).map(StringUtil::capitalize).collect(Collectors.joining(" ")));
         }
 
         return this;

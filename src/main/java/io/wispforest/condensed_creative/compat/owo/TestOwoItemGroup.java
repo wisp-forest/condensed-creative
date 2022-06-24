@@ -1,4 +1,4 @@
-package io.wispforest.condensedCreative.compat.owo;
+package io.wispforest.condensed_creative.compat.owo;
 
 import io.wispforest.owo.itemgroup.Icon;
 import io.wispforest.owo.itemgroup.OwoItemGroup;

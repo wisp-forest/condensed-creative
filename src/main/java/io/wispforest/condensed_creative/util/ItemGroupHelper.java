@@ -1,6 +1,6 @@
-package io.wispforest.condensedCreative.util;
+package io.wispforest.condensed_creative.util;
 
-import io.wispforest.condensedCreative.CondensedCreative;
+import io.wispforest.condensed_creative.CondensedCreative;
 import net.minecraft.item.ItemGroup;
 
 public record ItemGroupHelper(ItemGroup group, int tab) {
