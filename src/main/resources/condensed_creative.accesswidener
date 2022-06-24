@@ -6,5 +6,3 @@ accessible class net/minecraft/client/gui/screen/ingame/CreativeInventoryScreen$
 accessible field net/minecraft/client/gui/screen/ingame/CreativeInventoryScreen INVENTORY Lnet/minecraft/inventory/SimpleInventory;
 
 accessible field net/minecraft/inventory/SimpleInventory size I
-
-accessible field net/minecraft/nbt/NbtCompound entries Ljava/util/Map;

@@ -4,6 +4,7 @@
   "package": "io.wispforest.condensed_creative.mixins",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "NbtCompoundAccessor"
   ],
   "client": [
     "client.CreativeInventoryScreenMixin",
