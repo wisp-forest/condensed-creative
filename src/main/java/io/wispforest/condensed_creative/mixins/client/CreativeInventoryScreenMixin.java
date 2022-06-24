@@ -71,6 +71,20 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
         INVENTORY = new CondensedInventory(INVENTORY.size());
     }
 
+    @Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/PlayerScreenHandler;addListener(Lnet/minecraft/screen/ScreenHandlerListener;)V", shift = At.Shift.BY, by = 2))
+    private void addButtonRender(CallbackInfo ci){
+        if(CondensedCreative.MAIN_CONFIG.getConfig().enableEntryRefreshButton) {
+            this.addDrawableChild(new TexturedButtonWidget(this.x + 200, this.y + 140, 16, 16, 0, 0, 16, refreshButtonIcon, 32, 32,
+                button -> {
+                    if (CondensedEntryRegistry.refreshEntrypoints()) {
+                        setSelectedTab(ItemGroup.GROUPS[this.selectedTab]);
+                    }
+                },
+                (button, matrices, mouseX, mouseY) -> {
+                    this.renderOrderedTooltip(matrices, this.client.textRenderer.wrapLines(Text.of("Refresh Condensed Entries"), Math.max(this.width / 2 - 43, 170)), mouseX, mouseY);
+                }, ScreenTexts.EMPTY));
+        }
+    }
 
     //------------------------------------------------------------------------------------------------------------------------------------------------------//
 

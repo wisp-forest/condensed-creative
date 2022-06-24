@@ -99,6 +99,9 @@ public class CondensedCreative implements ModInitializer, ClientModInitializer, 
             }
         }
 
+        if(refreshed){
+            BuiltinEntries.clearEntriesFromList();
+        }
 
         BuiltinEntries.addEntriesToList();
 

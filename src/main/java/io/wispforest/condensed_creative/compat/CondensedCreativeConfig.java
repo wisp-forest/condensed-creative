@@ -22,4 +22,11 @@ public class CondensedCreativeConfig implements ConfigData {
     @ConfigEntry.Category("debug_info")
     @ConfigEntry.Gui.Tooltip
     public boolean enableDebugIdentifiersForEntries = false;
+
+    //------------------------------------------------
+
+    @ConfigEntry.Category("client")
+    @ConfigEntry.Gui.Tooltip
+    public boolean enableEntryRefreshButton = true;
+
 }

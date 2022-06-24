@@ -192,4 +192,25 @@ public final class CondensedEntryRegistry {
             }
         }
     }
+    @ApiStatus.Internal
+    public static boolean refreshEntrypoints(){
+        int previousSize = 0;
+        int currentSize = 0;
+
+        for(Map.Entry<ItemGroupHelper, List<CondensedItemEntry>> entry : CondensedEntryRegistry.ALL_CONDENSED_ENTRIES.entrySet()){
+            previousSize += entry.getValue().size();
+        }
+
+        ALL_CONDENSED_ENTRIES.clear();
+
+        for(CondensedCreativeInitializer initializer : FabricLoader.getInstance().getEntrypoints("condensed_creative", CondensedCreativeInitializer.class)){
+            initializer.onInitializeCondensedEntries(true);
+        }
+
+        for(Map.Entry<ItemGroupHelper, List<CondensedItemEntry>> entry : CondensedEntryRegistry.ALL_CONDENSED_ENTRIES.entrySet()){
+            currentSize += entry.getValue().size();
+        }
+
+        return previousSize != currentSize;
+    }
 }
