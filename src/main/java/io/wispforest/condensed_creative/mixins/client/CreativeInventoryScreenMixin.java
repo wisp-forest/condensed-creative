@@ -188,6 +188,11 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
 
                 this.getHandlerDuck().scrollItems(this.currentRowPosition);
 
+                if(this.currentRowPosition > getHandlerDuck().getMaxRowCount()) {
+                    this.currentRowPosition = getHandlerDuck().getMaxRowCount();
+
+                    this.getHandlerDuck().scrollItems(this.currentRowPosition);
+                }
 
                 ci.cancel();
             }
