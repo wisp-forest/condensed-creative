@@ -16,4 +16,13 @@
 
     "text.autoconfig.condensed_creative.option.enableEntryRefreshButton": "Enable Entry Refresh Button",
     "text.autoconfig.condensed_creative.option.enableEntryRefreshButton.@Tooltip": "Useful if something else is having issues being rendered behind within the creative screen as this button is more for debugging",
+
+    "text.autoconfig.condensed_creative.option.enableEntryBackgroundColor": "Enable Entry Background Coloring",
+    "text.autoconfig.condensed_creative.option.enableEntryBackgroundColor.@Tooltip": "Would not recommend having this and outlines disabled as it will be hard to see the condensed entries.",
+
+    "text.autoconfig.condensed_creative.option.enableEntryBorderColor": "Enable Entry Border Coloring",
+    "text.autoconfig.condensed_creative.option.enableEntryBorderColor.@Tooltip": "Would not recommend having this and backgrounds disabled as it will be hard to see the condensed entries.",
+
+    "text.autoconfig.condensed_creative.option.condensedEntryBorderColor": "Entry Outline Color",
+    "text.autoconfig.condensed_creative.option.condensedEntryBorderColor.@Tooltip": "Such a color should contain a Alpha value."
 }

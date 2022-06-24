@@ -29,4 +29,15 @@ public class CondensedCreativeConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip
     public boolean enableEntryRefreshButton = true;
 
+    @ConfigEntry.Category("client")
+    @ConfigEntry.Gui.Tooltip
+    public boolean enableEntryBackgroundColor = true;
+
+    @ConfigEntry.Category("client")
+    @ConfigEntry.Gui.Tooltip
+    public boolean enableEntryBorderColor = true;
+
+    @ConfigEntry.Category("client")
+    @ConfigEntry.ColorPicker(allowAlpha = true)
+    public int condensedEntryBorderColor = Color.ofRGBA(62, 171, 247, 192).getColor();
 }
