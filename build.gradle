@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.11-SNAPSHOT'
+	id 'fabric-loom' version '0.12-SNAPSHOT'
 	id 'maven-publish'
 	id 'io.github.juuxel.loom-quiltflower' version '1.7.2'
 }
@@ -19,6 +19,12 @@ repositories {
 		url = "https://api.modrinth.com/maven"
 		content {
 			includeGroup "maven.modrinth"
+		}
+	}
+	maven {
+		url "https://maven.terraformersmc.com/releases/"
+		content {
+			includeGroup "com.terraformersmc"
 		}
 	}
 }
@@ -48,8 +54,8 @@ dependencies {
 	implementation 'org.joml:joml:1.10.2'
 	modLocalRuntime 'org.joml:joml:1.10.2'
 
-	modCompileOnly("maven.modrinth:modmenu:${project.modmenu}")
-	modLocalRuntime("maven.modrinth:modmenu:${project.modmenu}")
+	modCompileOnly("com.terraformersmc:modmenu:${project.modmenu}")
+	modLocalRuntime("com.terraformersmc:modmenu:${project.modmenu}")
 }
 
 loom {
