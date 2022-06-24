@@ -38,6 +38,35 @@ public class BuiltinEntries {
                         .addItemGroup(ItemGroup.BUILDING_BLOCKS, false)
                         .setTitleStringFromTagKey());
 
+        BUILTIN_ENTRIES.add(
+                CondensedEntryRegistry.of(CondensedCreative.createID("concrete"), Blocks.WHITE_CONCRETE, item -> {
+                            if(item instanceof BlockItem){
+                                String itemPath = Registry.ITEM.getId(item).getPath();
+
+                                if(itemPath.contains("concrete") && !itemPath.contains("powder")){
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        })
+                        .addItemGroup(ItemGroup.BUILDING_BLOCKS, false)
+                        .setTitleStringFromTagKey());
+
+        BUILTIN_ENTRIES.add(
+                CondensedEntryRegistry.of(CondensedCreative.createID("concrete_powder"), Blocks.WHITE_CONCRETE_POWDER, item -> {
+                            if(item instanceof BlockItem){
+                                String itemPath = Registry.ITEM.getId(item).getPath();
+
+                                if(itemPath.contains("concrete") && itemPath.contains("powder")){
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        })
+                        .addItemGroup(ItemGroup.BUILDING_BLOCKS, false)
+                        .setTitleStringFromTagKey());
 
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.fromItems(CondensedCreative.createID("ores"), Blocks.IRON_ORE,
@@ -84,6 +113,25 @@ public class BuiltinEntries {
                         .addItemGroup(ItemGroup.DECORATIONS, false)
                         .setTitleStringFromTagKey());
 
+        BUILTIN_ENTRIES.add(
+                CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("fences"), Blocks.OAK_FENCE, ItemTags.FENCES)
+                        .addItemGroup(ItemGroup.DECORATIONS, false)
+                        .setTitleStringFromTagKey());
+
+        BUILTIN_ENTRIES.add(
+                CondensedEntryRegistry.of(CondensedCreative.createID("stained_glass_panes"), Blocks.GLASS_PANE, (item) -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof StainedGlassPaneBlock)
+                        .addItemGroup(ItemGroup.DECORATIONS, false)
+                        .setTitleStringFromTagKey());
+
+        BUILTIN_ENTRIES.add(
+                CondensedEntryRegistry.of(CondensedCreative.createID("corals"), Blocks.BRAIN_CORAL, (item) -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof CoralParentBlock)
+                        .addItemGroup(ItemGroup.DECORATIONS, false)
+                        .setTitleStringFromTagKey());
+
+        BUILTIN_ENTRIES.add(
+                CondensedEntryRegistry.of(CondensedCreative.createID("glazed_terracotta"), Blocks.WHITE_GLAZED_TERRACOTTA, (item) -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof GlazedTerracottaBlock)
+                        .addItemGroup(ItemGroup.DECORATIONS, false)
+                        .setTitleStringFromTagKey());
 
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.fromBlockTag(CondensedCreative.createID("shulkers"), Blocks.SHULKER_BOX, BlockTags.SHULKER_BOXES)
@@ -112,6 +160,10 @@ public class BuiltinEntries {
                         .addItemGroup(ItemGroup.REDSTONE, false)
                         .setTitleStringFromTagKey());
 
+        BUILTIN_ENTRIES.add(
+                CondensedEntryRegistry.fromBlockTag(CondensedCreative.createID("fence_gates"), Blocks.OAK_FENCE_GATE, BlockTags.FENCE_GATES)
+                        .addItemGroup(ItemGroup.REDSTONE, false)
+                        .setTitleStringFromTagKey());
 
         //-------------------------------
 
