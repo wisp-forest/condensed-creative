@@ -118,17 +118,17 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> {
     public boolean isSlotAbovePartOfCondensedEntry(Slot slot, Identifier condensedID){
         int topSlotIndex = slot.getIndex() - 9;
 
-        return topSlotIndex > 0 &&
+        return topSlotIndex >= 0 &&
                 ((CondensedInventory) slot.inventory).getEntryStack(topSlotIndex) instanceof CondensedItemEntry condensedItemEntry &&
                 condensedID == condensedItemEntry.condensedID;
     }
 
     @Unique
     public boolean isSlotBelowPartOfCondensedEntry(Slot slot, Identifier condensedID){
-        int topSlotIndex = slot.getIndex() + 9;
+        int bottomSlotIndex = slot.getIndex() + 9;
 
-        return topSlotIndex < slot.inventory.size() &&
-                ((CondensedInventory) slot.inventory).getEntryStack(topSlotIndex) instanceof CondensedItemEntry condensedItemEntry &&
+        return bottomSlotIndex < slot.inventory.size() &&
+                ((CondensedInventory) slot.inventory).getEntryStack(bottomSlotIndex) instanceof CondensedItemEntry condensedItemEntry &&
                 condensedID == condensedItemEntry.condensedID;
     }
 
@@ -138,10 +138,10 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> {
             return false;
         }
 
-        int topSlotIndex = slot.getIndex() - 1;
+        int leftSlotIndex = slot.getIndex() - 1;
 
-        return topSlotIndex < slot.inventory.size() &&
-                ((CondensedInventory) slot.inventory).getEntryStack(topSlotIndex) instanceof CondensedItemEntry condensedItemEntry &&
+        return leftSlotIndex < slot.inventory.size() &&
+                ((CondensedInventory) slot.inventory).getEntryStack(leftSlotIndex) instanceof CondensedItemEntry condensedItemEntry &&
                 condensedID == condensedItemEntry.condensedID;
     }
 
@@ -151,10 +151,10 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> {
             return false;
         }
 
-        int topSlotIndex = slot.getIndex() + 1;
+        int rightSlotIndex = slot.getIndex() + 1;
 
-        return topSlotIndex < slot.inventory.size() &&
-                ((CondensedInventory) slot.inventory).getEntryStack(topSlotIndex) instanceof CondensedItemEntry condensedItemEntry &&
+        return rightSlotIndex < slot.inventory.size() &&
+                ((CondensedInventory) slot.inventory).getEntryStack(rightSlotIndex) instanceof CondensedItemEntry condensedItemEntry &&
                 condensedID == condensedItemEntry.condensedID;
     }
 }
