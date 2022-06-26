@@ -166,11 +166,6 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
                     List<Integer> allEntryHashes = condensedItemEntry.childrenEntry.stream().map(CondensedItemEntry::getItemEntryHashCode).toList();
 
                     this.getHandlerDuck().getDefaultEntryList().removeIf(entry -> !(entry instanceof CondensedItemEntry) && allEntryHashes.contains(entry.hashCode()));
-
-                    if(CondensedCreative.isDeveloperMode()) {
-                        LOGGER.info("[AddingCondensedEntries]: Adding " + condensedItemEntry.asString() + " to " + group.toString());
-                        LOGGER.info("[AddingCondensedEntries]: Hash List " + allEntryHashes.toString());
-                    }
                 }
             }
         }
