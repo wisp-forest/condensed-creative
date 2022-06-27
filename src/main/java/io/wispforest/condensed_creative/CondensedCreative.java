@@ -90,12 +90,12 @@ public class CondensedCreative implements ModInitializer, ClientModInitializer, 
         if(CondensedCreative.isDeveloperMode()) {
             if(CondensedCreative.testGroup != null) {
                 CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("test2"), Blocks.OAK_LOG, ItemTags.LOGS)
-                        .addItemGroup(CondensedCreative.testGroup, 0)
-                        .setTitleStringFromTagKey();
+                        .setTitleStringFromTagKey()
+                        .addItemGroup(CondensedCreative.testGroup, 0);
 
                 CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("test3"), Blocks.WHITE_CARPET, ItemTags.WOOL_CARPETS)
-                        .addItemGroup(CondensedCreative.testGroup, 1)
-                        .setTitleStringFromTagKey();
+                        .setTitleStringFromTagKey()
+                        .addItemGroup(CondensedCreative.testGroup, 1);
             }
         }
 

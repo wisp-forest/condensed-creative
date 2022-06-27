@@ -26,21 +26,21 @@ public class BuiltinEntries {
     public static void addEntriesToList(){
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("logs"), Blocks.OAK_LOG, ItemTags.LOGS)
-                        .addItemGroup(ItemGroup.BUILDING_BLOCKS, false)
-                        .addFilterPredicate(vanillaItemsOnly)
-                        .setTitleStringFromTagKey());
+                        .addTargetedFilter(vanillaItemsOnly)
+                        .setTitleStringFromTagKey()
+                        .addItemGroup(ItemGroup.BUILDING_BLOCKS, false));
 
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("wools"), Blocks.WHITE_WOOL, ItemTags.WOOL)
-                        .addItemGroup(ItemGroup.BUILDING_BLOCKS, false)
-                        .addFilterPredicate(vanillaItemsOnly)
-                        .setTitleStringFromTagKey());
+                        .addTargetedFilter(vanillaItemsOnly)
+                        .setTitleStringFromTagKey()
+                        .addItemGroup(ItemGroup.BUILDING_BLOCKS, false));
 
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("terracotta"), Blocks.TERRACOTTA, ItemTags.TERRACOTTA)
-                        .addItemGroup(ItemGroup.BUILDING_BLOCKS, false)
-                        .addFilterPredicate(vanillaItemsOnly)
-                        .setTitleStringFromTagKey());
+                        .addTargetedFilter(vanillaItemsOnly)
+                        .setTitleStringFromTagKey()
+                        .addItemGroup(ItemGroup.BUILDING_BLOCKS, false));
 
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.of(CondensedCreative.createID("concrete"), Blocks.WHITE_CONCRETE, item -> {
@@ -54,9 +54,9 @@ public class BuiltinEntries {
 
                             return false;
                         })
-                        .addItemGroup(ItemGroup.BUILDING_BLOCKS, false)
-                        .addFilterPredicate(vanillaItemsOnly)
-                        .setTitleStringFromTagKey());
+                        .addTargetedFilter(vanillaItemsOnly)
+                        .setTitleStringFromTagKey()
+                        .addItemGroup(ItemGroup.BUILDING_BLOCKS, false));
 
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.of(CondensedCreative.createID("concrete_powder"), Blocks.WHITE_CONCRETE_POWDER, item -> {
@@ -70,9 +70,9 @@ public class BuiltinEntries {
 
                             return false;
                         })
-                        .addItemGroup(ItemGroup.BUILDING_BLOCKS, false)
-                        .addFilterPredicate(vanillaItemsOnly)
-                        .setTitleStringFromTagKey());
+                        .addTargetedFilter(vanillaItemsOnly)
+                        .setTitleStringFromTagKey()
+                        .addItemGroup(ItemGroup.BUILDING_BLOCKS, false));
 
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.fromItems(CondensedCreative.createID("ores"), Blocks.IRON_ORE,
@@ -86,122 +86,122 @@ public class BuiltinEntries {
                                 Blocks.DIAMOND_ORE, Blocks.DEEPSLATE_DIAMOND_ORE,
                                 Blocks.NETHER_GOLD_ORE, Blocks.NETHER_QUARTZ_ORE
                         ).map(Block::asItem).toList())
-                        .addItemGroup(ItemGroup.BUILDING_BLOCKS, false)
-                        .addFilterPredicate(vanillaItemsOnly));
+                        .addTargetedFilter(vanillaItemsOnly)
+                        .addItemGroup(ItemGroup.BUILDING_BLOCKS, false));
 
         BUILTIN_ENTRIES.add(
-                CondensedEntryRegistry.of(CondensedCreative.createID("glass"), Blocks.IRON_ORE,
+                CondensedEntryRegistry.of(CondensedCreative.createID("glass"), Blocks.WHITE_STAINED_GLASS,
                                 item -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof StainedGlassBlock)
-                        .addItemGroup(ItemGroup.BUILDING_BLOCKS, false)
-                        .addFilterPredicate(vanillaItemsOnly));
+                        .addTargetedFilter(vanillaItemsOnly)
+                        .addItemGroup(ItemGroup.BUILDING_BLOCKS, false));
 
         //-------------------------------
 
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("carpets"), Blocks.WHITE_CARPET, ItemTags.WOOL_CARPETS)
-                        .addItemGroup(ItemGroup.DECORATIONS, false)
-                        .addFilterPredicate(vanillaItemsOnly)
-                        .setTitleStringFromTagKey());
+                        .addTargetedFilter(vanillaItemsOnly)
+                        .setTitleStringFromTagKey()
+                        .addItemGroup(ItemGroup.DECORATIONS, false));
 
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("candles"), Blocks.WHITE_CANDLE, ItemTags.CANDLES)
-                        .addItemGroup(ItemGroup.DECORATIONS, false)
-                        .addFilterPredicate(vanillaItemsOnly)
-                        .setTitleStringFromTagKey());
+                        .addTargetedFilter(vanillaItemsOnly)
+                        .setTitleStringFromTagKey()
+                        .addItemGroup(ItemGroup.DECORATIONS, false));
 
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("beds"), Blocks.WHITE_BED, ItemTags.BEDS)
-                        .addItemGroup(ItemGroup.DECORATIONS, false)
-                        .addFilterPredicate(vanillaItemsOnly)
-                        .setTitleStringFromTagKey());
+                        .addTargetedFilter(vanillaItemsOnly)
+                        .setTitleStringFromTagKey()
+                        .addItemGroup(ItemGroup.DECORATIONS, false));
 
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("banners"), Blocks.WHITE_BANNER, ItemTags.BANNERS)
-                        .addItemGroup(ItemGroup.DECORATIONS, false)
-                        .addFilterPredicate(vanillaItemsOnly)
-                        .setTitleStringFromTagKey());
+                        .addTargetedFilter(vanillaItemsOnly)
+                        .setTitleStringFromTagKey()
+                        .addItemGroup(ItemGroup.DECORATIONS, false));
 
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("walls"), Blocks.COBBLESTONE_WALL, ItemTags.WALLS)
-                        .addItemGroup(ItemGroup.DECORATIONS, false)
-                        .addFilterPredicate(vanillaItemsOnly)
-                        .setTitleStringFromTagKey());
+                        .addTargetedFilter(vanillaItemsOnly)
+                        .setTitleStringFromTagKey()
+                        .addItemGroup(ItemGroup.DECORATIONS, false));
 
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("fences"), Blocks.OAK_FENCE, ItemTags.FENCES)
-                        .addItemGroup(ItemGroup.DECORATIONS, false)
-                        .addFilterPredicate(vanillaItemsOnly)
-                        .setTitleStringFromTagKey());
+                        .addTargetedFilter(vanillaItemsOnly)
+                        .setTitleStringFromTagKey()
+                        .addItemGroup(ItemGroup.DECORATIONS, false));
 
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.of(CondensedCreative.createID("stained_glass_panes"), Blocks.GLASS_PANE, (item) -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof StainedGlassPaneBlock)
-                        .addItemGroup(ItemGroup.DECORATIONS, false)
-                        .addFilterPredicate(vanillaItemsOnly)
-                        .setTitleStringFromTagKey());
+                        .addTargetedFilter(vanillaItemsOnly)
+                        .setTitleStringFromTagKey()
+                        .addItemGroup(ItemGroup.DECORATIONS, false));
 
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.of(CondensedCreative.createID("corals"), Blocks.BRAIN_CORAL, (item) -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof CoralParentBlock)
-                        .addItemGroup(ItemGroup.DECORATIONS, false)
-                        .addFilterPredicate(vanillaItemsOnly)
-                        .setTitleStringFromTagKey());
+                        .addTargetedFilter(vanillaItemsOnly)
+                        .setTitleStringFromTagKey()
+                        .addItemGroup(ItemGroup.DECORATIONS, false));
 
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.of(CondensedCreative.createID("glazed_terracotta"), Blocks.WHITE_GLAZED_TERRACOTTA, (item) -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof GlazedTerracottaBlock)
-                        .addItemGroup(ItemGroup.DECORATIONS, false)
-                        .addFilterPredicate(vanillaItemsOnly)
-                        .setTitleStringFromTagKey());
+                        .addTargetedFilter(vanillaItemsOnly)
+                        .setTitleStringFromTagKey()
+                        .addItemGroup(ItemGroup.DECORATIONS, false));
 
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.fromBlockTag(CondensedCreative.createID("shulkers"), Blocks.SHULKER_BOX, BlockTags.SHULKER_BOXES)
-                        .addItemGroup(ItemGroup.DECORATIONS, false)
-                        .addFilterPredicate(vanillaItemsOnly)
-                        .setTitleStringFromTagKey());
+                        .addTargetedFilter(vanillaItemsOnly)
+                        .setTitleStringFromTagKey()
+                        .addItemGroup(ItemGroup.DECORATIONS, false));
 
         //-------------------------------
 
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("buttons"), Blocks.STONE_BUTTON, ItemTags.BUTTONS)
-                        .addItemGroup(ItemGroup.REDSTONE, false)
-                        .addFilterPredicate(vanillaItemsOnly)
-                        .setTitleStringFromTagKey());
+                        .addTargetedFilter(vanillaItemsOnly)
+                        .setTitleStringFromTagKey()
+                        .addItemGroup(ItemGroup.REDSTONE, false));
 
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.fromBlockTag(CondensedCreative.createID("pressure_plates"), Blocks.STONE_PRESSURE_PLATE, BlockTags.PRESSURE_PLATES)
-                        .addItemGroup(ItemGroup.REDSTONE, false)
-                        .addFilterPredicate(vanillaItemsOnly)
-                        .setTitleStringFromTagKey());
+                        .addTargetedFilter(vanillaItemsOnly)
+                        .setTitleStringFromTagKey()
+                        .addItemGroup(ItemGroup.REDSTONE, false));
 
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.fromBlockTag(CondensedCreative.createID("doors"), Blocks.IRON_DOOR, BlockTags.DOORS)
-                        .addItemGroup(ItemGroup.REDSTONE, false)
-                        .addFilterPredicate(vanillaItemsOnly)
-                        .setTitleStringFromTagKey());
+                        .addTargetedFilter(vanillaItemsOnly)
+                        .setTitleStringFromTagKey()
+                        .addItemGroup(ItemGroup.REDSTONE, false));
 
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.fromBlockTag(CondensedCreative.createID("trapdoors"), Blocks.IRON_TRAPDOOR, BlockTags.TRAPDOORS)
-                        .addItemGroup(ItemGroup.REDSTONE, false)
-                        .addFilterPredicate(vanillaItemsOnly)
-                        .setTitleStringFromTagKey());
+                        .addTargetedFilter(vanillaItemsOnly)
+                        .setTitleStringFromTagKey()
+                        .addItemGroup(ItemGroup.REDSTONE, false));
 
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.fromBlockTag(CondensedCreative.createID("fence_gates"), Blocks.OAK_FENCE_GATE, BlockTags.FENCE_GATES)
-                        .addItemGroup(ItemGroup.REDSTONE, false)
-                        .addFilterPredicate(vanillaItemsOnly)
-                        .setTitleStringFromTagKey());
+                        .addTargetedFilter(vanillaItemsOnly)
+                        .setTitleStringFromTagKey()
+                        .addItemGroup(ItemGroup.REDSTONE, false));
 
         //-------------------------------
 
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.of(CondensedCreative.createID("spawn_eggs"), Items.AXOLOTL_SPAWN_EGG, item -> item instanceof SpawnEggItem)
-                        .addItemGroup(ItemGroup.MISC, false)
-                        .addFilterPredicate(vanillaItemsOnly)
-                        .setTitleStringFromTagKey());
+                        //.addTargetedFilter(vanillaItemsOnly)
+                        .setTitleStringFromTagKey()
+                        .addItemGroup(ItemGroup.MISC, false));
 
         BUILTIN_ENTRIES.add(
                 CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("music_discs"), Items.MUSIC_DISC_13, ItemTags.MUSIC_DISCS)
-                        .addItemGroup(ItemGroup.MISC, false)
-                        .addFilterPredicate(vanillaItemsOnly)
-                        .setTitleStringFromTagKey());
+                        //.addTargetedFilter(vanillaItemsOnly)
+                        .setTitleStringFromTagKey()
+                        .addItemGroup(ItemGroup.MISC, false));
     }
 
     public static void clearEntriesFromList(){
