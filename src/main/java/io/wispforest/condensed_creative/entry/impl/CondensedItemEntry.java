@@ -27,6 +27,8 @@ public class CondensedItemEntry extends ItemEntry{
     public static final Map<Identifier, Boolean> CHILD_VISIBILITY = new HashMap<>();
 
     private @Nullable Predicate<Item> childrenPredicate = null;
+    private @Nullable Predicate<Item> enhancedFilter = null;
+
     private CondensedItemEntry currentlyDisplayedEntry;
 
     private Text condensedEntryTitle = null;
@@ -100,6 +102,16 @@ public class CondensedItemEntry extends ItemEntry{
         return this;
     }
 
+    /**
+     * Set a filter when gathering the children for the Children Entries in the event that you want to filter out unwanted items from a generic predicate e.i. thru tags
+     */
+    public CondensedItemEntry addFilterPredicate(Predicate<Item> filterPredicate){
+        this.enhancedFilter = filterPredicate;
+
+        return this;
+    }
+
+
     //--------------------------------------------
 
     @ApiStatus.Internal
@@ -157,8 +169,13 @@ public class CondensedItemEntry extends ItemEntry{
     public void createChildren(){
         if(childrenEntry.isEmpty() && childrenPredicate != null){
             Registry.ITEM.forEach(item1 -> {
-                if(childrenPredicate.test(item1))
+                if(childrenPredicate.test(item1)) {
+                    if(enhancedFilter != null && !enhancedFilter.test(item1)){
+                        return;
+                    }
+
                     this.childrenEntry.add(createChild(condensedID, item1.getDefaultStack()));
+                }
             });
         }
 
