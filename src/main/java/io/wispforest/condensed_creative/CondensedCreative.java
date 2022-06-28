@@ -60,15 +60,7 @@ public class CondensedCreative implements ModInitializer, ClientModInitializer, 
         MAIN_CONFIG = AutoConfig.getConfigHolder(CondensedCreativeConfig.class);
 
         MAIN_CONFIG.registerSaveListener((configHolder, condensedCreativeConfig) -> {
-            if(condensedCreativeConfig.enableDefaultCCIGroups) {
-                if(!BuiltinEntries.builtinEntriesAdded) {
-                    BuiltinEntries.addDefaultEntries();
-                }
-            }else{
-                if(BuiltinEntries.builtinEntriesAdded) {
-                    BuiltinEntries.removeDefaultEntries();
-                }
-            }
+            CondensedEntryRegistry.refreshEntrypoints();
 
             return ActionResult.SUCCESS;
         });
@@ -83,7 +75,7 @@ public class CondensedCreative implements ModInitializer, ClientModInitializer, 
     //---------------------------------------------------------------------------------------------------------
 
     public static boolean isDeveloperMode(){
-        return FabricLoader.getInstance().isDevelopmentEnvironment() || DEBUG;
+        return DEBUG;
     }
 
     public void onInitializeCondensedEntries(boolean refreshed) {
@@ -99,14 +91,8 @@ public class CondensedCreative implements ModInitializer, ClientModInitializer, 
             }
         }
 
-        if(refreshed){
-            BuiltinEntries.clearEntriesFromList();
-        }
-
-        BuiltinEntries.addEntriesToList();
-
         if(MAIN_CONFIG.getConfig().enableDefaultCCIGroups){
-            BuiltinEntries.addDefaultEntries();
+            BuiltinEntries.registerBuiltinEntries();
         }
     }
 }
