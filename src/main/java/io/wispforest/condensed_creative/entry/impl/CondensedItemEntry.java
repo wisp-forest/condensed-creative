@@ -45,9 +45,9 @@ public class CondensedItemEntry extends ItemEntry {
 
     //-------------------------------------------
 
-    private @Nullable Predicate<Item> generalizedFilter = null;
+    private @Nullable Text extraInfoText = null;
 
-    private @Nullable Predicate<Item> targetedFilter = null;
+    private @Nullable Predicate<Item> generalizedFilter = null;
 
     private @Nullable Consumer<List<ItemStack>> entrySorting = null;
 
@@ -55,13 +55,13 @@ public class CondensedItemEntry extends ItemEntry {
 
     //-------------------------------------------
 
-    private CondensedItemEntry(Identifier identifier, @Nullable ItemStack defaultItemstack, boolean isChild) {
-        super(defaultItemstack);
+    private CondensedItemEntry(Identifier identifier, ItemStack defaultStack, boolean isChild) {
+        super(defaultStack);
 
         this.condensedID = identifier;
         this.isChild = isChild;
 
-        condensedEntryTitle = Text.of(StringUtil.capitalize(this.condensedID.getPath()));
+        this.condensedEntryTitle = Text.of(StringUtil.capitalize(identifier.getPath()));
 
         CHILD_VISIBILITY.put(identifier, false);
     }
@@ -105,13 +105,6 @@ public class CondensedItemEntry extends ItemEntry {
         }
 
         /**
-         * Sets the tooltip title text to be based of the given {@link String}
-         */
-        public Builder setTitleString(String condensedEntryTitle){
-            return setTitleString(Text.translatable(condensedEntryTitle));
-        }
-
-        /**
          * Sets the tooltip title text to be based of the given {@link Text}
          */
         public Builder setTitleString(Text condensedEntryTitle){
@@ -132,10 +125,10 @@ public class CondensedItemEntry extends ItemEntry {
         }
 
         /**
-         * Set a filter when gathering the children for the Children Entries in the event that you want to filter out unwanted items from a generic predicate e.i. thru tags
+         * Adds extra text onto the Entries tooltip
          */
-        public Builder addTargetedFilter(Predicate<Item> filterPredicate){
-            this.currentEntry.targetedFilter = filterPredicate;
+        public Builder setExtraInfoText(Text extraInfoText){
+            this.currentEntry.extraInfoText = extraInfoText;
 
             return this;
         }
@@ -143,7 +136,7 @@ public class CondensedItemEntry extends ItemEntry {
         /**
          * Used to filter the children list during creation
          */
-        public Builder addEntrySorting(Consumer<List<ItemStack>> childrenSort){
+        public Builder setEntrySorting(Consumer<List<ItemStack>> childrenSort){
             this.currentEntry.entrySorting = childrenSort;
 
             return this;
@@ -191,10 +184,6 @@ public class CondensedItemEntry extends ItemEntry {
 
             Registry.ITEM.forEach(item1 -> {
                 if(generalizedFilter.test(item1)) {
-                    if(targetedFilter != null && !targetedFilter.test(item1)){
-                        return;
-                    }
-
                     stacks.add(item1.getDefaultStack());
                 }
             });
@@ -245,6 +234,10 @@ public class CondensedItemEntry extends ItemEntry {
 
     public void getParentTooltipText(List<Text> tooltipData, PlayerEntity player, TooltipContext context) {
         tooltipData.add(condensedEntryTitle);
+
+        if(extraInfoText != null) {
+            tooltipData.add(extraInfoText);
+        }
 
         if(itemTagKey != null && CondensedCreative.MAIN_CONFIG.getConfig().enableTagPreviewForEntries){
             tooltipData.add(Text.of("Tag: #" + itemTagKey.id().toString()).copy().formatted(Formatting.GRAY));

@@ -192,6 +192,7 @@ public final class CondensedEntryRegistry {
             }
         }
     }
+
     @ApiStatus.Internal
     public static boolean refreshEntrypoints(){
         int previousSize = 0;
