@@ -4,7 +4,6 @@ import io.wispforest.condensed_creative.CondensedCreative;
 import io.wispforest.condensed_creative.ducks.CreativeInventoryScreenHandlerDuck;
 import io.wispforest.condensed_creative.entry.Entry;
 import io.wispforest.condensed_creative.entry.impl.CondensedItemEntry;
-import io.wispforest.condensed_creative.entry.impl.ItemEntry;
 import io.wispforest.condensed_creative.registry.CondensedEntryRegistry;
 import io.wispforest.condensed_creative.registry.CustomItemGroupOrderHelper;
 import io.wispforest.condensed_creative.util.CondensedInventory;

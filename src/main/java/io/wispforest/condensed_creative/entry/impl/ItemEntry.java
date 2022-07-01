@@ -2,6 +2,9 @@ package io.wispforest.condensed_creative.entry.impl;
 
 import io.wispforest.condensed_creative.entry.Entry;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.registry.Registry;
+
+import java.util.Objects;
 
 public class ItemEntry implements Entry {
 
@@ -15,7 +18,8 @@ public class ItemEntry implements Entry {
 
     @Override
     public ItemStack getEntryStack() {
-        return itemStack;
+        //THE ITEMSTACK MUST BE COPIED OR THINGS DOWN THE LINE WILL ADJUST THIS IN SOME WAYS FUCKING WITH THE HASH FOR ITEMS WITH NBT I THINK FUCK!!!!
+        return itemStack.copy();
     }
 
     @Override
@@ -38,6 +42,7 @@ public class ItemEntry implements Entry {
     @Override
     public int hashCode() {
         int hash = Long.hashCode(nbtTagHasher.hashStack(this.getEntryStack()));
+
         hash = hash * 31 + System.identityHashCode(getEntryStack().getItem());
 
         return hash;

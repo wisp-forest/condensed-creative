@@ -4,7 +4,6 @@ import io.wispforest.condensed_creative.CondensedCreative;
 import io.wispforest.condensed_creative.entry.Entry;
 import io.wispforest.condensed_creative.registry.CondensedEntryRegistry;
 import io.wispforest.condensed_creative.util.ItemGroupHelper;
-import net.fabricmc.loader.impl.util.StringUtil;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -15,6 +14,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import org.apache.commons.lang3.text.WordUtils;
 import org.jetbrains.annotations.ApiStatus;
 
 import javax.annotation.Nullable;
@@ -61,7 +61,7 @@ public class CondensedItemEntry extends ItemEntry {
         this.condensedID = identifier;
         this.isChild = isChild;
 
-        this.condensedEntryTitle = Text.of(StringUtil.capitalize(identifier.getPath()));
+        this.condensedEntryTitle = Text.of(WordUtils.capitalize(identifier.getPath()));
 
         CHILD_VISIBILITY.put(identifier, false);
     }
@@ -118,7 +118,7 @@ public class CondensedItemEntry extends ItemEntry {
          */
         public Builder setTitleStringFromTagKey(){
             if(this.currentEntry.itemTagKey != null){
-                this.currentEntry.condensedEntryTitle = Text.of(Arrays.stream(this.currentEntry.itemTagKey.id().getPath().split("_")).map(StringUtil::capitalize).collect(Collectors.joining(" ")));
+                this.currentEntry.condensedEntryTitle = Text.of(Arrays.stream(this.currentEntry.itemTagKey.id().getPath().split("_")).map(WordUtils::capitalize).collect(Collectors.joining(" ")));
             }
 
             return this;

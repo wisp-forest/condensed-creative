@@ -96,7 +96,7 @@ public class BuiltinEntries {
                 .addItemGroup(ItemGroup.DECORATIONS);
 
 
-        CondensedEntryRegistry.of(CondensedCreative.createID("walls"), Blocks.COBBLESTONE_WALL, itemTagWithVanillaCheck(temTags.WALLS))
+        CondensedEntryRegistry.of(CondensedCreative.createID("walls"), Blocks.COBBLESTONE_WALL, itemTagWithVanillaCheck(ItemTags.WALLS))
                 .setTitleStringFromTagKey()
                 .addItemGroup(ItemGroup.DECORATIONS);
 
