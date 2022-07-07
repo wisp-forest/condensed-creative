@@ -11,7 +11,7 @@ public class CondensedCreativeConfig implements ConfigData {
 
     @ConfigEntry.Category("common")
     @ConfigEntry.Gui.Tooltip
-    public boolean enableDefaultCCIGroups = false;
+    public boolean enableDefaultCCGroups = true;
 
     //------------------------------------------------
 
@@ -27,7 +27,7 @@ public class CondensedCreativeConfig implements ConfigData {
 
     @ConfigEntry.Category("client")
     @ConfigEntry.Gui.Tooltip
-    public boolean enableEntryRefreshButton = true;
+    public boolean enableEntryRefreshButton = false;
 
     @ConfigEntry.Category("client")
     @ConfigEntry.Gui.Tooltip

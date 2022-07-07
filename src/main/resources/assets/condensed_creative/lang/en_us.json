@@ -1,12 +1,12 @@
 {
-    "text.autoconfig.condensed_creative.title": "CCI Config",
+    "text.autoconfig.condensed_creative.title": "CC Config",
 
     "text.autoconfig.condensed_creative.category.common": "Common",
     "text.autoconfig.condensed_creative.category.debug_info": "Debug Info",
     "text.autoconfig.condensed_creative.category.client": "Client",
 
-    "text.autoconfig.condensed_creative.option.enableDefaultCCIGroups": "Enable Builtin Entries",
-    "text.autoconfig.condensed_creative.option.enableDefaultCCIGroups.@Tooltip": "Adds some Condensed Entries for certain internal minecraft Tags",
+    "text.autoconfig.condensed_creative.option.enableDefaultCCGroups": "Enable Builtin Entries",
+    "text.autoconfig.condensed_creative.option.enableDefaultCCGroups.@Tooltip": "Adds some Condensed Entries for certain internal minecraft Tags",
 
     "text.autoconfig.condensed_creative.option.enableTagPreviewForEntries": "Enable Tag Tooltip",
     "text.autoconfig.condensed_creative.option.enableTagPreviewForEntries.@Tooltip": "Show Tag for the Condensed Entry",

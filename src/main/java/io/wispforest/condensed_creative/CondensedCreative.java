@@ -91,7 +91,7 @@ public class CondensedCreative implements ModInitializer, ClientModInitializer, 
             }
         }
 
-        if(MAIN_CONFIG.getConfig().enableDefaultCCIGroups){
+        if(MAIN_CONFIG.getConfig().enableDefaultCCGroups){
             BuiltinEntries.registerBuiltinEntries();
         }
     }

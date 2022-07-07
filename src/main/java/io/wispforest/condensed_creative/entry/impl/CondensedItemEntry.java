@@ -61,7 +61,7 @@ public class CondensedItemEntry extends ItemEntry {
         this.condensedID = identifier;
         this.isChild = isChild;
 
-        this.condensedEntryTitle = Text.of(WordUtils.capitalize(identifier.getPath()));
+        this.condensedEntryTitle = Text.of(Arrays.stream(identifier.getPath().split("_")).map(WordUtils::capitalize).collect(Collectors.joining(" ")));
 
         CHILD_VISIBILITY.put(identifier, false);
     }
