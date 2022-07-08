@@ -1,4 +1,4 @@
-# Condensed Creative Items
+# Condensed Creative
 
 [![curseforge](https://img.shields.io/badge/-CurseForge-gray?style=for-the-badge&logo=curseforge&labelColor=orange)](https://www.curseforge.com/minecraft/mc-mods/cci)
 [![modrinth](https://img.shields.io/badge/-modrinth-gray?style=for-the-badge&labelColor=green&labelWidth=15&logo=appveyor&logoColor=white)](https://modrinth.com/mod/condensed-creative)
@@ -7,7 +7,7 @@
 
 ## Overview
 
-Condensed Creative Items is currently a small library mod that allows for Mod creators to condense items into one slot similar to the Bedrock version of the game. Upon clicking the slot, it will expand to show what is all within Condensed Entry. Such is basically a space saver for blocks or items that are very similar, with the creative tab.
+Condensed Creative is currently a small library mod that allows for Mod creators to condense items into one slot similar to the Bedrock version of the game. Upon clicking the slot, it will expand to show what is all within Condensed Entry. Such is basically a space saver for blocks or items that are very similar, with the creative tab.
 
 **Build Setup:**
 
