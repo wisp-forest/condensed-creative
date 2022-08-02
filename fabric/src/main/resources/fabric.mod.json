@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "condensed_creative",
+  "version": "${version}",
+
+  "name": "Condensed Creative",
+  "description": "A Mod that allows for Modders to Condense there many blocks into Bedrock like Item Entry's!",
+  "authors": [
+    "Blodhgarm"
+  ],
+  "contact": {
+    "sources": "https://github.com/wisp-forest/condensed-creative"
+  },
+  "license": "MIT license",
+  "icon": "assets/condensed_creative/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "io.wispforest.condensed_creative.fabric.CondensedCreativeFabric"
+    ],
+    "condensed_creative": [
+      "io.wispforest.condensed_creative.CondensedCreative"
+    ],
+    "modmenu": [
+      "io.wispforest.condensed_creative.fabriclike.compat.CondensedCreativeModMenu"
+    ]
+  },
+  "mixins": [
+    "condensedCreativeFabric.mixins.json",
+    "condensedCreativeCommon.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.13.3",
+    "fabric": "*",
+    "minecraft": ">=1.19",
+    "cloth-config": ">=6.2.62"
+  }
+}

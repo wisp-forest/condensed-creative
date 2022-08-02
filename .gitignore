@@ -4,6 +4,9 @@
 build/
 out/
 classes/
+libs/
+output/
+bin/
 
 # eclipse
 
@@ -18,11 +21,11 @@ classes/
 
 # vscode
 
-.settings/
-.vscode/
-bin/
+.settings
+.vscode
 .classpath
 .project
+.metadat
 
 # macos
 
@@ -31,3 +34,5 @@ bin/
 # fabric
 
 run/
+/old-buildstuff/
+/old-src/

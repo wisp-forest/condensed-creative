@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "io.wispforest.condensed_creative.forge.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+  ],
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

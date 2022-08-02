@@ -1,0 +1,21 @@
+modLoader = "javafml"
+loaderVersion = "[41,)"
+issueTrackerURL = "https://github.com/wisp-forest/condensed-creative/issues"
+license = "MIT license"
+
+[[mods]]
+modId = "condensed_creative"
+version = "${version}"
+displayName = "Condensed Creative"
+authors = "Blodhgarm"
+description = '''
+A Mod that allows for Modders to Condense there many blocks into Bedrock like Item Entry's!
+'''
+logoFile = "icon.png"
+
+[[dependencies.condensed_creative]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.19,)"
+ordering = "NONE"
+side = "BOTH"

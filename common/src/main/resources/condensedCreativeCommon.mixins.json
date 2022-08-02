@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "package": "io.wispforest.condensed_creative.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+  ],
+  "client": [
+    "NbtCompoundAccessor",
+    "client.CreativeInventoryScreenMixin",
+    "client.CreativeInventoryScreenMixin$CreativeInventoryScreenHandlerMixin",
+    "client.HandledScreenAccessor",
+    "client.HandledScreenMixin",
+    "client.ScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
