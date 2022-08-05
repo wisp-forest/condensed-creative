@@ -153,22 +153,17 @@ public class CondensedItemEntry extends ItemEntry {
          * Used to add the {@link CondensedItemEntry} to a certain {@link ItemGroup} with tab index support if using a {@link io.wispforest.owo.itemgroup.OwoItemGroup} with tabs
          */
         public CondensedItemEntry addItemGroup(ItemGroup itemGroup, int tabIndex){
-            return addItemGroup(itemGroup, tabIndex, true);
+            return addItemGroup(ItemGroupHelper.of(itemGroup, tabIndex), true);
         }
 
         //---------------------------------------------------------------------------
 
         @ApiStatus.Internal
-        public CondensedItemEntry addItemGroup(ItemGroup itemGroup, boolean addToMainEntriesMap){
-            return addItemGroup(itemGroup, 0, addToMainEntriesMap);
-        }
-
-        @ApiStatus.Internal
-        public CondensedItemEntry addItemGroup(ItemGroup itemGroup, int tabIndex, boolean addToMainEntriesMap){
-            this.currentEntry.itemGroupInfo = ItemGroupHelper.of(itemGroup, tabIndex);
+        public CondensedItemEntry addItemGroup(ItemGroupHelper helper, boolean addToMainEntriesMap){
+            this.currentEntry.itemGroupInfo = helper;
 
             if(addToMainEntriesMap) {
-                CondensedEntryRegistry.addCondensedEntryToMainList(this.currentEntry);
+                CondensedEntryRegistry.addCondensedEntryToRegistryMap(this.currentEntry);
             }
 
             return this.currentEntry;

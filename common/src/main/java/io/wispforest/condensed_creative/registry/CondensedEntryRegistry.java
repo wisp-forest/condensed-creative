@@ -170,7 +170,7 @@ public final class CondensedEntryRegistry {
 
     @ApiStatus.Internal
     @ApiStatus.Experimental
-    public static void addCondensedEntryToMainList(CondensedItemEntry condensedItemEntry){
+    public static void addCondensedEntryToRegistryMap(CondensedItemEntry condensedItemEntry){
         if(condensedItemEntry.getItemGroupInfo() != null) {
             if (ALL_CONDENSED_ENTRIES.containsKey(condensedItemEntry.getItemGroupInfo())) {
                 ALL_CONDENSED_ENTRIES.get(condensedItemEntry.getItemGroupInfo()).add(condensedItemEntry);

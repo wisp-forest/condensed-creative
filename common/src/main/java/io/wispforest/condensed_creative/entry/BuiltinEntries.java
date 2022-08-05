@@ -18,16 +18,13 @@ public class BuiltinEntries {
     public static void registerBuiltinEntries(){
 
         CondensedEntryRegistry.of(CondensedCreative.createID("logs"), Blocks.OAK_LOG, itemTagWithVanillaCheck(ItemTags.LOGS))
-                .setTitleStringFromTagKey()
                 .addItemGroup(ItemGroup.BUILDING_BLOCKS);
 
         CondensedEntryRegistry.of(CondensedCreative.createID("wools"), Blocks.WHITE_WOOL, itemTagWithVanillaCheck(ItemTags.WOOL))
-                .setTitleStringFromTagKey()
                 .addItemGroup(ItemGroup.BUILDING_BLOCKS);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("terracotta"), Blocks.TERRACOTTA, itemTagWithVanillaCheck(ItemTags.TERRACOTTA))
-                .setTitleStringFromTagKey()
                 .addItemGroup(ItemGroup.BUILDING_BLOCKS);
 
         CondensedEntryRegistry.of(CondensedCreative.createID("concrete"), Blocks.WHITE_CONCRETE,
@@ -40,7 +37,6 @@ public class BuiltinEntries {
 
                     return false;
                 }))
-                .setTitleStringFromTagKey()
                 .addItemGroup(ItemGroup.BUILDING_BLOCKS);
 
         CondensedEntryRegistry.of(CondensedCreative.createID("concrete_powder"), Blocks.WHITE_CONCRETE_POWDER,
@@ -53,7 +49,6 @@ public class BuiltinEntries {
 
                     return false;
                 }))
-                .setTitleStringFromTagKey()
                 .addItemGroup(ItemGroup.BUILDING_BLOCKS);
 
         CondensedEntryRegistry.fromItems(CondensedCreative.createID("ores"), Blocks.IRON_ORE,
@@ -77,93 +72,75 @@ public class BuiltinEntries {
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("carpets"), Blocks.WHITE_CARPET, itemTagWithVanillaCheck(ItemTags.WOOL_CARPETS))
-                .setTitleStringFromTagKey()
                 .addItemGroup(ItemGroup.DECORATIONS);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("candles"), Blocks.WHITE_CANDLE, itemTagWithVanillaCheck(ItemTags.CANDLES))
-                .setTitleStringFromTagKey()
                 .addItemGroup(ItemGroup.DECORATIONS);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("beds"), Blocks.WHITE_BED, itemTagWithVanillaCheck(ItemTags.BEDS))
-                .setTitleStringFromTagKey()
                 .addItemGroup(ItemGroup.DECORATIONS);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("banners"), Blocks.WHITE_BANNER, itemTagWithVanillaCheck(ItemTags.BANNERS))
-                .setTitleStringFromTagKey()
                 .addItemGroup(ItemGroup.DECORATIONS);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("walls"), Blocks.COBBLESTONE_WALL, itemTagWithVanillaCheck(ItemTags.WALLS))
-                .setTitleStringFromTagKey()
                 .addItemGroup(ItemGroup.DECORATIONS);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("fences"), Blocks.OAK_FENCE, itemTagWithVanillaCheck(ItemTags.FENCES))
-                .setTitleStringFromTagKey()
                 .addItemGroup(ItemGroup.DECORATIONS);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("stained_glass_panes"), Blocks.GLASS_PANE,
                 predicateWithVanillaCheck((item) -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof StainedGlassPaneBlock))
-                .setTitleStringFromTagKey()
                 .addItemGroup(ItemGroup.DECORATIONS);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("corals"), Blocks.BRAIN_CORAL,
                 predicateWithVanillaCheck((item) -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof CoralParentBlock))
-                .setTitleStringFromTagKey()
                 .addItemGroup(ItemGroup.DECORATIONS);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("glazed_terracotta"), Blocks.WHITE_GLAZED_TERRACOTTA,
                         predicateWithVanillaCheck((item) -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof GlazedTerracottaBlock))
-                .setTitleStringFromTagKey()
                 .addItemGroup(ItemGroup.DECORATIONS);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("shulkers"), Blocks.SHULKER_BOX, blockTagWithVanillaCheck(BlockTags.SHULKER_BOXES))
-                .setTitleStringFromTagKey()
                 .addItemGroup(ItemGroup.DECORATIONS);
 
         //-------------------------------
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("buttons"), Blocks.STONE_BUTTON, itemTagWithVanillaCheck(ItemTags.BUTTONS))
-                .setTitleStringFromTagKey()
                 .addItemGroup(ItemGroup.REDSTONE);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("pressure_plates"), Blocks.STONE_PRESSURE_PLATE, blockTagWithVanillaCheck(BlockTags.PRESSURE_PLATES))
-                .setTitleStringFromTagKey()
                 .addItemGroup(ItemGroup.REDSTONE);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("doors"), Blocks.IRON_DOOR, blockTagWithVanillaCheck(BlockTags.DOORS))
-                .setTitleStringFromTagKey()
                 .addItemGroup(ItemGroup.REDSTONE);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("trapdoors"), Blocks.IRON_TRAPDOOR, blockTagWithVanillaCheck(BlockTags.TRAPDOORS))
-                .setTitleStringFromTagKey()
                 .addItemGroup(ItemGroup.REDSTONE);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("fence_gates"), Blocks.OAK_FENCE_GATE, blockTagWithVanillaCheck(BlockTags.FENCE_GATES))
-                .setTitleStringFromTagKey()
                 .addItemGroup(ItemGroup.REDSTONE);
 
         //-------------------------------
 
         CondensedEntryRegistry.of(CondensedCreative.createID("spawn_eggs"), Items.AXOLOTL_SPAWN_EGG, item -> item instanceof SpawnEggItem)
-                .setTitleStringFromTagKey()
                 .addItemGroup(ItemGroup.MISC);
 
-
         CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("music_discs"), Items.MUSIC_DISC_13, ItemTags.MUSIC_DISCS)
-                .setTitleStringFromTagKey()
                 .addItemGroup(ItemGroup.MISC);
     }
 

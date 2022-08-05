@@ -1,0 +1,35 @@
+{
+  "debug_entries": true,
+  "condensed_creative.test": {
+    "0": {
+      "condensed_creative:test1": {
+        "base_item": "minecraft:oak_log",
+        "item_tag": "minecraft:logs"
+      }
+    },
+    "1": {
+      "condensed_creative:test2": {
+        "base_item": "minecraft:white_carpet",
+        "item_tag": "minecraft:wool_carpets"
+      }
+    },
+    "2": {
+      "condensed_creative:test3": {
+        "base_item": "minecraft:string",
+        "items": [
+          "minecraft:string",
+          "minecraft:feather",
+          "minecraft:gunpowder"
+        ]
+      },
+      "condensed_creative:test4": {
+        "base_item": "minecraft:string",
+        "items": [
+          "minecraft:string",
+          "minecraft:feather",
+          "minecraft:gunpowder"
+        ]
+      }
+    }
+  }
+}

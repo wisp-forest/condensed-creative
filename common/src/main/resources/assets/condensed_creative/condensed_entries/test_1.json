@@ -1,0 +1,13 @@
+{
+  "debug_entries": true,
+  "misc": {
+    "condensed_creative:test1": {
+      "base_item": "minecraft:string",
+      "items": [
+        "minecraft:string",
+        "minecraft:feather",
+        "minecraft:gunpowder"
+      ]
+    }
+  }
+}

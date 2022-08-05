@@ -11,6 +11,8 @@ public class CondensedCreativeQuilt implements ClientModInitializer {
 
     @Override
     public void onInitializeClient(ModContainer mod) {
+        CondensedCreative.DEBUG_ENV = QuiltLoader.isDevelopmentEnvironment();
+
         if (QuiltLoader.isModLoaded("owo")) {
             OwoCompat.init();
         }

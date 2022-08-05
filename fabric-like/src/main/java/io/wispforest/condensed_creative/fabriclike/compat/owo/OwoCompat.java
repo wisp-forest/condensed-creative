@@ -15,6 +15,13 @@ public class OwoCompat {
 
             return -1;
         };
+        CondensedCreative.getMaxTabCount = group -> {
+            if (group instanceof OwoItemGroup) {
+                return ((OwoItemGroup)group).tabs.size();
+            }
+
+            return 1;
+        };
 
         if (CondensedCreative.isDeveloperMode()) {
             CondensedCreative.createOwoItemGroup = () -> {

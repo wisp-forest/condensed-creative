@@ -26,7 +26,7 @@ public interface CondensedCreativeInitializer {
     void onInitializeCondensedEntries(boolean refreshed);
 
     /**
-     * FORGE ONLY!
+     * Used for the Forge Loader ONLY!
      */
     @interface InitializeCondensedEntries{}
 }
