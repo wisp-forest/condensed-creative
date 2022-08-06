@@ -16,8 +16,6 @@ repositories {
     maven { url 'https://maven.wispforest.io' }
 }
 
-...
-
 dependencies {
     // Recommend creating a CondensedCreativeItems version within your gradle.properties 
     
