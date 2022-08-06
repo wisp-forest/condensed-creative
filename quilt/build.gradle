@@ -72,24 +72,25 @@ shadowJar {
     exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
-    classifier "dev-shadow"
+    classifier "quilt-dev-shadow"
 }
 
 remapJar {
     injectAccessWidener = true
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier null
+    classifier "quilt"
 }
 
 jar {
-    classifier "dev"
+    classifier "quilt-dev"
 }
 
 sourcesJar {
     def commonSources = project(":common").sourcesJar
     dependsOn commonSources
     from commonSources.archiveFile.map { zipTree(it) }
+    classifier "quilt-sources"
 }
 
 components.java {
@@ -100,15 +101,15 @@ components.java {
 
 def ENV = System.getenv()
 
-publishing {
-    publications {
-        mavenQuilt(MavenPublication) {
-            artifactId = rootProject.archives_base_name + "-" + project.name
-            from components.java
-        }
-    }
-
-    repositories {
+//publishing {
+//    publications {
+//        mavenQuilt(MavenPublication) {
+//            artifactId = rootProject.archives_base_name + "-" + project.name
+//            from components.java
+//        }
+//    }
+//
+//    repositories {
 //        maven {
 //            url ENV.MAVEN_URL
 //
@@ -117,5 +118,5 @@ publishing {
 //                password ENV.MAVEN_PASSWORD
 //            }
 //        }
-    }
-}
+//    }
+//}

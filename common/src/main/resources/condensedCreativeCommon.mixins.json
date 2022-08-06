@@ -10,8 +10,7 @@
     "client.CreativeInventoryScreenMixin$CreativeInventoryScreenHandlerMixin",
     "client.HandledScreenAccessor",
     "client.HandledScreenMixin",
-    "client.ScreenMixin",
-    "client.MinecraftClientMixin"
+    "client.ScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
