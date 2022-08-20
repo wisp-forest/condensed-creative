@@ -15,10 +15,13 @@ Condensed Creative is currently a small library mod that allows for Mod creators
 repositories {
     maven { url 'https://maven.wispforest.io' }
 }
-```
 
-```groovy
 dependencies {
     // Recommend creating a CondensedCreativeItems version within your gradle.properties 
-    modImplementation "io.wispforest:condensed_creative:${project.condensed_creative_version}"
+    
+    //Loom (Fabric / Quilt / Forge Loom)
+    modImplementation "io.wispforest:condensed_creative-fabric:${project.condensed_creative_version}"
+    
+    //Base Forge
+    implementation fg.deobf("io.wispforest:condensed_creative-forge:${project.condensed_creative_version}")
 }
