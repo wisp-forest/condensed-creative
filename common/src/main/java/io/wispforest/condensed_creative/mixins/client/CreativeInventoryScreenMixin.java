@@ -29,6 +29,7 @@ import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -52,8 +53,6 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
     //-------------
 
     @Unique private static final Identifier refreshButtonIcon = CondensedCreative.createID("textures/gui/refresh_button.png");
-
-    @Unique private static final Logger LOGGER = LogManager.getLogger("CondensedCreative");
 
     @Unique private boolean validItemGroupForCondensedEntries = false;
 
@@ -196,11 +195,11 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
 
     //----------
 
-    @Redirect(method = "drawBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/CreativeInventoryScreen;drawTexture(Lnet/minecraft/client/util/math/MatrixStack;IIIIII)V", ordinal = 1))
-    private void drawScrollBarUsingLineCount(CreativeInventoryScreen instance, MatrixStack matrixStack, int x, int y, int u, int v, int width, int height){
+    @ModifyArg(method = "drawBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/CreativeInventoryScreen;drawTexture(Lnet/minecraft/client/util/math/MatrixStack;IIIIII)V", ordinal = 1), index = 2)
+    private int changePosForScrollBar(int y){
         int j = this.y + 18;
 
-        this.drawTexture(matrixStack, x, j + (int)((float)((j + 112) - j - 17) * ((float)this.currentRowPosition / this.getHandlerDuck().getMaxRowCount())), u, v, width, height);
+        return j + (int)((float)((j + 112) - j - 17) * ((float)this.currentRowPosition / this.getHandlerDuck().getMaxRowCount()));
     }
 
     //----------
