@@ -29,10 +29,6 @@ public class CondensedEntriesLoader extends JsonDataLoader {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
-    private static final Pair<ItemGroupHelper, List<CondensedItemEntry>> EMPTY = new Pair<>(null, null);
-
-    private final Map<ItemGroupHelper, List<CondensedItemEntry>> condensedEntries = new HashMap<>();
-
     public CondensedEntriesLoader() {
         super(GSON, "condensed_entries");
     }
@@ -41,9 +37,13 @@ public class CondensedEntriesLoader extends JsonDataLoader {
     protected void apply(Map<Identifier, JsonElement> prepared, ResourceManager manager, Profiler profiler) {
         LOGGER.info("[CondensedEntriesLoader]: Starting loading!");
 
+        if(!CondensedEntryRegistry.RESOURCE_LOADED_CONDENSED_ENTRIES.isEmpty()) {
+            CondensedEntryRegistry.RESOURCE_LOADED_CONDENSED_ENTRIES.clear();
+        }
+        
         prepared.forEach((id, jsonData) -> {
             try {
-                deserializeFile(id, ((JsonObject) jsonData)).forEach(CondensedEntryRegistry::addCondensedEntryToRegistryMap);
+                deserializeFile(id, ((JsonObject) jsonData)).forEach(condensedItemEntry -> CondensedEntryRegistry.addCondensedEntryToRegistryMap(condensedItemEntry, CondensedEntryRegistry.RESOURCE_LOADED_CONDENSED_ENTRIES));
             } catch (IllegalArgumentException | JsonParseException var10) {
                 LOGGER.error("[CondensedEntriesLoader]: Parsing error loading recipe {}", id, var10);
             }
