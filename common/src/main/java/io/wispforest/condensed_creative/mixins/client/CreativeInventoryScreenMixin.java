@@ -16,7 +16,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.ScreenTexts;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
@@ -81,7 +80,7 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
                 },
                 (button, matrices, mouseX, mouseY) -> {
                     this.renderOrderedTooltip(matrices, this.client.textRenderer.wrapLines(Text.of("Refresh Condensed Entries"), Math.max(this.width / 2 - 43, 170)), mouseX, mouseY);
-                }, ScreenTexts.EMPTY));
+                }, Text.of("")));
         }
     }
 

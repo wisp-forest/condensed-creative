@@ -71,7 +71,7 @@ public class BuiltinEntries {
         //-------------------------------
 
 
-        CondensedEntryRegistry.of(CondensedCreative.createID("carpets"), Blocks.WHITE_CARPET, itemTagWithVanillaCheck(ItemTags.WOOL_CARPETS))
+        CondensedEntryRegistry.of(CondensedCreative.createID("carpets"), Blocks.WHITE_CARPET, itemTagWithVanillaCheck(ItemTags.CARPETS))
                 .addItemGroup(ItemGroup.DECORATIONS);
 
 
