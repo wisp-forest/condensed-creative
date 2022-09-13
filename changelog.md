@@ -1,12 +1,5 @@
-Condensed Creative has been updated with more built-in entries, minor API changes to making condensed groups, and fix some bugs causing crashing and jankness.
+Condensed Creative 2.0.1 is a small release to fix a single bug
 
-#### Features
-- New Border outlines can be enabled/disabled through the Config menu
-  - The outline color can also be customised within the such config
-- Add ability for some custom info text for Condensable Entries
-- Implement sorting with Condensable Entries
+#### Bug Fix
+- Fix a bug with the CreativeInventoryScreenMixin if someone else attempts to change the UV position causing bad scrollbar
 
-#### Bug Fixes
-- Fix issues with Entry hashes changing due to how the creative inventory messes with ItemStacks
-- Fix mod Icon being the default fabric one
-- Fix text being incorrectly made from the given Entry Identifier 
