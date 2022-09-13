@@ -146,8 +146,10 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
                 }
             }
         } else {
-            if (validItemGroupForCondensedEntries && CondensedEntryRegistry.ALL_CONDENSED_ENTRIES.containsKey(itemGroupHelper)) {
-                for (CondensedItemEntry condensedItemEntry : CondensedEntryRegistry.ALL_CONDENSED_ENTRIES.get(itemGroupHelper)) {
+            List<CondensedItemEntry> entries = CondensedEntryRegistry.getEntryList(itemGroupHelper);
+
+            if (validItemGroupForCondensedEntries && !entries.isEmpty()) {
+                for (CondensedItemEntry condensedItemEntry : entries) {
                     int i = this.getHandlerDuck().getDefaultEntryList().indexOf(Entry.of(condensedItemEntry.getEntryStack()));
 
                     condensedItemEntry.createChildren();

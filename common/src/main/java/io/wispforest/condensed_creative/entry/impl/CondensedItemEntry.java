@@ -163,7 +163,7 @@ public class CondensedItemEntry extends ItemEntry {
             this.currentEntry.itemGroupInfo = helper;
 
             if(addToMainEntriesMap) {
-                CondensedEntryRegistry.addCondensedEntryToRegistryMap(this.currentEntry);
+                CondensedEntryRegistry.addCondensedEntryToRegistryMap(this.currentEntry, CondensedEntryRegistry.ENTRYPOINT_CONDENSED_ENTRIES);
             }
 
             return this.currentEntry;
