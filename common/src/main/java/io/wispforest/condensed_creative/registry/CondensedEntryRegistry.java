@@ -5,7 +5,7 @@ import io.wispforest.condensed_creative.entry.impl.CondensedItemEntry;
 import io.wispforest.condensed_creative.util.ItemGroupHelper;
 import net.minecraft.block.Block;
 import net.minecraft.item.*;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.ApiStatus;
 

@@ -10,11 +10,14 @@ import io.wispforest.condensed_creative.util.CondensedInventory;
 import io.wispforest.condensed_creative.util.ItemGroupHelper;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
+import net.minecraft.client.gui.tooltip.Tooltip;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.screen.slot.Slot;
@@ -42,7 +45,7 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
 
     @Shadow @Final @Mutable public static SimpleInventory INVENTORY;
 
-    @Shadow private static int selectedTab;
+    @Shadow private static ItemGroup selectedTab;
 
     @Shadow private float scrollPosition;
 
@@ -73,15 +76,15 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
     @Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/PlayerScreenHandler;addListener(Lnet/minecraft/screen/ScreenHandlerListener;)V", shift = At.Shift.BY, by = 2))
     private void addButtonRender(CallbackInfo ci){
         if(CondensedCreative.MAIN_CONFIG.getConfig().enableEntryRefreshButton) {
-            this.addDrawableChild(new TexturedButtonWidget(this.x + 200, this.y + 140, 16, 16, 0, 0, 16, refreshButtonIcon, 32, 32,
-                button -> {
-                    if (CondensedEntryRegistry.refreshEntrypoints()) {
-                        setSelectedTab(ItemGroup.GROUPS[this.selectedTab]);
-                    }
-                },
-                (button, matrices, mouseX, mouseY) -> {
-                    this.renderOrderedTooltip(matrices, this.client.textRenderer.wrapLines(Text.of("Refresh Condensed Entries"), Math.max(this.width / 2 - 43, 170)), mouseX, mouseY);
-                }, ScreenTexts.EMPTY));
+
+            ClickableWidget widget = new TexturedButtonWidget(this.x + 200, this.y + 140, 16, 16, 0, 0, 16, refreshButtonIcon, 32, 32,
+                    button -> {
+                        if (CondensedEntryRegistry.refreshEntrypoints()) setSelectedTab(this.selectedTab);
+                    }, ScreenTexts.EMPTY);
+
+            widget.setTooltip(Tooltip.of(Text.of("Refresh Condensed Entries")));
+
+            this.addDrawableChild(widget);
         }
     }
 
@@ -102,13 +105,12 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
     }
 
     @Inject(method = "setSelectedTab", at = {
-                @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemGroup;appendStacks(Lnet/minecraft/util/collection/DefaultedList;)V", shift = At.Shift.BY, by = 1),
-                @At(value = "INVOKE", target = "Lnet/minecraft/util/collection/DefaultedList;addAll(Ljava/util/Collection;)Z", ordinal = 0, shift = At.Shift.BY, by = 2)})
+                @At(value = "INVOKE", target = "Lnet/minecraft/util/collection/DefaultedList;addAll(Ljava/util/Collection;)Z",ordinal = 0, shift = At.Shift.BY, by = 2),
+                @At(value = "INVOKE", target = "Lnet/minecraft/util/collection/DefaultedList;addAll(Ljava/util/Collection;)Z", ordinal = 1, shift = At.Shift.BY, by = 1)})
     private void setSelectedTab$addStacksToEntryList(ItemGroup group, CallbackInfo ci){
         this.handler.itemList.forEach(stack -> getHandlerDuck().addToDefaultEntryList(stack));
 
-        if(group != ItemGroup.HOTBAR)
-            validItemGroupForCondensedEntries = true;
+        if(group != ItemGroups.HOTBAR) validItemGroupForCondensedEntries = true;
     }
 
     //-------------
@@ -131,7 +133,7 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
 
     //------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-    @Inject(method = "setSelectedTab", at = @At(value = "JUMP", opcode = Opcodes.IF_ACMPNE, ordinal = 1))
+    @Inject(method = "setSelectedTab", at = @At(value = "JUMP", opcode = Opcodes.IF_ACMPNE, ordinal = 2))
     private void filterEntriesAndAddCondensedEntries(ItemGroup group, CallbackInfo ci){
         ItemGroupHelper itemGroupHelper = ItemGroupHelper.of(group,
                 CondensedCreative.isOwoItemGroup.test(group) ? CondensedCreative.getTabIndexFromOwoGroup.apply(group) : 0);

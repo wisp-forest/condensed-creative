@@ -4,10 +4,10 @@ import io.wispforest.condensed_creative.CondensedCreative;
 import io.wispforest.condensed_creative.registry.CondensedEntryRegistry;
 import net.minecraft.block.*;
 import net.minecraft.item.*;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.tag.ItemTags;
-import net.minecraft.tag.TagKey;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.registry.tag.TagKey;
 
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -18,38 +18,38 @@ public class BuiltinEntries {
     public static void registerBuiltinEntries(){
 
         CondensedEntryRegistry.of(CondensedCreative.createID("logs"), Blocks.OAK_LOG, itemTagWithVanillaCheck(ItemTags.LOGS))
-                .addItemGroup(ItemGroup.BUILDING_BLOCKS);
+                .addItemGroup(ItemGroups.BUILDING_BLOCKS);
 
         CondensedEntryRegistry.of(CondensedCreative.createID("wools"), Blocks.WHITE_WOOL, itemTagWithVanillaCheck(ItemTags.WOOL))
-                .addItemGroup(ItemGroup.BUILDING_BLOCKS);
+                .addItemGroup(ItemGroups.COLORED_BLOCKS);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("terracotta"), Blocks.TERRACOTTA, itemTagWithVanillaCheck(ItemTags.TERRACOTTA))
-                .addItemGroup(ItemGroup.BUILDING_BLOCKS);
+                .addItemGroup(ItemGroups.COLORED_BLOCKS);
 
         CondensedEntryRegistry.of(CondensedCreative.createID("concrete"), Blocks.WHITE_CONCRETE,
                 predicateWithVanillaCheck((item) -> {
                     if(item instanceof BlockItem){
-                        String itemPath = Registry.ITEM.getId(item).getPath();
+                        String itemPath = Registries.ITEM.getId(item).getPath();
 
                         return itemPath.contains("concrete") && !itemPath.contains("powder");
                     }
 
                     return false;
                 }))
-                .addItemGroup(ItemGroup.BUILDING_BLOCKS);
+                .addItemGroup(ItemGroups.COLORED_BLOCKS);
 
         CondensedEntryRegistry.of(CondensedCreative.createID("concrete_powder"), Blocks.WHITE_CONCRETE_POWDER,
                 predicateWithVanillaCheck((item) -> {
                     if(item instanceof BlockItem) {
-                        String itemPath = Registry.ITEM.getId(item).getPath();
+                        String itemPath = Registries.ITEM.getId(item).getPath();
 
                         return itemPath.contains("concrete") && itemPath.contains("powder");
                     }
 
                     return false;
                 }))
-                .addItemGroup(ItemGroup.BUILDING_BLOCKS);
+                .addItemGroup(ItemGroups.COLORED_BLOCKS);
 
         CondensedEntryRegistry.fromItems(CondensedCreative.createID("ores"), Blocks.IRON_ORE,
                 Stream.of(Blocks.COAL_ORE, Blocks.DEEPSLATE_COAL_ORE,
@@ -62,89 +62,88 @@ public class BuiltinEntries {
                         Blocks.DIAMOND_ORE, Blocks.DEEPSLATE_DIAMOND_ORE,
                         Blocks.NETHER_GOLD_ORE, Blocks.NETHER_QUARTZ_ORE
                 ).map(Block::asItem).toList())
-                .addItemGroup(ItemGroup.BUILDING_BLOCKS);
+                .addItemGroup(ItemGroups.NATURAL);
 
         CondensedEntryRegistry.of(CondensedCreative.createID("glass"), Blocks.WHITE_STAINED_GLASS,
                 predicateWithVanillaCheck((item) -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof StainedGlassBlock))
-                .addItemGroup(ItemGroup.BUILDING_BLOCKS);
+                .addItemGroup(ItemGroups.COLORED_BLOCKS);
 
         //-------------------------------
 
-
         CondensedEntryRegistry.of(CondensedCreative.createID("carpets"), Blocks.WHITE_CARPET, itemTagWithVanillaCheck(ItemTags.WOOL_CARPETS))
-                .addItemGroup(ItemGroup.DECORATIONS);
+                .addItemGroup(ItemGroups.COLORED_BLOCKS);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("candles"), Blocks.WHITE_CANDLE, itemTagWithVanillaCheck(ItemTags.CANDLES))
-                .addItemGroup(ItemGroup.DECORATIONS);
+                .addItemGroup(ItemGroups.COLORED_BLOCKS);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("beds"), Blocks.WHITE_BED, itemTagWithVanillaCheck(ItemTags.BEDS))
-                .addItemGroup(ItemGroup.DECORATIONS);
+                .addItemGroup(ItemGroups.COLORED_BLOCKS);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("banners"), Blocks.WHITE_BANNER, itemTagWithVanillaCheck(ItemTags.BANNERS))
-                .addItemGroup(ItemGroup.DECORATIONS);
+                .addItemGroup(ItemGroups.COLORED_BLOCKS);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("walls"), Blocks.COBBLESTONE_WALL, itemTagWithVanillaCheck(ItemTags.WALLS))
-                .addItemGroup(ItemGroup.DECORATIONS);
+                .addItemGroup(ItemGroups.BUILDING_BLOCKS);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("fences"), Blocks.OAK_FENCE, itemTagWithVanillaCheck(ItemTags.FENCES))
-                .addItemGroup(ItemGroup.DECORATIONS);
+                .addItemGroup(ItemGroups.BUILDING_BLOCKS);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("stained_glass_panes"), Blocks.GLASS_PANE,
                 predicateWithVanillaCheck((item) -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof StainedGlassPaneBlock))
-                .addItemGroup(ItemGroup.DECORATIONS);
+                .addItemGroup(ItemGroups.COLORED_BLOCKS);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("corals"), Blocks.BRAIN_CORAL,
                 predicateWithVanillaCheck((item) -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof CoralParentBlock))
-                .addItemGroup(ItemGroup.DECORATIONS);
+                .addItemGroup(ItemGroups.NATURAL);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("glazed_terracotta"), Blocks.WHITE_GLAZED_TERRACOTTA,
                         predicateWithVanillaCheck((item) -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof GlazedTerracottaBlock))
-                .addItemGroup(ItemGroup.DECORATIONS);
+                .addItemGroup(ItemGroups.COLORED_BLOCKS);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("shulkers"), Blocks.SHULKER_BOX, blockTagWithVanillaCheck(BlockTags.SHULKER_BOXES))
-                .addItemGroup(ItemGroup.DECORATIONS);
+                .addItemGroup(ItemGroups.COLORED_BLOCKS);
 
         //-------------------------------
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("buttons"), Blocks.STONE_BUTTON, itemTagWithVanillaCheck(ItemTags.BUTTONS))
-                .addItemGroup(ItemGroup.REDSTONE);
+                .addItemGroup(ItemGroups.REDSTONE);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("pressure_plates"), Blocks.STONE_PRESSURE_PLATE, blockTagWithVanillaCheck(BlockTags.PRESSURE_PLATES))
-                .addItemGroup(ItemGroup.REDSTONE);
+                .addItemGroup(ItemGroups.REDSTONE);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("doors"), Blocks.IRON_DOOR, blockTagWithVanillaCheck(BlockTags.DOORS))
-                .addItemGroup(ItemGroup.REDSTONE);
+                .addItemGroup(ItemGroups.REDSTONE);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("trapdoors"), Blocks.IRON_TRAPDOOR, blockTagWithVanillaCheck(BlockTags.TRAPDOORS))
-                .addItemGroup(ItemGroup.REDSTONE);
+                .addItemGroup(ItemGroups.REDSTONE);
 
 
         CondensedEntryRegistry.of(CondensedCreative.createID("fence_gates"), Blocks.OAK_FENCE_GATE, blockTagWithVanillaCheck(BlockTags.FENCE_GATES))
-                .addItemGroup(ItemGroup.REDSTONE);
+                .addItemGroup(ItemGroups.REDSTONE);
 
         //-------------------------------
 
         CondensedEntryRegistry.of(CondensedCreative.createID("spawn_eggs"), Items.AXOLOTL_SPAWN_EGG, item -> item instanceof SpawnEggItem)
-                .addItemGroup(ItemGroup.MISC);
+                .addItemGroup(ItemGroups.SPAWN_EGGS);
 
         CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("music_discs"), Items.MUSIC_DISC_13, ItemTags.MUSIC_DISCS)
-                .addItemGroup(ItemGroup.MISC);
+                .addItemGroup(ItemGroups.TOOLS);
     }
 
-    private static final Predicate<Item> vanillaItemsOnly = item -> Objects.equals(Registry.ITEM.getId(item).getNamespace(), "minecraft");
+    private static final Predicate<Item> vanillaItemsOnly = item -> Objects.equals(Registries.ITEM.getId(item).getNamespace(), "minecraft");
 
     private static Predicate<Item> itemTagWithVanillaCheck(TagKey<Item> tagKey){
         return (item) -> item.getRegistryEntry().isIn(tagKey) && BuiltinEntries.vanillaItemsOnly.test(item);

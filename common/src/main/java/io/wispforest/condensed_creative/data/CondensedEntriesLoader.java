@@ -9,15 +9,16 @@ import io.wispforest.condensed_creative.util.ItemGroupHelper;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemGroups;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.resource.JsonDataLoader;
 import net.minecraft.resource.ResourceManager;
-import net.minecraft.tag.TagKey;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 import net.minecraft.util.JsonHelper;
-import net.minecraft.util.Pair;
 import net.minecraft.util.profiler.Profiler;
-import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.message.FormattedMessage;
 import org.slf4j.Logger;
 
@@ -66,9 +67,9 @@ public class CondensedEntriesLoader extends JsonDataLoader {
         List<CondensedItemEntry> entrys = new ArrayList<>();
 
         for(Map.Entry<String, JsonElement> itemgroupEntry : jsonDataSet){
-            String itemGroupName = itemgroupEntry.getKey();
+            Text itemGroupName = Text.translatable(itemgroupEntry.getKey());
 
-            Optional<ItemGroup> itemGroup = Arrays.stream(ItemGroup.GROUPS).filter(group -> Objects.equals(group.getName(), itemGroupName)).findFirst();
+            Optional<ItemGroup> itemGroup = ItemGroups.getGroups().stream().filter(group -> Objects.equals(group.getDisplayName(), itemGroupName)).findFirst();
 
             if(itemGroup.isEmpty()){
                 throw new JsonParseException(getFormattedString("A Invaild Itemgroup name was given so no Entries are loaded from it: [Name: {}]", itemGroupName));
@@ -131,12 +132,12 @@ public class CondensedEntriesLoader extends JsonDataLoader {
         Item item = JsonHelper.getItem(jsonObject, "base_item");
 
         if(jsonObject.has("item_tag")){
-            TagKey<Item> itemTagKey = TagKey.of(Registry.ITEM_KEY, Identifier.tryParse(JsonHelper.getString(jsonObject, "item_tag")));
+            TagKey<Item> itemTagKey = TagKey.of(RegistryKeys.ITEM, Identifier.tryParse(JsonHelper.getString(jsonObject, "item_tag")));
 
             return CondensedEntryRegistry.fromItemTag(entryId, item, itemTagKey).addItemGroup(helper, false);
 
         } else if(jsonObject.has("block_tag")){
-            TagKey<Block> itemTagKey = TagKey.of(Registry.BLOCK_KEY, Identifier.tryParse(JsonHelper.getString(jsonObject, "block_tag")));
+            TagKey<Block> itemTagKey = TagKey.of(RegistryKeys.BLOCK, Identifier.tryParse(JsonHelper.getString(jsonObject, "block_tag")));
 
             return CondensedEntryRegistry.fromBlockTag(entryId, item, itemTagKey).addItemGroup(helper, false);
 

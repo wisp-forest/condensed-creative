@@ -28,7 +28,7 @@ public class CustomItemGroupOrderHelper {
      *
      * @param group The ItemGroup to have this modified order
      */
-    public static List<Entry> getEmptyItemGroupList(ItemGroup group){
+    public static List<Entry> getEmptyItemGroupList(ItemGroup group) {
         return getEmptyItemGroupList(group, -1);
     }
 
@@ -38,14 +38,14 @@ public class CustomItemGroupOrderHelper {
      * @param group The ItemGroup to have this modified order
      * @param tabIndex The Tab Index if such {@link ItemGroup} is a {@link io.wispforest.owo.itemgroup.OwoItemGroup}
      */
-    public static List<Entry> getEmptyItemGroupList(ItemGroup group, int tabIndex){
+    public static List<Entry> getEmptyItemGroupList(ItemGroup group, int tabIndex) {
         ItemGroupHelper groupHelper = ItemGroupHelper.of(group, tabIndex);
 
         List<Entry> entryList = new ArrayList<>();
 
-        if(CUSTOM_ITEM_GROUP_ORDER.containsKey(groupHelper)){
+        if(CUSTOM_ITEM_GROUP_ORDER.containsKey(groupHelper)) {
             LOGGER.error("[" + CondensedCreative.MODID + "]: It seems that multiple mods are trying to make a custom Creative Order List for entries!");
-        }else{
+        } else {
             CUSTOM_ITEM_GROUP_ORDER.put(groupHelper, entryList);
         }
 

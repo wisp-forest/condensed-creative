@@ -9,15 +9,15 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -177,7 +177,7 @@ public class CondensedItemEntry extends ItemEntry {
         if(childrenEntry.isEmpty() && generalizedFilter != null){
             List<ItemStack> stacks = new ArrayList<>();
 
-            Registry.ITEM.forEach(item1 -> {
+            Registries.ITEM.forEach(item1 -> {
                 if(generalizedFilter.test(item1)) {
                     stacks.add(item1.getDefaultStack());
                 }

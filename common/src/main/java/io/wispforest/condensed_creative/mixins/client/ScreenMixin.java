@@ -42,7 +42,7 @@ public class ScreenMixin {
             if(slot != null && slot.inventory instanceof CondensedInventory condensedInventory) {
                 if (Entry.nbtTagHasher.hashStack(slot.getStack()) == Entry.nbtTagHasher.hashStack(stack)) {
                     if (condensedInventory.getEntryStack(slot.id) instanceof CondensedItemEntry condensedItemEntry && !condensedItemEntry.isChild) {
-                        condensedItemEntry.getParentTooltipText(this.tooltipCache, this.client.player, this.client.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.NORMAL);
+                        condensedItemEntry.getParentTooltipText(this.tooltipCache, this.client.player, this.client.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.BASIC);
                     }
                 }
             }

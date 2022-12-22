@@ -1,18 +1,13 @@
 package io.wispforest.condensed_creative;
 
 import io.wispforest.condensed_creative.compat.CondensedCreativeConfig;
-import io.wispforest.condensed_creative.data.CondensedEntriesLoader;
 import io.wispforest.condensed_creative.entry.BuiltinEntries;
 import io.wispforest.condensed_creative.registry.CondensedCreativeInitializer;
 import io.wispforest.condensed_creative.registry.CondensedEntryRegistry;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.resource.ReloadableResourceManagerImpl;
-import net.minecraft.tag.ItemTags;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 
