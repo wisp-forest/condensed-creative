@@ -3,6 +3,7 @@ package io.wispforest.condensed_creative.data;
 import com.google.gson.*;
 import com.mojang.logging.LogUtils;
 import io.wispforest.condensed_creative.CondensedCreative;
+import io.wispforest.condensed_creative.LoaderSpecificUtils;
 import io.wispforest.condensed_creative.entry.impl.CondensedItemEntry;
 import io.wispforest.condensed_creative.registry.CondensedEntryRegistry;
 import io.wispforest.condensed_creative.util.ItemGroupHelper;
@@ -67,12 +68,12 @@ public class CondensedEntriesLoader extends JsonDataLoader {
         List<CondensedItemEntry> entrys = new ArrayList<>();
 
         for(Map.Entry<String, JsonElement> itemgroupEntry : jsonDataSet){
-            Text itemGroupName = Text.translatable(itemgroupEntry.getKey());
+            Identifier itemGroupId = LoaderSpecificUtils.convertBetweenLoaderId(new Identifier(itemgroupEntry.getKey()));
 
-            Optional<ItemGroup> itemGroup = ItemGroups.getGroups().stream().filter(group -> Objects.equals(group.getDisplayName(), itemGroupName)).findFirst();
+            Optional<ItemGroup> itemGroup = ItemGroups.getGroups().stream().filter(group -> Objects.equals(LoaderSpecificUtils.getIdentifierFromGroup(group), itemGroupId)).findFirst();
 
             if(itemGroup.isEmpty()){
-                throw new JsonParseException(getFormattedString("A Invaild Itemgroup name was given so no Entries are loaded from it: [Name: {}]", itemGroupName));
+                throw new JsonParseException(getFormattedString("A Invaild Itemgroup name was given so no Entries are loaded from it: [Name: {}]", itemGroupId));
             }
 
             Function<Integer, ItemGroupHelper> builder = integer -> new ItemGroupHelper(itemGroup.get(), integer);
@@ -113,7 +114,7 @@ public class CondensedEntriesLoader extends JsonDataLoader {
 
                 }
             } else {
-                throw new JsonParseException(getFormattedString("Seems that the Json File is malformed in the a certain ItemGroup section: [Name: {}]", itemGroupName));
+                throw new JsonParseException(getFormattedString("Seems that the Json File is malformed in the a certain ItemGroup section: [Name: {}]", itemGroupId));
             }
         }
 

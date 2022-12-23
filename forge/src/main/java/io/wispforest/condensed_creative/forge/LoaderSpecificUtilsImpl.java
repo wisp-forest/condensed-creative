@@ -1,7 +1,11 @@
 package io.wispforest.condensed_creative.forge;
 
 import com.mojang.logging.LogUtils;
+import io.wispforest.condensed_creative.LoaderSpecificUtils;
 import io.wispforest.condensed_creative.registry.CondensedCreativeInitializer;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.util.Identifier;
+import net.minecraftforge.common.CreativeModeTabRegistry;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import org.objectweb.asm.Type;
@@ -10,7 +14,7 @@ import org.slf4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EntrypointExpectPlatformImpl {
+public class LoaderSpecificUtilsImpl {
 
     public static final Logger LOGGER = LogUtils.getLogger();
 
@@ -38,5 +42,17 @@ public class EntrypointExpectPlatformImpl {
         }
 
         return condensedCreativeInitializers;
+    }
+
+    public Identifier getIdentifierFromGroup(ItemGroup group){
+        Identifier identifier = CreativeModeTabRegistry.getName(group);
+
+        if(identifier == null) throw new NullPointerException("[CondensedCreative] There was a attempt to get a Identifier for a given ItemGroup but was found to be null");
+
+        return identifier;
+    }
+
+    public static Identifier convertBetweenLoaderId(Identifier identifier){
+        return LoaderSpecificUtils.identifierLoaderMap.getOrDefault(identifier, identifier);
     }
 }

@@ -1,6 +1,6 @@
 {
   "debug_entries": true,
-  "misc": {
+  "ingredients": {
     "condensed_creative:test1": {
       "base_item": "minecraft:string",
       "items": [

@@ -1,6 +1,6 @@
 package io.wispforest.condensed_creative.registry;
 
-import io.wispforest.condensed_creative.EntrypointExpectPlatform;
+import io.wispforest.condensed_creative.LoaderSpecificUtils;
 import io.wispforest.condensed_creative.entry.impl.CondensedItemEntry;
 import io.wispforest.condensed_creative.util.ItemGroupHelper;
 import net.minecraft.block.Block;
@@ -220,7 +220,7 @@ public final class CondensedEntryRegistry {
 
         ENTRYPOINT_CONDENSED_ENTRIES.clear();
 
-        for(CondensedCreativeInitializer initializer : EntrypointExpectPlatform.getEntryPoints()){
+        for(CondensedCreativeInitializer initializer : LoaderSpecificUtils.getEntryPoints()){
             initializer.onInitializeCondensedEntries(true);
         }
 

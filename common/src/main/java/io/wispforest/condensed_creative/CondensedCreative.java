@@ -49,7 +49,7 @@ public class CondensedCreative implements CondensedCreativeInitializer {
             return ActionResult.SUCCESS;
         });
 
-        for(CondensedCreativeInitializer initializer : EntrypointExpectPlatform.getEntryPoints()){
+        for(CondensedCreativeInitializer initializer : LoaderSpecificUtils.getEntryPoints()){
             initializer.onInitializeCondensedEntries(false);
         }
     }

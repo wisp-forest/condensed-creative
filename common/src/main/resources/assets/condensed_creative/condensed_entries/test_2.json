@@ -1,6 +1,6 @@
   {
   "debug_entries": true,
-  "condensed_creative.test": {
+  "condensed_creative:test": {
     "0": {
       "condensed_creative:test1": {
         "base_item": "minecraft:oak_log",

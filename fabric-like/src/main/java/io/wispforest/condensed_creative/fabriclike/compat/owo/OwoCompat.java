@@ -41,7 +41,7 @@ public class OwoCompat {
             CondensedCreative.createOwoItemGroup = () -> {
                 OwoItemGroup owoItemGroup = OwoItemGroup.builder(CondensedCreative.createID("test"), () -> Icon.of(Blocks.BEDROCK.asItem().getDefaultStack()))
                         .initializer(group -> {
-                            addTabToList(group.tabs, group, Icon.of(Blocks.BRICKS), "building_block", true, (enabledFeatures, entries, hasPermissions) -> {
+                            addTabToList(group.tabs, group, Icon.of(Blocks.BRICKS), "building_blocks", true, (enabledFeatures, entries, hasPermissions) -> {
                                 ((ItemGroupAccessor) ItemGroups.BUILDING_BLOCKS)
                                         .cc$getEntryCollector()
                                         .accept(enabledFeatures, entries, hasPermissions);
@@ -51,8 +51,8 @@ public class OwoCompat {
                                         .cc$getEntryCollector()
                                         .accept(enabledFeatures, entries, hasPermissions);
                             });
-                            addTabToList(group.tabs, group, Icon.of(Items.LAVA_BUCKET), "tools", false, (enabledFeatures, entries, hasPermissions) -> {
-                                ((ItemGroupAccessor) ItemGroups.TOOLS)
+                            addTabToList(group.tabs, group, Icon.of(Items.IRON_INGOT), "ingredients", false, (enabledFeatures, entries, hasPermissions) -> {
+                                ((ItemGroupAccessor) ItemGroups.INGREDIENTS)
                                         .cc$getEntryCollector()
                                         .accept(enabledFeatures, entries, hasPermissions);
                             });

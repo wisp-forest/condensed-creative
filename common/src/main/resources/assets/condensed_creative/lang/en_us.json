@@ -24,5 +24,10 @@
     "text.autoconfig.condensed_creative.option.enableEntryBorderColor.@Tooltip": "Would not recommend having this and backgrounds disabled as it will be hard to see the condensed entries.",
 
     "text.autoconfig.condensed_creative.option.condensedEntryBorderColor": "Entry Outline Color",
-    "text.autoconfig.condensed_creative.option.condensedEntryBorderColor.@Tooltip": "Such a color should contain a Alpha value."
+    "text.autoconfig.condensed_creative.option.condensedEntryBorderColor.@Tooltip": "Such a color should contain a Alpha value.",
+
+    "itemGroup.condensed_creative.test": "Condensed Creative",
+    "itemGroup.condensed_creative.test.tab.building_blocks": "Building Blocks",
+    "itemGroup.condensed_creative.test.tab.colored_blocks": "Colored Blocks",
+    "itemGroup.condensed_creative.test.tab.ingredients": "Ingredients"
 }
