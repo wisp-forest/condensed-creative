@@ -4,21 +4,25 @@ import io.wispforest.condensed_creative.CondensedCreative;
 import io.wispforest.condensed_creative.ducks.CreativeInventoryScreenHandlerDuck;
 import io.wispforest.condensed_creative.entry.Entry;
 import io.wispforest.condensed_creative.entry.impl.CondensedItemEntry;
+import io.wispforest.condensed_creative.entry.impl.ItemEntry;
 import io.wispforest.condensed_creative.registry.CondensedEntryRegistry;
-import io.wispforest.condensed_creative.registry.CustomItemGroupOrderHelper;
 import io.wispforest.condensed_creative.util.CondensedInventory;
 import io.wispforest.condensed_creative.util.ItemGroupHelper;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
@@ -28,6 +32,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.MathHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
@@ -85,6 +90,27 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
             widget.setTooltip(Tooltip.of(Text.of("Refresh Condensed Entries")));
 
             this.addDrawableChild(widget);
+        }
+    }
+
+    //------------------------------------------------------------------------------------------------------------------------------------------------------//
+
+    @Inject(method = "renderTooltip(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/item/ItemStack;II)V", at = @At("HEAD"), cancellable = true)
+    private void testToReplaceTooltipText(MatrixStack matrices, ItemStack stack, int x, int y, CallbackInfo ci){
+        Slot slot = ((HandledScreenAccessor)this).getFocusedSlot();
+
+        if(slot != null && slot.inventory instanceof CondensedInventory condensedInventory) {
+            if (ItemEntry.hashcodeForItemStack(slot.getStack()) == ItemEntry.hashcodeForItemStack(stack)) {
+                if (condensedInventory.getEntryStack(slot.id) instanceof CondensedItemEntry condensedItemEntry && !condensedItemEntry.isChild) {
+                    List<Text> tooltipData = new ArrayList<>();
+
+                    condensedItemEntry.getParentTooltipText(tooltipData, this.client.player, this.client.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.BASIC);
+
+                    this.renderTooltip(matrices, tooltipData, stack.getTooltipData(), x, y);
+
+                    ci.cancel();
+                }
+            }
         }
     }
 

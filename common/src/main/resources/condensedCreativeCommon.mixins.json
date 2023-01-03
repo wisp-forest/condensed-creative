@@ -10,8 +10,7 @@
     "client.CreativeInventoryScreenMixin",
     "client.CreativeInventoryScreenMixin$CreativeInventoryScreenHandlerMixin",
     "client.HandledScreenAccessor",
-    "client.HandledScreenMixin",
-    "client.ScreenMixin"
+    "client.HandledScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
