@@ -25,9 +25,9 @@ public final class CondensedEntryRegistry {
      *
      * <p>For owo ItemGroup with certain tabs use {@link CondensedItemEntry.Builder#addItemGroup(ItemGroup, int)} to specify a certain tab index.</p>
      */
-    public static final Map<ItemGroupHelper, List<CondensedItemEntry>> ENTRYPOINT_CONDENSED_ENTRIES = new HashMap<>();
+    public static final Map<ItemGroupHelper, List<CondensedItemEntry>> ENTRYPOINT_LOADED_ENTRIES = new HashMap<>();
 
-    public static final Map<ItemGroupHelper, List<CondensedItemEntry>> RESOURCE_LOADED_CONDENSED_ENTRIES = new HashMap<>();
+    public static final Map<ItemGroupHelper, List<CondensedItemEntry>> RESOURCE_LOADED_ENTRIES = new HashMap<>();
 
     /**
      * Method to create A {@link CondensedItemEntry} using a Predicate
@@ -172,12 +172,12 @@ public final class CondensedEntryRegistry {
     public static List<CondensedItemEntry> getEntryList(ItemGroupHelper itemGroupHelper){
         List<CondensedItemEntry> entries = new ArrayList<>();
 
-        if(ENTRYPOINT_CONDENSED_ENTRIES.containsKey(itemGroupHelper)){
-            entries.addAll(ENTRYPOINT_CONDENSED_ENTRIES.get(itemGroupHelper));
+        if(ENTRYPOINT_LOADED_ENTRIES.containsKey(itemGroupHelper)){
+            entries.addAll(ENTRYPOINT_LOADED_ENTRIES.get(itemGroupHelper));
         }
 
-        if(RESOURCE_LOADED_CONDENSED_ENTRIES.containsKey(itemGroupHelper)) {
-            entries.addAll(RESOURCE_LOADED_CONDENSED_ENTRIES.get(itemGroupHelper));
+        if(RESOURCE_LOADED_ENTRIES.containsKey(itemGroupHelper)) {
+            entries.addAll(RESOURCE_LOADED_ENTRIES.get(itemGroupHelper));
         }
 
         return entries;
@@ -203,8 +203,8 @@ public final class CondensedEntryRegistry {
     @ApiStatus.Experimental
     public static void removeCondensedEntryToMainList(CondensedItemEntry condensedItemEntry){
         if(condensedItemEntry.getItemGroupInfo() != null) {
-            if (ENTRYPOINT_CONDENSED_ENTRIES.containsKey(condensedItemEntry.getItemGroupInfo())) {
-                ENTRYPOINT_CONDENSED_ENTRIES.get(condensedItemEntry.getItemGroupInfo()).remove(condensedItemEntry);
+            if (ENTRYPOINT_LOADED_ENTRIES.containsKey(condensedItemEntry.getItemGroupInfo())) {
+                ENTRYPOINT_LOADED_ENTRIES.get(condensedItemEntry.getItemGroupInfo()).remove(condensedItemEntry);
             }
         }
     }
@@ -214,17 +214,17 @@ public final class CondensedEntryRegistry {
         int previousSize = 0;
         int currentSize = 0;
 
-        for(Map.Entry<ItemGroupHelper, List<CondensedItemEntry>> entry : CondensedEntryRegistry.ENTRYPOINT_CONDENSED_ENTRIES.entrySet()){
+        for(Map.Entry<ItemGroupHelper, List<CondensedItemEntry>> entry : CondensedEntryRegistry.ENTRYPOINT_LOADED_ENTRIES.entrySet()){
             previousSize += entry.getValue().size();
         }
 
-        ENTRYPOINT_CONDENSED_ENTRIES.clear();
+        ENTRYPOINT_LOADED_ENTRIES.clear();
 
         for(CondensedCreativeInitializer initializer : LoaderSpecificUtils.getEntryPoints()){
             initializer.onInitializeCondensedEntries(true);
         }
 
-        for(Map.Entry<ItemGroupHelper, List<CondensedItemEntry>> entry : CondensedEntryRegistry.ENTRYPOINT_CONDENSED_ENTRIES.entrySet()){
+        for(Map.Entry<ItemGroupHelper, List<CondensedItemEntry>> entry : CondensedEntryRegistry.ENTRYPOINT_LOADED_ENTRIES.entrySet()){
             currentSize += entry.getValue().size();
         }
 

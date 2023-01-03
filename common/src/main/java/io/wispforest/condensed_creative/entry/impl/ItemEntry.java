@@ -38,12 +38,17 @@ public class ItemEntry implements Entry {
 
     @Override
     public int hashCode() {
-        int hash = Long.hashCode(nbtTagHasher.hashStack(this.getEntryStack()));
+        return hashcodeForItemStack(this.getEntryStack());
+    }
 
-        hash = hash * 31 + System.identityHashCode(getEntryStack().getItem());
+    public static int hashcodeForItemStack(ItemStack stack){
+        int hash = Long.hashCode(nbtTagHasher.hashStack(stack));
+
+        hash = hash * 31 + System.identityHashCode(stack.getItem());
 
         return hash;
     }
+
 
     @Override
     public boolean equals(Object obj) {

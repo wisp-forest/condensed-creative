@@ -1,4 +1,4 @@
-  {
+{
   "debug_entries": true,
   "condensed_creative:test": {
     "0": {
@@ -14,22 +14,35 @@
       }
     },
     "2": {
-      "condensed_creative:test3": {
-        "base_item": "minecraft:string",
-        "items": [
-          "minecraft:string",
-          "minecraft:feather",
-          "minecraft:gunpowder"
-        ]
+      "condensed_creative:test4": {},
+      "condensed_creative:test5": {}
+    }
+  },
+  "sharded_entries": {
+    "condensed_creative:test4": {
+      "base_item": "minecraft:sand",
+      "item_tag": "minecraft:sand",
+      "title": "USE_TAG",
+      "description": "Test 1",
+      "strict_filter": false,
+      "entry_order": "DEFAULT",
+      "item_comparison": false
+    },
+    "condensed_creative:test5": {
+      "base_item": "minecraft:string",
+      "items": [
+        "minecraft:string",
+        "minecraft:feather",
+        "minecraft:gunpowder"
+      ],
+      "title": "Random Crap",
+      "description": {
+        "text": "Test 2",
+        "color": "gray"
       },
-      "condensed_creative:test4": {
-        "base_item": "minecraft:string",
-        "items": [
-          "minecraft:string",
-          "minecraft:feather",
-          "minecraft:gunpowder"
-        ]
-      }
+      "strict_filter": true,
+      "entry_order": "ITEMGROUP",
+      "item_comparison": false
     }
   }
 }

@@ -19,8 +19,10 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class CondensedItemEntry extends ItemEntry {
@@ -31,27 +33,33 @@ public class CondensedItemEntry extends ItemEntry {
 
     public final Identifier condensedID;
 
+    private Supplier<List<ItemStack>> childrenSupplier = null;
+
+    private Text condensedEntryTitle;
+
+    private boolean compareToItem = false;
+
+    private ItemGroupHelper itemGroupInfo;
+
+    private EntryOrder listOrder = EntryOrder.DEFAULT_ORDER;
+
+    private boolean removeIfNotFound = false;
+
+    //-------------------------------------------
+
+    private @Nullable Text descriptionText = null;
+
+    private @Nullable Consumer<List<ItemStack>> entrySorting = null;
+
+    private @Nullable TagKey<?> tagKey = null;
+
+    //-------------------------------------------
+
     public final boolean isChild;
 
     public final List<CondensedItemEntry> childrenEntry = new ArrayList<>();
 
-    private ItemGroupHelper itemGroupInfo;
-
-    private Text condensedEntryTitle;
-
-    private boolean compareItemRatherThanStack = false;
-
     private CondensedItemEntry currentlyDisplayedEntry;
-
-    //-------------------------------------------
-
-    private @Nullable Text extraInfoText = null;
-
-    private @Nullable Predicate<Item> generalizedFilter = null;
-
-    private @Nullable Consumer<List<ItemStack>> entrySorting = null;
-
-    private @Nullable TagKey<?> itemTagKey = null;
 
     //-------------------------------------------
 
@@ -75,31 +83,51 @@ public class CondensedItemEntry extends ItemEntry {
 
     public static class Builder {
 
-        private final CondensedItemEntry currentEntry;
+        public final CondensedItemEntry currentEntry;
 
-        public Builder(Identifier condensedID, ItemStack defaultItemstack, Collection<ItemStack> entrys) {
+        public Builder(Identifier condensedID, ItemStack defaultItemstack, Collection<ItemStack> entries) {
             this.currentEntry = new CondensedItemEntry(condensedID, defaultItemstack, false);
 
-            entrys.forEach(itemStack -> {
-                this.currentEntry.childrenEntry.add(createChild(condensedID, itemStack));
-            });
+            this.currentEntry.childrenSupplier = () -> new ArrayList<>(entries);
         }
 
         public Builder(Identifier condensedID, ItemStack defaultItemstack, Predicate<Item> entryPredicate, @Nullable TagKey<?> tagKey) {
             this.currentEntry = new CondensedItemEntry(condensedID, defaultItemstack, false);
 
-            this.currentEntry.generalizedFilter = entryPredicate;
+            this.currentEntry.childrenSupplier = () -> {
+                List<ItemStack> stacks = new ArrayList<>();
 
-            if(tagKey != null){
-                this.currentEntry.itemTagKey = tagKey;
-            }
+                Registries.ITEM.forEach(item1 -> {
+                    if (entryPredicate.test(item1)) stacks.add(item1.getDefaultStack());
+                });
+
+                return stacks;
+            };
+
+            this.currentEntry.tagKey = tagKey;
+        }
+
+        private Builder(CondensedItemEntry entry){
+            this.currentEntry = new CondensedItemEntry(entry.condensedID, entry.itemStack, false);
+
+            this.currentEntry.condensedEntryTitle = entry.condensedEntryTitle;
+            this.currentEntry.compareToItem = entry.compareToItem;
+
+            this.currentEntry.descriptionText = entry.descriptionText;
+            this.currentEntry.childrenSupplier = entry.childrenSupplier;
+            this.currentEntry.tagKey = entry.tagKey;
+
+            this.currentEntry.entrySorting = entry.entrySorting;
+            this.currentEntry.listOrder = entry.listOrder;
+
+            this.currentEntry.removeIfNotFound = entry.removeIfNotFound;
         }
 
         /**
          * Toggles the comparison mode to be item :: item rather than the stacks themselves
          */
         public Builder compareItemNotStack(){
-            this.currentEntry.compareItemRatherThanStack = true;
+            this.currentEntry.compareToItem = true;
 
             return this;
         }
@@ -107,7 +135,7 @@ public class CondensedItemEntry extends ItemEntry {
         /**
          * Sets the tooltip title text to be based of the given {@link Text}
          */
-        public Builder setTitleString(Text condensedEntryTitle){
+        public Builder setTitle(Text condensedEntryTitle){
             this.currentEntry.condensedEntryTitle = condensedEntryTitle;
 
             return this;
@@ -116,19 +144,19 @@ public class CondensedItemEntry extends ItemEntry {
         /**
          * Sets the tooltip title text to be based of the already given Tag if such has been set
          */
-        public Builder setTitleStringFromTagKey(){
-            if(this.currentEntry.itemTagKey != null){
-                this.currentEntry.condensedEntryTitle = Text.of(Arrays.stream(this.currentEntry.itemTagKey.id().getPath().split("_")).map(WordUtils::capitalize).collect(Collectors.joining(" ")));
+        public Builder setTitleFromTagKey(){
+            if(this.currentEntry.tagKey != null){
+                this.currentEntry.condensedEntryTitle = Text.of(Arrays.stream(this.currentEntry.tagKey.id().getPath().split("_")).map(WordUtils::capitalize).collect(Collectors.joining(" ")));
             }
 
             return this;
         }
 
         /**
-         * Adds extra text onto the Entries tooltip
+         * Adds description onto the Entries tooltip
          */
-        public Builder setExtraInfoText(Text extraInfoText){
-            this.currentEntry.extraInfoText = extraInfoText;
+        public Builder setDescription(Text extraInfoText){
+            this.currentEntry.descriptionText = extraInfoText;
 
             return this;
         }
@@ -138,6 +166,25 @@ public class CondensedItemEntry extends ItemEntry {
          */
         public Builder setEntrySorting(Consumer<List<ItemStack>> childrenSort){
             this.currentEntry.entrySorting = childrenSort;
+            this.currentEntry.listOrder = EntryOrder.CUSTOM_ORDER;
+
+            return this;
+        }
+
+        /**
+         * Used Change the Children's Order (See {@link EntryOrder})
+         */
+        public Builder setListOrder(EntryOrder entryOrder){
+            this.currentEntry.listOrder = entryOrder;
+
+            return this;
+        }
+
+        /**
+         * Toggle whether to use the given ItemGroup for the Entry should allow blocks not found within it
+         */
+        public Builder toggleStrictEntryFilter(boolean value){
+            this.currentEntry.removeIfNotFound = value;
 
             return this;
         }
@@ -163,34 +210,67 @@ public class CondensedItemEntry extends ItemEntry {
             this.currentEntry.itemGroupInfo = helper;
 
             if(addToMainEntriesMap) {
-                CondensedEntryRegistry.addCondensedEntryToRegistryMap(this.currentEntry, CondensedEntryRegistry.ENTRYPOINT_CONDENSED_ENTRIES);
+                CondensedEntryRegistry.addCondensedEntryToRegistryMap(this.currentEntry, CondensedEntryRegistry.ENTRYPOINT_LOADED_ENTRIES);
             }
 
             return this.currentEntry;
+        }
+
+        public Builder copy(){
+            return new Builder(this.currentEntry);
         }
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
 
     @ApiStatus.Internal
-    public void createChildren(){
-        if(childrenEntry.isEmpty() && generalizedFilter != null){
-            List<ItemStack> stacks = new ArrayList<>();
+    public void initializeChildren(List<Entry> itemGroupList){
+        if(this.childrenEntry.isEmpty()) {
+            List<ItemStack> childrenStacks = this.childrenSupplier.get();
 
-            Registries.ITEM.forEach(item1 -> {
-                if(generalizedFilter.test(item1)) {
-                    stacks.add(item1.getDefaultStack());
+            List<ItemStack> replacedStacks = filterItemGroupStacks(itemGroupList, childrenStacks.stream().map(ItemEntry::hashcodeForItemStack).toList(), true);
+
+            if (removeIfNotFound) {
+                for (int i = 0; i < childrenStacks.size(); i++) {
+                    ItemStack childrenStack = childrenStacks.get(i);
+
+                    boolean bl = replacedStacks
+                            .stream()
+                            .anyMatch(stack -> ItemEntry.hashcodeForItemStack(childrenStack) == ItemEntry.hashcodeForItemStack(stack));
+
+                    if (!bl) childrenStacks.remove(childrenStack);
                 }
-            });
-
-            if(this.entrySorting != null) {
-                this.entrySorting.accept(stacks);
             }
 
-            this.childrenEntry.addAll(stacks.stream().map(stack -> createChild(this.condensedID, stack)).toList());
+            this.listOrder.sortList(replacedStacks, childrenStacks, this.entrySorting != null ? this.entrySorting : (l) -> {});
+
+            this.childrenEntry.addAll(
+                    childrenStacks
+                            .stream()
+                            .map(stack -> createChild(this.condensedID, stack))
+                            .toList()
+            );
+        } else {
+            filterItemGroupStacks(itemGroupList, this.childrenEntry.stream().map(CondensedItemEntry::getItemEntryHashCode).toList(), false);
         }
 
         getNextValue();
+    }
+
+    public List<ItemStack> filterItemGroupStacks(List<Entry> itemGroupList, List<Integer> hashValues, boolean returnStacks){
+        List<ItemStack> replacedStacks = new ArrayList<>();
+
+        itemGroupList.removeIf(entry -> {
+            if(!(entry instanceof CondensedItemEntry) && hashValues.contains(entry.hashCode())){
+                if(returnStacks) replacedStacks.add(entry.getEntryStack());
+
+                return true;
+            }
+
+            return false;
+        });
+
+        return replacedStacks;
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
@@ -223,19 +303,18 @@ public class CondensedItemEntry extends ItemEntry {
 
     @Override
     public void toggleVisibility() {
-        if(!isChild)
-            CHILD_VISIBILITY.replace(this.condensedID, !CHILD_VISIBILITY.get(this.condensedID));
+        if(!isChild) CHILD_VISIBILITY.replace(this.condensedID, !CHILD_VISIBILITY.get(this.condensedID));
     }
 
     public void getParentTooltipText(List<Text> tooltipData, PlayerEntity player, TooltipContext context) {
         tooltipData.add(condensedEntryTitle);
 
-        if(extraInfoText != null) {
-            tooltipData.add(extraInfoText);
+        if(descriptionText != null) {
+            tooltipData.add(descriptionText);
         }
 
-        if(itemTagKey != null && CondensedCreative.MAIN_CONFIG.getConfig().enableTagPreviewForEntries){
-            tooltipData.add(Text.of("Tag: #" + itemTagKey.id().toString()).copy().formatted(Formatting.GRAY));
+        if(tagKey != null && CondensedCreative.MAIN_CONFIG.getConfig().enableTagPreviewForEntries){
+            tooltipData.add(Text.of("Tag: #" + tagKey.id().toString()).copy().formatted(Formatting.GRAY));
         }
 
         if(CondensedCreative.MAIN_CONFIG.getConfig().enableDebugIdentifiersForEntries) {
@@ -243,6 +322,11 @@ public class CondensedItemEntry extends ItemEntry {
 
             tooltipData.add(Text.of("EntryID: " + condensedID.toString()).copy().formatted(Formatting.GRAY));
         }
+    }
+
+    @Nullable
+    public TagKey<?> getTagKey(){
+        return this.tagKey;
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
@@ -257,16 +341,14 @@ public class CondensedItemEntry extends ItemEntry {
 
         hash = hash * 31 + this.condensedID.hashCode();
 
-        if(!this.isChild){
-            hash = hash * 31 + this.childrenEntry.hashCode();
-        }
+        if(!this.isChild) hash = hash * 31 + this.childrenEntry.hashCode();
 
         return hash;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if(this.compareItemRatherThanStack && obj instanceof Entry entry && !(entry instanceof CondensedItemEntry)){
+        if(this.compareToItem && obj instanceof Entry entry && !(entry instanceof CondensedItemEntry)){
             return this.getEntryStack().getItem() == entry.getEntryStack().getItem();
         }
 
@@ -278,4 +360,52 @@ public class CondensedItemEntry extends ItemEntry {
         return isChild ? super.toString() : ( "ParentEntry: {Id: " + this.condensedID + "}");
     }
 
+    public enum EntryOrder implements SortingAction {
+        DEFAULT_ORDER((itemGroupStacks, toBeChildren, customFilter) -> {}),
+        ITEMGROUP_ORDER((itemGroupStacks, toBeChildren, customFilter) -> {
+            List<ItemStack> newListOrder = new ArrayList<>();
+
+            for(int i = 0; i < itemGroupStacks.size(); i++){
+                ItemStack currentItemGroupStack = itemGroupStacks.get(i);
+
+                AtomicReference<ItemStack> foundChildStack = new AtomicReference<>(ItemStack.EMPTY);
+
+                toBeChildren.removeIf(stack -> {
+                    if(ItemEntry.hashcodeForItemStack(currentItemGroupStack) == ItemEntry.hashcodeForItemStack(stack)){
+                        foundChildStack.set(stack);
+
+                        return true;
+                    }
+
+                    return false;
+                });
+
+                if(foundChildStack.get() != ItemStack.EMPTY){
+                    newListOrder.add(foundChildStack.get());
+                }
+            }
+
+            if(!toBeChildren.isEmpty()) newListOrder.addAll(toBeChildren);
+
+            toBeChildren.clear();
+
+            toBeChildren.addAll(newListOrder);
+        }),
+        CUSTOM_ORDER((itemGroupStacks, toBeChildren, customFilter) -> customFilter.accept(toBeChildren));
+
+        public SortingAction action;
+
+        EntryOrder(SortingAction action){
+            this.action = action;
+        }
+
+        @Override
+        public void sortList(List<ItemStack> itemGroupStacks, List<ItemStack> toBeChildren, Consumer<List<ItemStack>> customFilter) {
+            this.action.sortList(itemGroupStacks, toBeChildren, customFilter);
+        }
+    }
+
+    public interface SortingAction {
+        void sortList(List<ItemStack> itemGroupStacks, List<ItemStack> toBeChildren, Consumer<List<ItemStack>> customFilter);
+    }
 }

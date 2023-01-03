@@ -164,40 +164,28 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
         ItemGroupHelper itemGroupHelper = ItemGroupHelper.of(group,
                 CondensedCreative.isOwoItemGroup.test(group) ? CondensedCreative.getTabIndexFromOwoGroup.apply(group) : 0);
 
-        if(CustomItemGroupOrderHelper.CUSTOM_ITEM_GROUP_ORDER.containsKey(itemGroupHelper)){
-            for (Entry entry : CustomItemGroupOrderHelper.CUSTOM_ITEM_GROUP_ORDER.get(itemGroupHelper)) {
-                this.getHandlerDuck().getDefaultEntryList().add(entry);
+        List<CondensedItemEntry> entries = CondensedEntryRegistry.getEntryList(itemGroupHelper);
 
-                if (entry instanceof CondensedItemEntry condensedItemEntry) {
-                    condensedItemEntry.createChildren();
-                    this.getHandlerDuck().getDefaultEntryList().addAll(condensedItemEntry.childrenEntry);
-                }
-            }
-        } else {
-            List<CondensedItemEntry> entries = CondensedEntryRegistry.getEntryList(itemGroupHelper);
+        if (validItemGroupForCondensedEntries && !entries.isEmpty()) {
+            for (CondensedItemEntry condensedItemEntry : entries) {
+                int i = this.getHandlerDuck().getDefaultEntryList().indexOf(Entry.of(condensedItemEntry.getEntryStack()));
 
-            if (validItemGroupForCondensedEntries && !entries.isEmpty()) {
-                for (CondensedItemEntry condensedItemEntry : entries) {
-                    int i = this.getHandlerDuck().getDefaultEntryList().indexOf(Entry.of(condensedItemEntry.getEntryStack()));
+                condensedItemEntry.initializeChildren(this.getHandlerDuck().getDefaultEntryList());
 
-                    condensedItemEntry.createChildren();
+                List<CondensedItemEntry> allGroupedEntries = new ArrayList<>(condensedItemEntry.childrenEntry);
 
-                    List<CondensedItemEntry> allGroupedEntries = new ArrayList<>(condensedItemEntry.childrenEntry);
+                allGroupedEntries.add(0, condensedItemEntry);
 
-                    allGroupedEntries.add(0, condensedItemEntry);
-
-                    if (i >= 0) {
+                if(allGroupedEntries.size() > 1) {
+                    if (i >= 0 && i < this.getHandlerDuck().getDefaultEntryList().size()) {
                         this.getHandlerDuck().getDefaultEntryList().addAll(i, allGroupedEntries);
                     } else {
                         this.getHandlerDuck().getDefaultEntryList().addAll(allGroupedEntries);
                     }
-
-                    List<Integer> allEntryHashes = condensedItemEntry.childrenEntry.stream().map(CondensedItemEntry::getItemEntryHashCode).toList();
-
-                    this.getHandlerDuck().getDefaultEntryList().removeIf(entry -> !(entry instanceof CondensedItemEntry) && allEntryHashes.contains(entry.hashCode()));
                 }
             }
         }
+
     }
 
     //----------

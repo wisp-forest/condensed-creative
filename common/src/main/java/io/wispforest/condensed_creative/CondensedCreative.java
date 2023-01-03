@@ -60,6 +60,7 @@ public class CondensedCreative implements CondensedCreativeInitializer {
         return DEBUG_ENV || DEBUG;
     }
 
+    @Override
     public void onInitializeCondensedEntries(boolean refreshed) {
 //        if(CondensedCreative.isDeveloperMode()) {
 //            if(CondensedCreative.testGroup != null) {
