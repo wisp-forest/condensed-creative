@@ -11,7 +11,7 @@ Condensed Creative is currently a small library mod that allows for Mod creators
 
 **Build Setup:**
 
-```grovvy
+```groovy
 repositories {
     maven { url 'https://maven.wispforest.io' }
 }
