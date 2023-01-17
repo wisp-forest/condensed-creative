@@ -7,21 +7,32 @@
 
 ## Overview
 
-Condensed Creative is currently a small library mod that allows for Mod creators to condense items into one slot similar to the Bedrock version of the game. Upon clicking the slot, it will expand to show what is all within Condensed Entry. Such is basically a space saver for blocks or items that are very similar, with the creative tab.
+Condensed Creative is a small library mod that allows for Mod or Datapack Developers to reduce Creative ItemGroup clutter by compacting similar Items into Condensed Entries that can be expanded or shrunk similar to Bedrock Addition of the Game. 
 
-**Build Setup:**
+Information on how to use the API can be found at [Wisp Forest Docs](https://docs.wispforest.io/condensed-creative/setup/)
 
-```groovy
+### Build Setup
+
+Add the given maven below to your repositories section within your `build.gradle`:
+
+```groovy title="build.gradle"
 repositories {
     maven { url 'https://maven.wispforest.io' }
 }
 
+<...>
+
 dependencies {
-    // Recommend creating a CondensedCreativeItems version within your gradle.properties 
-    
     //Loom (Fabric / Quilt / Forge Loom)
     modImplementation "io.wispforest:condensed_creative-fabric:${project.condensed_creative_version}"
-    
+
     //Base Forge
     implementation fg.deobf("io.wispforest:condensed_creative-forge:${project.condensed_creative_version}")
 }
+```
+```
+condensed_creative_version=...
+```
+
+Note: If you are using Architectury, you can get the Common version using `modImplementation "io.wispforest:condensed_creative-common:${project.condensed_creative_version}"`
+
