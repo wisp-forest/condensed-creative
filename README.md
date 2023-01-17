@@ -30,7 +30,7 @@ dependencies {
     implementation fg.deobf("io.wispforest:condensed_creative-forge:${project.condensed_creative_version}")
 }
 ```
-```
+```properties
 condensed_creative_version=...
 ```
 
