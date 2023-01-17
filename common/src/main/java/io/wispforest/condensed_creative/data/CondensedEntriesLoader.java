@@ -32,6 +32,12 @@ public class CondensedEntriesLoader extends JsonDataLoader {
     private static final Map<Identifier, CondensedItemEntry.Builder> LOCAL_ENTRIES = new HashMap<>();
     private static boolean checkLocalEntries = false;
 
+    private static final List<ItemGroup> BLACKLISTED_ITEM_GROUPS = List.of(
+            ItemGroups.HOTBAR,
+            ItemGroups.SEARCH,
+            ItemGroups.OPERATOR
+    );
+
     public CondensedEntriesLoader() {
         super(GSON, "condensed_entries");
     }
@@ -41,10 +47,14 @@ public class CondensedEntriesLoader extends JsonDataLoader {
         LOGGER.info("[CondensedEntriesLoader]: Starting loading!");
 
         if(!CondensedEntryRegistry.RESOURCE_LOADED_ENTRIES.isEmpty()) CondensedEntryRegistry.RESOURCE_LOADED_ENTRIES.clear();
-        
+
+        List<ItemGroup> ITEM_GROUPS = new ArrayList<>(ItemGroups.getGroups());
+
+        ITEM_GROUPS.removeAll(BLACKLISTED_ITEM_GROUPS);
+
         prepared.forEach((id, jsonData) -> {
             try {
-                deserializeFile(id, ((JsonObject) jsonData)).forEach(condensedItemEntry -> CondensedEntryRegistry.addCondensedEntryToRegistryMap(condensedItemEntry, CondensedEntryRegistry.RESOURCE_LOADED_ENTRIES));
+                deserializeFile(id, ((JsonObject) jsonData), ITEM_GROUPS).forEach(condensedItemEntry -> CondensedEntryRegistry.addCondensedEntryToRegistryMap(condensedItemEntry, CondensedEntryRegistry.RESOURCE_LOADED_ENTRIES));
             } catch (IllegalArgumentException | JsonParseException var10) {
                 LOGGER.error("[CondensedEntriesLoader]: Parsing error loading Condensed Entry {}", id, var10);
             }
@@ -53,7 +63,7 @@ public class CondensedEntriesLoader extends JsonDataLoader {
         LOGGER.info("[CondensedEntriesLoader]: Ending loading!");
     }
 
-    private static List<CondensedItemEntry> deserializeFile(Identifier id, JsonObject json) {
+    private static List<CondensedItemEntry> deserializeFile(Identifier id, JsonObject json, List<ItemGroup> itemGroups) {
        Map<String, JsonElement> jsonMap = json.asMap();
 
         if(json.has("debug_entries")){
@@ -95,7 +105,8 @@ public class CondensedEntriesLoader extends JsonDataLoader {
         for(Map.Entry<String, JsonElement> itemGroupEntries : jsonMap.entrySet()){
             Identifier itemGroupId = LoaderSpecificUtils.convertBetweenLoaderId(new Identifier(itemGroupEntries.getKey()));
 
-            Optional<ItemGroup> itemGroup = ItemGroups.getGroups().stream().filter(group -> Objects.equals(LoaderSpecificUtils.getIdentifierFromGroup(group), itemGroupId)).findFirst();
+            Optional<ItemGroup> itemGroup = itemGroups.stream()
+                    .filter(group -> Objects.equals(LoaderSpecificUtils.getIdentifierFromGroup(group), itemGroupId)).findFirst();
 
             if(itemGroup.isEmpty()){
                 LOGGER.error("[CondensedEntryLoader]: A Invaild Itemgroup name was given so no Entries are loaded from it: [FileID: {}, GroupID: {}]", id, itemGroupId);
@@ -188,12 +199,12 @@ public class CondensedEntriesLoader extends JsonDataLoader {
             if (jsonObject.has("item_tag")) {
                 TagKey<Item> itemTagKey = TagKey.of(RegistryKeys.ITEM, Identifier.tryParse(JsonHelper.getString(jsonObject, "item_tag")));
 
-                builder = CondensedEntryRegistry.fromItemTag(entryId, item, itemTagKey);
+                builder = CondensedEntryRegistry.fromTag(entryId, item, itemTagKey);
 
             } else if (jsonObject.has("block_tag")) {
                 TagKey<Block> itemTagKey = TagKey.of(RegistryKeys.BLOCK, Identifier.tryParse(JsonHelper.getString(jsonObject, "block_tag")));
 
-                builder = CondensedEntryRegistry.fromBlockTag(entryId, item, itemTagKey);
+                builder = CondensedEntryRegistry.fromTag(entryId, item, itemTagKey);
 
             } else if (jsonObject.has("items")) {
                 List<Item> items = new ArrayList<>();
@@ -212,7 +223,7 @@ public class CondensedEntriesLoader extends JsonDataLoader {
             JsonElement element = jsonObject.get("strict_filter");
 
             if(element instanceof JsonPrimitive primitive && primitive.isBoolean()){
-                builder.toggleStrictEntryFilter(primitive.getAsBoolean());
+                builder.toggleStrictFiltering(primitive.getAsBoolean());
             } else {
                 LOGGER.warn("[CondensedEntryLoader]: Strict Filter Mode wasn't found to be a boolean: [FileID: {}, EntryID: {}]", fileID, key);
             }
@@ -224,7 +235,7 @@ public class CondensedEntriesLoader extends JsonDataLoader {
             try {
                 if(element.isJsonPrimitive() && element.getAsJsonPrimitive().getAsString().equals("USE_TAG")){
                     if(builder.currentEntry.getTagKey() != null) {
-                        builder.setTitleFromTagKey();
+                        builder.setTitleFromTag();
                     }
                 } else {
                     Text text = Text.Serializer.fromJson(element);
@@ -257,9 +268,9 @@ public class CondensedEntriesLoader extends JsonDataLoader {
                 String string = element.getAsString();
 
                 if(Objects.equals(string, "ITEMGROUP")){
-                    builder.setListOrder(CondensedItemEntry.EntryOrder.ITEMGROUP_ORDER);
+                    builder.setEntryOrder(CondensedItemEntry.EntryOrder.ITEMGROUP_ORDER);
                 } else if(Objects.equals(string, "DEFAULT")){
-                    builder.setListOrder(CondensedItemEntry.EntryOrder.DEFAULT_ORDER);
+                    builder.setEntryOrder(CondensedItemEntry.EntryOrder.DEFAULT_ORDER);
                 } else {
                     LOGGER.warn("[CondensedEntryLoader]: A given Entry Order seems to not exist with the list of Orderings: [FileID: {}, EntryID: {}]", fileID, key);
                 }
@@ -274,7 +285,7 @@ public class CondensedEntriesLoader extends JsonDataLoader {
             if(element.isJsonPrimitive()){
                 boolean value = element.getAsBoolean();
 
-                if(value) builder.compareItemNotStack();
+                builder.useItemComparison(value);
             } else {
                 LOGGER.warn("[CondensedEntryLoader]: A Item Comparison was found to be malformed in some way: [FileID: {}, EntryID: {}]", fileID, key);
             }

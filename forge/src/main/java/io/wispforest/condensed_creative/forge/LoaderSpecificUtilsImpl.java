@@ -44,10 +44,14 @@ public class LoaderSpecificUtilsImpl {
         return condensedCreativeInitializers;
     }
 
-    public Identifier getIdentifierFromGroup(ItemGroup group){
+    public static Identifier getIdentifierFromGroup(ItemGroup group){
         Identifier identifier = CreativeModeTabRegistry.getName(group);
 
-        if(identifier == null) throw new NullPointerException("[CondensedCreative] There was a attempt to get a Identifier for a given ItemGroup but was found to be null");
+        if(identifier == null) {
+            LOGGER.warn("[CondensedCreative] There was a attempt to get a Identifier for a given ItemGroup but was found to be null: [Group: {}]", group.getDisplayName().toString());
+
+            return new Identifier("invalid", "invalid");
+        }
 
         return identifier;
     }

@@ -17,18 +17,20 @@ public class BuiltinEntries {
 
     public static void registerBuiltinEntries(){
 
-        CondensedEntryRegistry.of(CondensedCreative.createID("logs"), Blocks.OAK_LOG, itemTagWithVanillaCheck(ItemTags.LOGS))
+        CondensedEntryRegistry.fromTag(CondensedCreative.createID("logs"), Blocks.OAK_LOG, ItemTags.LOGS)
+                .toggleStrictFiltering(true)
                 .addItemGroup(ItemGroups.BUILDING_BLOCKS);
 
-        CondensedEntryRegistry.of(CondensedCreative.createID("wools"), Blocks.WHITE_WOOL, itemTagWithVanillaCheck(ItemTags.WOOL))
+        CondensedEntryRegistry.fromTag(CondensedCreative.createID("wools"), Blocks.WHITE_WOOL, ItemTags.WOOL)
+                .toggleStrictFiltering(true)
                 .addItemGroup(ItemGroups.COLORED_BLOCKS);
 
-
-        CondensedEntryRegistry.of(CondensedCreative.createID("terracotta"), Blocks.TERRACOTTA, itemTagWithVanillaCheck(ItemTags.TERRACOTTA))
+        CondensedEntryRegistry.fromTag(CondensedCreative.createID("terracotta"), Blocks.TERRACOTTA, ItemTags.TERRACOTTA)
+                .toggleStrictFiltering(true)
                 .addItemGroup(ItemGroups.COLORED_BLOCKS);
 
         CondensedEntryRegistry.of(CondensedCreative.createID("concrete"), Blocks.WHITE_CONCRETE,
-                predicateWithVanillaCheck((item) -> {
+                (item) -> {
                     if(item instanceof BlockItem){
                         String itemPath = Registries.ITEM.getId(item).getPath();
 
@@ -36,11 +38,12 @@ public class BuiltinEntries {
                     }
 
                     return false;
-                }))
+                })
+                .toggleStrictFiltering(true)
                 .addItemGroup(ItemGroups.COLORED_BLOCKS);
 
         CondensedEntryRegistry.of(CondensedCreative.createID("concrete_powder"), Blocks.WHITE_CONCRETE_POWDER,
-                predicateWithVanillaCheck((item) -> {
+                (item) -> {
                     if(item instanceof BlockItem) {
                         String itemPath = Registries.ITEM.getId(item).getPath();
 
@@ -48,7 +51,8 @@ public class BuiltinEntries {
                     }
 
                     return false;
-                }))
+                })
+                .toggleStrictFiltering(true)
                 .addItemGroup(ItemGroups.COLORED_BLOCKS);
 
         CondensedEntryRegistry.fromItems(CondensedCreative.createID("ores"), Blocks.IRON_ORE,
@@ -65,32 +69,39 @@ public class BuiltinEntries {
                 .addItemGroup(ItemGroups.NATURAL);
 
         CondensedEntryRegistry.of(CondensedCreative.createID("glass"), Blocks.WHITE_STAINED_GLASS,
-                predicateWithVanillaCheck((item) -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof StainedGlassBlock))
+                        (item) -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof StainedGlassBlock)
+                .toggleStrictFiltering(true)
                 .addItemGroup(ItemGroups.COLORED_BLOCKS);
 
         //-------------------------------
 
-        CondensedEntryRegistry.of(CondensedCreative.createID("carpets"), Blocks.WHITE_CARPET, itemTagWithVanillaCheck(ItemTags.WOOL_CARPETS))
+        CondensedEntryRegistry.fromTag(CondensedCreative.createID("carpets"), Blocks.WHITE_CARPET, ItemTags.WOOL_CARPETS)
+                .toggleStrictFiltering(true)
                 .addItemGroup(ItemGroups.COLORED_BLOCKS);
 
 
-        CondensedEntryRegistry.of(CondensedCreative.createID("candles"), Blocks.WHITE_CANDLE, itemTagWithVanillaCheck(ItemTags.CANDLES))
+        CondensedEntryRegistry.fromTag(CondensedCreative.createID("candles"), Blocks.WHITE_CANDLE, ItemTags.CANDLES)
+                .toggleStrictFiltering(true)
                 .addItemGroup(ItemGroups.COLORED_BLOCKS);
 
 
-        CondensedEntryRegistry.of(CondensedCreative.createID("beds"), Blocks.WHITE_BED, itemTagWithVanillaCheck(ItemTags.BEDS))
+        CondensedEntryRegistry.fromTag(CondensedCreative.createID("beds"), Blocks.WHITE_BED, ItemTags.BEDS)
+                .toggleStrictFiltering(true)
                 .addItemGroup(ItemGroups.COLORED_BLOCKS);
 
 
-        CondensedEntryRegistry.of(CondensedCreative.createID("banners"), Blocks.WHITE_BANNER, itemTagWithVanillaCheck(ItemTags.BANNERS))
+        CondensedEntryRegistry.fromTag(CondensedCreative.createID("banners"), Blocks.WHITE_BANNER, ItemTags.BANNERS)
+                .toggleStrictFiltering(true)
                 .addItemGroup(ItemGroups.COLORED_BLOCKS);
 
 
-        CondensedEntryRegistry.of(CondensedCreative.createID("walls"), Blocks.COBBLESTONE_WALL, itemTagWithVanillaCheck(ItemTags.WALLS))
+        CondensedEntryRegistry.fromTag(CondensedCreative.createID("walls"), Blocks.COBBLESTONE_WALL, ItemTags.WALLS)
+                .toggleStrictFiltering(true)
                 .addItemGroup(ItemGroups.BUILDING_BLOCKS);
 
 
-        CondensedEntryRegistry.of(CondensedCreative.createID("fences"), Blocks.OAK_FENCE, itemTagWithVanillaCheck(ItemTags.FENCES))
+        CondensedEntryRegistry.fromTag(CondensedCreative.createID("fences"), Blocks.OAK_FENCE, ItemTags.FENCES)
+                .toggleStrictFiltering(true)
                 .addItemGroup(ItemGroups.BUILDING_BLOCKS);
 
 
@@ -109,29 +120,34 @@ public class BuiltinEntries {
                 .addItemGroup(ItemGroups.COLORED_BLOCKS);
 
 
-        CondensedEntryRegistry.of(CondensedCreative.createID("shulkers"), Blocks.SHULKER_BOX, blockTagWithVanillaCheck(BlockTags.SHULKER_BOXES))
+        CondensedEntryRegistry.fromTag(CondensedCreative.createID("shulkers"), Blocks.SHULKER_BOX, BlockTags.SHULKER_BOXES)
+                .toggleStrictFiltering(true)
                 .addItemGroup(ItemGroups.COLORED_BLOCKS);
 
         //-------------------------------
 
-
-        CondensedEntryRegistry.of(CondensedCreative.createID("buttons"), Blocks.STONE_BUTTON, itemTagWithVanillaCheck(ItemTags.BUTTONS))
+        CondensedEntryRegistry.fromTag(CondensedCreative.createID("buttons"), Blocks.STONE_BUTTON, ItemTags.BUTTONS)
+                .toggleStrictFiltering(true)
                 .addItemGroup(ItemGroups.REDSTONE);
 
 
-        CondensedEntryRegistry.of(CondensedCreative.createID("pressure_plates"), Blocks.STONE_PRESSURE_PLATE, blockTagWithVanillaCheck(BlockTags.PRESSURE_PLATES))
+        CondensedEntryRegistry.fromTag(CondensedCreative.createID("pressure_plates"), Blocks.STONE_PRESSURE_PLATE, BlockTags.PRESSURE_PLATES)
+                .toggleStrictFiltering(true)
                 .addItemGroup(ItemGroups.REDSTONE);
 
 
-        CondensedEntryRegistry.of(CondensedCreative.createID("doors"), Blocks.IRON_DOOR, blockTagWithVanillaCheck(BlockTags.DOORS))
+        CondensedEntryRegistry.fromTag(CondensedCreative.createID("doors"), Blocks.IRON_DOOR, BlockTags.DOORS)
+                .toggleStrictFiltering(true)
                 .addItemGroup(ItemGroups.REDSTONE);
 
 
-        CondensedEntryRegistry.of(CondensedCreative.createID("trapdoors"), Blocks.IRON_TRAPDOOR, blockTagWithVanillaCheck(BlockTags.TRAPDOORS))
+        CondensedEntryRegistry.fromTag(CondensedCreative.createID("trapdoors"), Blocks.IRON_TRAPDOOR, BlockTags.TRAPDOORS)
+                .toggleStrictFiltering(true)
                 .addItemGroup(ItemGroups.REDSTONE);
 
 
-        CondensedEntryRegistry.of(CondensedCreative.createID("fence_gates"), Blocks.OAK_FENCE_GATE, blockTagWithVanillaCheck(BlockTags.FENCE_GATES))
+        CondensedEntryRegistry.fromTag(CondensedCreative.createID("fence_gates"), Blocks.OAK_FENCE_GATE, BlockTags.FENCE_GATES)
+                .toggleStrictFiltering(true)
                 .addItemGroup(ItemGroups.REDSTONE);
 
         //-------------------------------
@@ -139,21 +155,11 @@ public class BuiltinEntries {
         CondensedEntryRegistry.of(CondensedCreative.createID("spawn_eggs"), Items.AXOLOTL_SPAWN_EGG, item -> item instanceof SpawnEggItem)
                 .addItemGroup(ItemGroups.SPAWN_EGGS);
 
-        CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("music_discs"), Items.MUSIC_DISC_13, ItemTags.MUSIC_DISCS)
+        CondensedEntryRegistry.fromTag(CondensedCreative.createID("music_discs"), Items.MUSIC_DISC_13, ItemTags.MUSIC_DISCS)
                 .addItemGroup(ItemGroups.TOOLS);
     }
 
     private static final Predicate<Item> vanillaItemsOnly = item -> Objects.equals(Registries.ITEM.getId(item).getNamespace(), "minecraft");
-
-    private static Predicate<Item> itemTagWithVanillaCheck(TagKey<Item> tagKey){
-        return (item) -> item.getRegistryEntry().isIn(tagKey) && BuiltinEntries.vanillaItemsOnly.test(item);
-    }
-
-    private static Predicate<Item> blockTagWithVanillaCheck(TagKey<Block> tagKey){
-        return (item) -> item instanceof BlockItem blockItem &&
-                blockItem.getBlock().getRegistryEntry().isIn(tagKey) &&
-                BuiltinEntries.vanillaItemsOnly.test(item);
-    }
 
     private static Predicate<Item> predicateWithVanillaCheck(Predicate<Item> mainPredicate){
         return (item) -> mainPredicate.test(item) &&

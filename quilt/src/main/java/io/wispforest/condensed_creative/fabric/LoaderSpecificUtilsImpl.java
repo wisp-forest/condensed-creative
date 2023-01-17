@@ -14,7 +14,7 @@ public class LoaderSpecificUtilsImpl {
         return QuiltLoader.getEntrypoints("condensed_creative", CondensedCreativeInitializer.class);
     }
 
-    public Identifier getIdentifierFromGroup(ItemGroup group){
+    public static Identifier getIdentifierFromGroup(ItemGroup group){
         return group.getId();
     }
 

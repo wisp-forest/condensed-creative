@@ -1,15 +1,16 @@
 package io.wispforest.condensed_creative.entry.impl;
 
+import com.mojang.logging.LogUtils;
 import io.wispforest.condensed_creative.CondensedCreative;
 import io.wispforest.condensed_creative.entry.Entry;
 import io.wispforest.condensed_creative.registry.CondensedEntryRegistry;
 import io.wispforest.condensed_creative.util.ItemGroupHelper;
+import net.minecraft.block.Block;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -17,6 +18,7 @@ import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -27,13 +29,15 @@ import java.util.stream.Collectors;
 
 public class CondensedItemEntry extends ItemEntry {
 
+    private static final Logger LOGGER = LogUtils.getLogger();
+
     public static final Map<Identifier, Boolean> CHILD_VISIBILITY = new HashMap<>();
 
     //-------------------------------------------
 
     public final Identifier condensedID;
 
-    private Supplier<List<ItemStack>> childrenSupplier = null;
+    @Nullable private Supplier<List<ItemStack>> childrenSupplier = null;
 
     private Text condensedEntryTitle;
 
@@ -51,7 +55,7 @@ public class CondensedItemEntry extends ItemEntry {
 
     private @Nullable Consumer<List<ItemStack>> entrySorting = null;
 
-    private @Nullable TagKey<?> tagKey = null;
+    private @Nullable TagKey<? extends ItemConvertible> tagKey = null;
 
     //-------------------------------------------
 
@@ -91,20 +95,24 @@ public class CondensedItemEntry extends ItemEntry {
             this.currentEntry.childrenSupplier = () -> new ArrayList<>(entries);
         }
 
-        public Builder(Identifier condensedID, ItemStack defaultItemstack, Predicate<Item> entryPredicate, @Nullable TagKey<?> tagKey) {
+        public <T extends ItemConvertible> Builder(Identifier condensedID, ItemStack defaultItemstack, @Nullable Predicate<Item> entryPredicate, @Nullable TagKey<T> tagKey) {
             this.currentEntry = new CondensedItemEntry(condensedID, defaultItemstack, false);
 
-            this.currentEntry.childrenSupplier = () -> {
-                List<ItemStack> stacks = new ArrayList<>();
+            if(entryPredicate != null) {
+                this.currentEntry.childrenSupplier = () -> {
+                    List<ItemStack> stacks = new ArrayList<>();
 
-                Registries.ITEM.forEach(item1 -> {
-                    if (entryPredicate.test(item1)) stacks.add(item1.getDefaultStack());
-                });
+                    Registries.ITEM.forEach(item1 -> {
+                        if (entryPredicate.test(item1)) stacks.add(item1.getDefaultStack());
+                    });
 
-                return stacks;
-            };
-
-            this.currentEntry.tagKey = tagKey;
+                    return stacks;
+                };
+            } else if(tagKey != null){
+                this.currentEntry.tagKey = tagKey;
+            } else {
+                LOGGER.warn("[CondensedEntryBuilder]: Both the Predicate and the TagKey for a Condensed Entry was found to be null meaning it will be empty on creation: [Id: {}]", condensedID);
+            }
         }
 
         private Builder(CondensedItemEntry entry){
@@ -126,8 +134,8 @@ public class CondensedItemEntry extends ItemEntry {
         /**
          * Toggles the comparison mode to be item :: item rather than the stacks themselves
          */
-        public Builder compareItemNotStack(){
-            this.currentEntry.compareToItem = true;
+        public Builder useItemComparison(boolean value){
+            this.currentEntry.compareToItem = value;
 
             return this;
         }
@@ -144,7 +152,7 @@ public class CondensedItemEntry extends ItemEntry {
         /**
          * Sets the tooltip title text to be based of the already given Tag if such has been set
          */
-        public Builder setTitleFromTagKey(){
+        public Builder setTitleFromTag(){
             if(this.currentEntry.tagKey != null){
                 this.currentEntry.condensedEntryTitle = Text.of(Arrays.stream(this.currentEntry.tagKey.id().getPath().split("_")).map(WordUtils::capitalize).collect(Collectors.joining(" ")));
             }
@@ -155,8 +163,8 @@ public class CondensedItemEntry extends ItemEntry {
         /**
          * Adds description onto the Entries tooltip
          */
-        public Builder setDescription(Text extraInfoText){
-            this.currentEntry.descriptionText = extraInfoText;
+        public Builder setDescription(Text description){
+            this.currentEntry.descriptionText = description;
 
             return this;
         }
@@ -164,8 +172,8 @@ public class CondensedItemEntry extends ItemEntry {
         /**
          * Used to filter the children list during creation
          */
-        public Builder setEntrySorting(Consumer<List<ItemStack>> childrenSort){
-            this.currentEntry.entrySorting = childrenSort;
+        public Builder setEntrySorting(Consumer<List<ItemStack>> sortFunc){
+            this.currentEntry.entrySorting = sortFunc;
             this.currentEntry.listOrder = EntryOrder.CUSTOM_ORDER;
 
             return this;
@@ -174,16 +182,16 @@ public class CondensedItemEntry extends ItemEntry {
         /**
          * Used Change the Children's Order (See {@link EntryOrder})
          */
-        public Builder setListOrder(EntryOrder entryOrder){
+        public Builder setEntryOrder(EntryOrder entryOrder){
             this.currentEntry.listOrder = entryOrder;
 
             return this;
         }
 
         /**
-         * Toggle whether to use the given ItemGroup for the Entry should allow blocks not found within it
+         * Toggle whether to filter out any Children Entries not found within the Entries Item Group
          */
-        public Builder toggleStrictEntryFilter(boolean value){
+        public Builder toggleStrictFiltering(boolean value){
             this.currentEntry.removeIfNotFound = value;
 
             return this;
@@ -226,7 +234,7 @@ public class CondensedItemEntry extends ItemEntry {
     @ApiStatus.Internal
     public void initializeChildren(List<Entry> itemGroupList){
         if(this.childrenEntry.isEmpty()) {
-            List<ItemStack> childrenStacks = this.childrenSupplier.get();
+            List<ItemStack> childrenStacks = this.getChildren();
 
             List<ItemStack> replacedStacks = filterItemGroupStacks(itemGroupList, childrenStacks.stream().map(ItemEntry::hashcodeForItemStack).toList(), true);
 
@@ -255,6 +263,32 @@ public class CondensedItemEntry extends ItemEntry {
         }
 
         getNextValue();
+    }
+
+    public List<ItemStack> getChildren(){
+        List<ItemStack> stacks = new ArrayList<>();
+
+        if(childrenSupplier != null) return childrenSupplier.get();
+
+        if(tagKey != null) {
+            Registries.ITEM.forEach(item1 -> { if (withinEntriesTag(item1)) stacks.add(item1.getDefaultStack()); });
+        }
+
+        return stacks;
+    }
+
+    private <T extends ItemConvertible> boolean withinEntriesTag(Item item) {
+        if(tagKey == null) return false;
+
+        if(tagKey.isOf(RegistryKeys.ITEM)){
+            return item.getRegistryEntry().isIn((TagKey<Item>) tagKey);
+        } else if(tagKey.isOf(RegistryKeys.BLOCK)) {
+            return item instanceof BlockItem blockItem && blockItem.getBlock().getRegistryEntry().isIn((TagKey<Block>) tagKey);
+        } else {
+            LOGGER.warn("[CondensedEntryRegistry]: It seems that a Condensed Entry was somehow registered with Tag that isn't part of the Item or Block Registry: [Id: {}]", this.condensedID);
+        }
+
+        return false;
     }
 
     public List<ItemStack> filterItemGroupStacks(List<Entry> itemGroupList, List<Integer> hashValues, boolean returnStacks){

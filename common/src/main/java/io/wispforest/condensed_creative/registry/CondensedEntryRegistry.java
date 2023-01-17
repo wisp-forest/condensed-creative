@@ -1,13 +1,16 @@
 package io.wispforest.condensed_creative.registry;
 
+import com.mojang.logging.LogUtils;
 import io.wispforest.condensed_creative.LoaderSpecificUtils;
 import io.wispforest.condensed_creative.entry.impl.CondensedItemEntry;
 import io.wispforest.condensed_creative.util.ItemGroupHelper;
 import net.minecraft.block.Block;
 import net.minecraft.item.*;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.ApiStatus;
+import org.slf4j.Logger;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -19,6 +22,8 @@ import java.util.stream.Collectors;
  * Create {@link CondensedItemEntry} within your Client-Side Mod Initialization as this will only be seen for the User's side and not the server
  */
 public final class CondensedEntryRegistry {
+
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     /**
      * Register your A Entry's item group using {@link CondensedItemEntry.Builder#addItemGroup(ItemGroup)}.
@@ -56,95 +61,96 @@ public final class CondensedEntryRegistry {
     //----------
 
     /**
-     * Method to create A {@link CondensedItemEntry} using a Predicate
+     * Method to create A {@link CondensedItemEntry} using a Tag
      *
      * @param identifier The Entries identifier
      * @param itemConvertible The {@link ItemConvertible} being used to place the Entry within registered {@link ItemGroup}
-     * @param itemTagKey The {@link Item} {@link TagKey} used to find all the children items for the created {@link CondensedItemEntry}
+     * @param tagKey The {@link TagKey} used to find all the children items for the created {@link CondensedItemEntry}
      * @return The created {@link CondensedItemEntry}
      */
-    public static CondensedItemEntry.Builder fromItemTag(Identifier identifier, ItemConvertible itemConvertible, TagKey<Item> itemTagKey){
-        return new CondensedItemEntry.Builder(identifier, itemConvertible.asItem().getDefaultStack(), item -> item.getRegistryEntry().isIn(itemTagKey), itemTagKey);
+    public static <T extends ItemConvertible> CondensedItemEntry.Builder fromTag(Identifier identifier, ItemConvertible itemConvertible, TagKey<T> tagKey){
+        return fromTag(identifier, itemConvertible.asItem().getDefaultStack(), tagKey);
     }
 
     /**
-     * Method to create A {@link CondensedItemEntry} using a Predicate
+     * Method to create A {@link CondensedItemEntry} using a Tag
      *
      * @param identifier The Entries identifier
      * @param stack The {@link ItemStack} being used to place the Entry within the {@link ItemGroup}
-     * @param itemTagKey The {@link Item} {@link TagKey} used to find all the children items for the created {@link CondensedItemEntry}
+     * @param tagKey The {@link TagKey} used to find all the children items for the created {@link CondensedItemEntry}
      * @return The created {@link CondensedItemEntry}
      */
-    public static CondensedItemEntry.Builder fromItemTag(Identifier identifier, ItemStack stack, TagKey<Item> itemTagKey){
-        return new CondensedItemEntry.Builder(identifier, stack, item -> item.getRegistryEntry().isIn(itemTagKey), itemTagKey);
-    }
-
-    /**
-     * Method to create A {@link CondensedItemEntry} using a Predicate
-     *
-     * @param identifier The Entries identifier
-     * @param itemConvertible The {@link ItemConvertible} being used to place the Entry within registered {@link ItemGroup}
-     * @param blockTagKey The {@link Item} {@link TagKey} used to find all the children items for the created {@link CondensedItemEntry}
-     * @return The created {@link CondensedItemEntry}
-     */
-    public static CondensedItemEntry.Builder fromBlockTag(Identifier identifier, ItemConvertible itemConvertible, TagKey<Block> blockTagKey){
-        return new CondensedItemEntry.Builder(identifier, itemConvertible.asItem().getDefaultStack(), item -> {
-            if(item instanceof BlockItem blockItem){
-                return blockItem.getBlock().getRegistryEntry().isIn(blockTagKey);
-            }else{
-                return false;
-            }
-        }, blockTagKey);
-    }
-
-    /**
-     * Method to create A {@link CondensedItemEntry} using a Predicate
-     *
-     * @param identifier The Entries identifier
-     * @param stack The {@link ItemStack} being used to place the Entry within the {@link ItemGroup}
-     * @param blockTagKey The {@link Item} {@link TagKey} used to find all the children items for the created {@link CondensedItemEntry}
-     * @return The created {@link CondensedItemEntry}
-     */
-    public static CondensedItemEntry.Builder fromBlockTag(Identifier identifier, ItemStack stack, TagKey<Block> blockTagKey){
-        return new CondensedItemEntry.Builder(identifier, stack, item -> {
-            if(item instanceof BlockItem blockItem){
-                return blockItem.getBlock().getRegistryEntry().isIn(blockTagKey);
-            } else {
-                return false;
-            }
-        }, blockTagKey);
+    public static <T extends ItemConvertible> CondensedItemEntry.Builder fromTag(Identifier identifier, ItemStack stack, TagKey<T> tagKey){
+        return new CondensedItemEntry.Builder(identifier, stack, null, tagKey);
     }
 
     //----------
 
     /**
-     * Method to create A {@link CondensedItemEntry} using a Predicate
+     * Use {@link #fromTag(Identifier, ItemConvertible, TagKey)}}
+     */
+    @Deprecated(forRemoval = true)
+    public static CondensedItemEntry.Builder fromItemTag(Identifier identifier, ItemConvertible itemConvertible, TagKey<Item> itemTagKey){
+        return fromItemTag(identifier, itemConvertible.asItem().getDefaultStack(), itemTagKey);
+    }
+
+    /**
+     * Use {@link #fromTag(Identifier, ItemConvertible, TagKey)}}
+     */
+    @Deprecated(forRemoval = true)
+    public static CondensedItemEntry.Builder fromItemTag(Identifier identifier, ItemStack stack, TagKey<Item> itemTagKey){
+        return fromTag(identifier, stack, itemTagKey);
+    }
+
+    /**
+     * Use {@link #fromTag(Identifier, ItemConvertible, TagKey)}}
+     */
+    @Deprecated(forRemoval = true)
+    public static CondensedItemEntry.Builder fromBlockTag(Identifier identifier, ItemConvertible itemConvertible, TagKey<Block> blockTagKey){
+        return fromBlockTag(identifier, itemConvertible.asItem().getDefaultStack(), blockTagKey);
+    }
+
+    /**
+     * Use {@link #fromTag(Identifier, ItemConvertible, TagKey)}}
+     */
+    @Deprecated(forRemoval = true)
+    public static CondensedItemEntry.Builder fromBlockTag(Identifier identifier, ItemStack stack, TagKey<Block> blockTagKey){
+        return fromTag(identifier, stack, blockTagKey);
+    }
+
+    //----------
+
+    /**
+     * Method to create A {@link CondensedItemEntry} using a Collection
      *
      * @param identifier The Entries identifier
      * @param itemConvertible The {@link ItemConvertible} being used to place the Entry within registered {@link ItemGroup}
      * @param collection The collection of {@link Item}'s that will be used to build the children entries for the Entry
      * @return The created {@link CondensedItemEntry}
      */
-    public static CondensedItemEntry.Builder fromItems(Identifier identifier, ItemConvertible itemConvertible, Collection<Item> collection){
-        return fromItemStacks(identifier, itemConvertible.asItem().getDefaultStack(), collection.stream().map(Item::getDefaultStack).collect(Collectors.toList()));
+    public static <I extends ItemConvertible> CondensedItemEntry.Builder fromItems(Identifier identifier, ItemConvertible itemConvertible, Collection<I> collection){
+        return fromItems(identifier, itemConvertible.asItem().getDefaultStack(), collection);
     }
 
     /**
-     * Method to create A {@link CondensedItemEntry} using a Predicate
+     * Method to create A {@link CondensedItemEntry} using a Collection
      *
      * @param identifier The Entries identifier
      * @param stack The {@link ItemStack} being used to place the Entry within the {@link ItemGroup}
      * @param collection The collection of {@link Item}'s that will be used to build the children entries for the Entry
      * @return The created {@link CondensedItemEntry}
      */
-    public static CondensedItemEntry.Builder fromItems(Identifier identifier, ItemStack stack, Collection<Item> collection){
-        return fromItemStacks(identifier, stack, collection.stream().map(Item::getDefaultStack).collect(Collectors.toList()));
+    public static <I extends ItemConvertible> CondensedItemEntry.Builder fromItems(Identifier identifier, ItemStack stack, Collection<I> collection){
+        return fromItemStacks(identifier, stack, collection.stream()
+                .map(ItemConvertible::asItem)
+                .map(Item::getDefaultStack)
+                .collect(Collectors.toList()));
     }
 
     //------------
 
     /**
-     * Method to create A {@link CondensedItemEntry} using a Predicate
+     * Method to create A {@link CondensedItemEntry} using a Collection
      *
      * @param identifier The Entries identifier
      * @param itemConvertible The {@link ItemConvertible} being used to place the Entry within registered {@link ItemGroup}
@@ -156,7 +162,7 @@ public final class CondensedEntryRegistry {
     }
 
     /**
-     * Method to create A {@link CondensedItemEntry} using a Predicate
+     * Method to create A {@link CondensedItemEntry} using a Collection
      *
      * @param identifier The Entries identifier
      * @param stack The {@link ItemStack} being used to place the Entry within the {@link ItemGroup}
