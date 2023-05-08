@@ -60,15 +60,15 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> {
 
                     Color backgroundColor = Color.ofTransparent(0x7F111111);//Color.ofRGBA(186, 186, 186, 255);
 
-                    if(CondensedCreative.MAIN_CONFIG.getConfig().enableEntryBackgroundColor) {
-                        if (CondensedCreative.MAIN_CONFIG.getConfig().enableEntryBorderColor) {
+                    if(CondensedCreative.MAIN_CONFIG.getConfig().entryBackgroundColor) {
+                        if (CondensedCreative.MAIN_CONFIG.getConfig().entryBorderColor) {
                             DrawableHelper.fill(new MatrixStack(), minX, minY, maxX, maxY, backgroundColor.getColor());
                         } else {
                             DrawableHelper.fill(new MatrixStack(), minX - 1, minY - 1, maxX + 1, maxY + 1, backgroundColor.getColor());
                         }
                     }
 
-                    if(CondensedCreative.MAIN_CONFIG.getConfig().enableEntryBorderColor) {
+                    if(CondensedCreative.MAIN_CONFIG.getConfig().entryBorderColor) {
                         RenderSystem.enableBlend();
 
                         Color outlineColor = Color.ofTransparent(CondensedCreative.MAIN_CONFIG.getConfig().condensedEntryBorderColor);//Color.ofRGBA(251, 255, 0, 128);

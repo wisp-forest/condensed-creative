@@ -1,7 +1,7 @@
 package io.wispforest.condensed_creative;
 
 import io.wispforest.condensed_creative.compat.CondensedCreativeConfig;
-import io.wispforest.condensed_creative.entry.BuiltinEntries;
+import io.wispforest.condensed_creative.data.BuiltinEntries;
 import io.wispforest.condensed_creative.registry.CondensedCreativeInitializer;
 import io.wispforest.condensed_creative.registry.CondensedEntryRegistry;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -74,7 +74,7 @@ public class CondensedCreative implements CondensedCreativeInitializer {
 //            }
 //        }
 
-        if(MAIN_CONFIG.getConfig().enableDefaultCCGroups){
+        if(MAIN_CONFIG.getConfig().defaultCCGroups){
             BuiltinEntries.registerBuiltinEntries();
         }
     }

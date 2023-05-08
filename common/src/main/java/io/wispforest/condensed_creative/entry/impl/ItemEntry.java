@@ -5,6 +5,8 @@ import net.minecraft.item.ItemStack;
 
 public class ItemEntry implements Entry {
 
+    public static final ItemEntry EMPTY = new ItemEntry(ItemStack.EMPTY);
+
     private boolean isVisible = true;
 
     public final ItemStack itemStack;
@@ -38,17 +40,20 @@ public class ItemEntry implements Entry {
 
     @Override
     public int hashCode() {
-        return hashcodeForItemStack(this.getEntryStack());
+        return hashcodeOfStack(this.getEntryStack());
     }
 
-    public static int hashcodeForItemStack(ItemStack stack){
+    public static boolean areStacksEqual(ItemStack stack1, ItemStack stack2){
+        return hashcodeOfStack(stack1) == hashcodeOfStack(stack2);
+    }
+
+    public static int hashcodeOfStack(ItemStack stack){
         int hash = Long.hashCode(nbtTagHasher.hashStack(stack));
 
         hash = hash * 31 + System.identityHashCode(stack.getItem());
 
         return hash;
     }
-
 
     @Override
     public boolean equals(Object obj) {

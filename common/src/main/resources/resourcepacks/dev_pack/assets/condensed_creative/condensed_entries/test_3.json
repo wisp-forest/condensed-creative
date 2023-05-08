@@ -1,0 +1,13 @@
+{
+  "debug_entries": true,
+  "functional": {
+    "condensed_creative:test1": {
+      "base_item": "minecraft:torch",
+      "items": [
+        "minecraft:torch",
+        "minecraft:soul_torch",
+        "minecraft:redstone_torch"
+      ]
+    }
+  }
+}

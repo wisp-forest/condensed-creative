@@ -144,7 +144,7 @@ public class CondensedEntriesLoader extends JsonDataLoader {
                                     try {
                                         entries.add(deserializeEntry(id, s, element)
                                                 .orElseThrow()
-                                                .addItemGroup(builder.apply(tabIndex), false));
+                                                .addToItemGroup(builder.apply(tabIndex), false));
                                     } catch (NoSuchElementException ignore) {}
                                 });
 
@@ -152,7 +152,7 @@ public class CondensedEntriesLoader extends JsonDataLoader {
                         try {
                             entries.add(deserializeEntry(id, innerJson.getKey(), innerJson.getValue())
                                     .orElseThrow()
-                                    .addItemGroup(builder.apply(0), false));
+                                    .addToItemGroup(builder.apply(0), false));
                         } catch (NoSuchElementException ignore) {}
                     }
                 }

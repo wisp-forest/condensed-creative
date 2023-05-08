@@ -75,17 +75,7 @@ public class CondensedInventory extends SimpleInventory {
         return itemStack;
     }
 
-    public ItemStack addStack(ItemStack stack) {
-        ItemStack itemStack = stack.copy();
-        this.addToExistingSlot(itemStack);
-        if (itemStack.isEmpty()) {
-            return ItemStack.EMPTY;
-        } else {
-            this.addToNewSlot(itemStack);
-            return itemStack.isEmpty() ? ItemStack.EMPTY : itemStack;
-        }
-    }
-
+    @Override
     public boolean canInsert(ItemStack stack) {
         boolean bl = false;
 
@@ -120,7 +110,7 @@ public class CondensedInventory extends SimpleInventory {
         this.markDirty();
     }
 
-    public void setStack(int slot, Entry entryStack) {
+    public void setEntryStack(int slot, Entry entryStack) {
         this.entryStacks.set(slot, entryStack);
 
         ItemStack stack = entryStack.getEntryStack();
@@ -171,42 +161,7 @@ public class CondensedInventory extends SimpleInventory {
         return ((List)this.entryStacks.stream().filter(entry -> !entry.isEmpty()).map(Entry::toString).collect(Collectors.toList())).toString();
     }
 
-    private void addToNewSlot(ItemStack stack) {
-        for(int i = 0; i < this.size; ++i) {
-            ItemStack itemStack = this.getStack(i);
-            if (itemStack.isEmpty()) {
-                this.setStack(i, stack.copy());
-                stack.setCount(0);
-                return;
-            }
-        }
-
-    }
-
-    private void addToExistingSlot(ItemStack stack) {
-        for(int i = 0; i < this.size; ++i) {
-            ItemStack itemStack = this.getStack(i);
-            if (ItemStack.canCombine(itemStack, stack)) {
-                this.transfer(stack, itemStack);
-                if (stack.isEmpty()) {
-                    return;
-                }
-            }
-        }
-
-    }
-
-    private void transfer(ItemStack source, ItemStack target) {
-        int i = Math.min(this.getMaxCountPerStack(), target.getMaxCount());
-        int j = Math.min(source.getCount(), i - target.getCount());
-        if (j > 0) {
-            target.increment(j);
-            source.decrement(j);
-            this.markDirty();
-        }
-
-    }
-
+    //TODO: WHY IS THIS HERE?
     public void readNbtList(NbtList nbtList) {
         for(int i = 0; i < nbtList.size(); ++i) {
             ItemStack itemStack = ItemStack.fromNbt(nbtList.getCompound(i));
@@ -214,20 +169,6 @@ public class CondensedInventory extends SimpleInventory {
                 this.addStack(itemStack);
             }
         }
-
-    }
-
-    public NbtList toNbtList() {
-        NbtList nbtList = new NbtList();
-
-        for(int i = 0; i < this.size(); ++i) {
-            ItemStack itemStack = this.getStack(i);
-            if (!itemStack.isEmpty()) {
-                nbtList.add(itemStack.writeNbt(new NbtCompound()));
-            }
-        }
-
-        return nbtList;
     }
 
     private List<ItemStack> getItemStackList(){

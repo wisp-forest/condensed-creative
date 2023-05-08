@@ -39,6 +39,8 @@ public class CondensedItemEntry extends ItemEntry {
 
     @Nullable private Supplier<List<ItemStack>> childrenSupplier = null;
 
+    @Nullable private Supplier<Text> condensedEntryTitleBuilder = null;
+
     private Text condensedEntryTitle;
 
     private boolean compareToItem = false;
@@ -48,6 +50,8 @@ public class CondensedItemEntry extends ItemEntry {
     private EntryOrder listOrder = EntryOrder.DEFAULT_ORDER;
 
     private boolean removeIfNotFound = false;
+
+    private ItemEntry chosenIconStack = null;
 
     //-------------------------------------------
 
@@ -63,7 +67,7 @@ public class CondensedItemEntry extends ItemEntry {
 
     public final List<CondensedItemEntry> childrenEntry = new ArrayList<>();
 
-    private CondensedItemEntry currentlyDisplayedEntry;
+    private ItemEntry currentlyDisplayedEntry;
 
     //-------------------------------------------
 
@@ -141,6 +145,15 @@ public class CondensedItemEntry extends ItemEntry {
         }
 
         /**
+         * Sets the tooltip title text to be based of the given {@link Text} Supplier
+         */
+        public Builder setTitleSupplier(Supplier<Text> condensedEntryTitle){
+            this.currentEntry.condensedEntryTitleBuilder = condensedEntryTitle;
+
+            return this;
+        }
+
+        /**
          * Sets the tooltip title text to be based of the given {@link Text}
          */
         public Builder setTitle(Text condensedEntryTitle){
@@ -200,21 +213,39 @@ public class CondensedItemEntry extends ItemEntry {
         /**
          * Used to add the {@link CondensedItemEntry} to a certain {@link ItemGroup}
          */
-        public CondensedItemEntry addItemGroup(ItemGroup itemGroup){
-            return addItemGroup(itemGroup, -1);
+        public CondensedItemEntry addToItemGroup(ItemGroup itemGroup){
+            return addToItemGroup(itemGroup, -1);
         }
 
         /**
          * Used to add the {@link CondensedItemEntry} to a certain {@link ItemGroup} with tab index support if using a {@link io.wispforest.owo.itemgroup.OwoItemGroup} with tabs
          */
-        public CondensedItemEntry addItemGroup(ItemGroup itemGroup, int tabIndex){
-            return addItemGroup(ItemGroupHelper.of(itemGroup, tabIndex), true);
+        public CondensedItemEntry addToItemGroup(ItemGroup itemGroup, int tabIndex){
+            return addToItemGroup(ItemGroupHelper.of(itemGroup, tabIndex), true);
+        }
+
+        public List<CondensedItemEntry> addToItemGroups(ItemGroup ...groups){
+            return this.addToItemGroups(true, Arrays.stream(groups).map(group -> ItemGroupHelper.of(group, 0)).toArray(ItemGroupHelper[]::new));
+        }
+
+        public List<CondensedItemEntry> addToItemGroups(boolean addToMainEntriesMap, ItemGroupHelper... helpers){
+            List<CondensedItemEntry> condensedItemEntries = new ArrayList<>();
+
+            CondensedItemEntry.Builder builder = this;
+
+            for(ItemGroupHelper helper : helpers){
+                condensedItemEntries.add(builder.addToItemGroup(helper, true));
+
+                builder = builder.copy();
+            }
+
+            return condensedItemEntries;
         }
 
         //---------------------------------------------------------------------------
 
         @ApiStatus.Internal
-        public CondensedItemEntry addItemGroup(ItemGroupHelper helper, boolean addToMainEntriesMap){
+        public CondensedItemEntry addToItemGroup(ItemGroupHelper helper, boolean addToMainEntriesMap){
             this.currentEntry.itemGroupInfo = helper;
 
             if(addToMainEntriesMap) {
@@ -236,33 +267,39 @@ public class CondensedItemEntry extends ItemEntry {
         if(this.childrenEntry.isEmpty()) {
             List<ItemStack> childrenStacks = this.getChildren();
 
-            List<ItemStack> replacedStacks = filterItemGroupStacks(itemGroupList, childrenStacks.stream().map(ItemEntry::hashcodeForItemStack).toList(), true);
+            List<ItemStack> replacedStacks = filterItemGroupStacks(itemGroupList, childrenStacks.stream().map(ItemEntry::hashcodeOfStack).toList(), true);
 
             if (removeIfNotFound) {
+                List<ItemStack> childrenStacksFiltered = new ArrayList<>();
+
                 for (int i = 0; i < childrenStacks.size(); i++) {
                     ItemStack childrenStack = childrenStacks.get(i);
 
                     boolean bl = replacedStacks
                             .stream()
-                            .anyMatch(stack -> ItemEntry.hashcodeForItemStack(childrenStack) == ItemEntry.hashcodeForItemStack(stack));
+                            .anyMatch(stack -> ItemEntry.hashcodeOfStack(childrenStack) == ItemEntry.hashcodeOfStack(stack));
 
-                    if (!bl) childrenStacks.remove(childrenStack);
+                    if (bl) childrenStacksFiltered.add(childrenStack);
                 }
+
+                if(childrenStacks.size() > replacedStacks.size()) childrenStacks = childrenStacksFiltered;
             }
 
-            this.listOrder.sortList(replacedStacks, childrenStacks, this.entrySorting != null ? this.entrySorting : (l) -> {});
+            if(!childrenStacks.isEmpty()) {
+                this.listOrder.sortList(replacedStacks, childrenStacks, this.entrySorting != null ? this.entrySorting : (l) -> {});
 
-            this.childrenEntry.addAll(
-                    childrenStacks
-                            .stream()
-                            .map(stack -> createChild(this.condensedID, stack))
-                            .toList()
-            );
+                this.childrenEntry.addAll(
+                        childrenStacks
+                                .stream()
+                                .map(stack -> createChild(this.condensedID, stack))
+                                .toList()
+                );
+            }
         } else {
             filterItemGroupStacks(itemGroupList, this.childrenEntry.stream().map(CondensedItemEntry::getItemEntryHashCode).toList(), false);
         }
 
-        getNextValue();
+        if(!this.childrenEntry.isEmpty()) getNextValue();
     }
 
     public List<ItemStack> getChildren(){
@@ -312,13 +349,21 @@ public class CondensedItemEntry extends ItemEntry {
     public long lastTick = 0;
 
     public void getNextValue(){
-        int index = new Random().nextInt(childrenEntry.size());
-        Iterator<CondensedItemEntry> iter = childrenEntry.iterator();
-        for (int i = 0; i < index; i++) {
-            iter.next();
-        }
+        if(chosenIconStack == null) {
+            int index = (CondensedCreative.MAIN_CONFIG.getConfig().rotationPreview)
+                    ? 0
+                    : new Random().nextInt(0, childrenEntry.size());
 
-        currentlyDisplayedEntry = iter.next();
+            if(index < 0 || index > childrenEntry.size()){
+                currentlyDisplayedEntry = ItemEntry.EMPTY;
+
+                LOGGER.error("[CondensedItemEntry]: It seems that a random number generated for the given CondensedEntry[{}] seems to have been out of the valid bounds!", this.condensedID);
+            } else {
+                currentlyDisplayedEntry = childrenEntry.get(index);
+            }
+        } else if(!currentlyDisplayedEntry.equals(chosenIconStack)){
+            currentlyDisplayedEntry = chosenIconStack;
+        }
     }
 
     public ItemGroupHelper getItemGroupInfo() {
@@ -341,17 +386,23 @@ public class CondensedItemEntry extends ItemEntry {
     }
 
     public void getParentTooltipText(List<Text> tooltipData, PlayerEntity player, TooltipContext context) {
+        if(condensedEntryTitleBuilder != null){
+            condensedEntryTitle = this.condensedEntryTitleBuilder.get();
+
+            condensedEntryTitleBuilder = null;
+        }
+
         tooltipData.add(condensedEntryTitle);
 
         if(descriptionText != null) {
             tooltipData.add(descriptionText);
         }
 
-        if(tagKey != null && CondensedCreative.MAIN_CONFIG.getConfig().enableTagPreviewForEntries){
+        if(tagKey != null && CondensedCreative.MAIN_CONFIG.getConfig().tagPreviewForEntries){
             tooltipData.add(Text.of("Tag: #" + tagKey.id().toString()).copy().formatted(Formatting.GRAY));
         }
 
-        if(CondensedCreative.MAIN_CONFIG.getConfig().enableDebugIdentifiersForEntries) {
+        if(CondensedCreative.MAIN_CONFIG.getConfig().debugIdentifiersForEntries) {
             tooltipData.add(Text.of(""));
 
             tooltipData.add(Text.of("EntryID: " + condensedID.toString()).copy().formatted(Formatting.GRAY));
@@ -405,7 +456,7 @@ public class CondensedItemEntry extends ItemEntry {
                 AtomicReference<ItemStack> foundChildStack = new AtomicReference<>(ItemStack.EMPTY);
 
                 toBeChildren.removeIf(stack -> {
-                    if(ItemEntry.hashcodeForItemStack(currentItemGroupStack) == ItemEntry.hashcodeForItemStack(stack)){
+                    if(ItemEntry.hashcodeOfStack(currentItemGroupStack) == ItemEntry.hashcodeOfStack(stack)){
                         foundChildStack.set(stack);
 
                         return true;

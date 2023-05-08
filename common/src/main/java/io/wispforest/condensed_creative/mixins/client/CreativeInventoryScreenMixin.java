@@ -8,8 +8,6 @@ import io.wispforest.condensed_creative.entry.impl.ItemEntry;
 import io.wispforest.condensed_creative.registry.CondensedEntryRegistry;
 import io.wispforest.condensed_creative.util.CondensedInventory;
 import io.wispforest.condensed_creative.util.ItemGroupHelper;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -22,7 +20,6 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
@@ -32,7 +29,6 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.MathHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
@@ -64,7 +60,7 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
 
     @Unique private boolean validItemGroupForCondensedEntries = false;
 
-    @Unique private int currentRowPosition = 0;
+    @Unique private float currentRowPosition = 0;
 
 
     //-------------
@@ -80,17 +76,16 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
 
     @Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/PlayerScreenHandler;addListener(Lnet/minecraft/screen/ScreenHandlerListener;)V", shift = At.Shift.BY, by = 2))
     private void addButtonRender(CallbackInfo ci){
-        if(CondensedCreative.MAIN_CONFIG.getConfig().enableEntryRefreshButton) {
+        if(!CondensedCreative.MAIN_CONFIG.getConfig().entryRefreshButton) return;
 
-            ClickableWidget widget = new TexturedButtonWidget(this.x + 200, this.y + 140, 16, 16, 0, 0, 16, refreshButtonIcon, 32, 32,
-                    button -> {
-                        if (CondensedEntryRegistry.refreshEntrypoints()) setSelectedTab(this.selectedTab);
-                    }, ScreenTexts.EMPTY);
+        ClickableWidget widget = new TexturedButtonWidget(this.x + 200, this.y + 140, 16, 16, 0, 0, 16, refreshButtonIcon, 32, 32,
+                button -> { if (CondensedEntryRegistry.refreshEntrypoints()) setSelectedTab(this.selectedTab); },
+                ScreenTexts.EMPTY
+        );
 
-            widget.setTooltip(Tooltip.of(Text.of("Refresh Condensed Entries")));
+        widget.setTooltip(Tooltip.of(Text.of("Refresh Condensed Entries")));
 
-            this.addDrawableChild(widget);
-        }
+        this.addDrawableChild(widget);
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -99,18 +94,17 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
     private void testToReplaceTooltipText(MatrixStack matrices, ItemStack stack, int x, int y, CallbackInfo ci){
         Slot slot = ((HandledScreenAccessor)this).getFocusedSlot();
 
-        if(slot != null && slot.inventory instanceof CondensedInventory condensedInventory) {
-            if (ItemEntry.hashcodeForItemStack(slot.getStack()) == ItemEntry.hashcodeForItemStack(stack)) {
-                if (condensedInventory.getEntryStack(slot.id) instanceof CondensedItemEntry condensedItemEntry && !condensedItemEntry.isChild) {
-                    List<Text> tooltipData = new ArrayList<>();
+        if(slot != null && slot.inventory instanceof CondensedInventory inv
+                && ItemEntry.areStacksEqual(slot.getStack(), stack)
+                && inv.getEntryStack(slot.id) instanceof CondensedItemEntry entry && !entry.isChild) {
 
-                    condensedItemEntry.getParentTooltipText(tooltipData, this.client.player, this.client.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.BASIC);
+            List<Text> tooltipData = new ArrayList<>();
 
-                    this.renderTooltip(matrices, tooltipData, stack.getTooltipData(), x, y);
+            entry.getParentTooltipText(tooltipData, this.client.player, this.client.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.BASIC);
 
-                    ci.cancel();
-                }
-            }
+            this.renderTooltip(matrices, tooltipData, stack.getTooltipData(), x, y);
+
+            ci.cancel();
         }
     }
 
@@ -164,50 +158,45 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
         ItemGroupHelper itemGroupHelper = ItemGroupHelper.of(group,
                 CondensedCreative.isOwoItemGroup.test(group) ? CondensedCreative.getTabIndexFromOwoGroup.apply(group) : 0);
 
-        List<CondensedItemEntry> entries = CondensedEntryRegistry.getEntryList(itemGroupHelper);
+        if (!validItemGroupForCondensedEntries) return;
 
-        if (validItemGroupForCondensedEntries && !entries.isEmpty()) {
-            for (CondensedItemEntry condensedItemEntry : entries) {
-                int i = this.getHandlerDuck().getDefaultEntryList().indexOf(Entry.of(condensedItemEntry.getEntryStack()));
+        for (CondensedItemEntry condensedItemEntry : CondensedEntryRegistry.getEntryList(itemGroupHelper)) {
+            int i = this.getHandlerDuck().getDefaultEntryList().indexOf(Entry.of(condensedItemEntry.getEntryStack()));
 
-                condensedItemEntry.initializeChildren(this.getHandlerDuck().getDefaultEntryList());
+            condensedItemEntry.initializeChildren(this.getHandlerDuck().getDefaultEntryList());
 
-                List<CondensedItemEntry> allGroupedEntries = new ArrayList<>(condensedItemEntry.childrenEntry);
+            List<CondensedItemEntry> allGroupedEntries = new ArrayList<>(condensedItemEntry.childrenEntry);
 
-                allGroupedEntries.add(0, condensedItemEntry);
+            allGroupedEntries.add(0, condensedItemEntry);
 
-                if(allGroupedEntries.size() > 1) {
-                    if (i >= 0 && i < this.getHandlerDuck().getDefaultEntryList().size()) {
-                        this.getHandlerDuck().getDefaultEntryList().addAll(i, allGroupedEntries);
-                    } else {
-                        this.getHandlerDuck().getDefaultEntryList().addAll(allGroupedEntries);
-                    }
-                }
+            if(allGroupedEntries.size() <= 1) continue;
+
+            if (i >= 0 && i < this.getHandlerDuck().getDefaultEntryList().size()) {
+                this.getHandlerDuck().getDefaultEntryList().addAll(i, allGroupedEntries);
+            } else {
+                this.getHandlerDuck().getDefaultEntryList().addAll(allGroupedEntries);
             }
         }
-
     }
 
     //----------
 
     @Inject(method = "onMouseClick", at = @At("HEAD"), cancellable = true)
     private void checkIfCondensedEntryWithinSlot(Slot slot, int slotId, int button, SlotActionType actionType, CallbackInfo ci){
-        if(slot != null && slot.inventory instanceof CondensedInventory condensedInventory) {
-            if (condensedInventory.getEntryStack(slotId) instanceof CondensedItemEntry condensedItemEntry && !condensedItemEntry.isChild) {
-                condensedItemEntry.toggleVisibility();
+        if(slot != null && slot.inventory instanceof CondensedInventory inv && inv.getEntryStack(slotId) instanceof CondensedItemEntry entry && !entry.isChild) {
+            entry.toggleVisibility();
 
-                this.getHandlerDuck().markEntryListDirty();
+            this.getHandlerDuck().markEntryListDirty();
 
-                this.getHandlerDuck().scrollItems(this.currentRowPosition);
+            this.getHandlerDuck().scrollItems(Math.round(this.currentRowPosition));
 
-                if(this.currentRowPosition > getHandlerDuck().getMaxRowCount()) {
-                    this.currentRowPosition = getHandlerDuck().getMaxRowCount();
+            if(this.currentRowPosition > getHandlerDuck().getMaxRowCount()) {
+                this.currentRowPosition = getHandlerDuck().getMaxRowCount();
 
-                    this.getHandlerDuck().scrollItems(this.currentRowPosition);
-                }
-
-                ci.cancel();
+                this.getHandlerDuck().scrollItems(Math.round(this.currentRowPosition));
             }
+
+            ci.cancel();
         }
     }
 
@@ -217,19 +206,23 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
     private int changePosForScrollBar(int y){
         int j = this.y + 18;
 
-        return j + (int)((float)((j + 112) - j - 17) * ((float)this.currentRowPosition / this.getHandlerDuck().getMaxRowCount()));
+        float scrollPosition = this.currentRowPosition / this.getHandlerDuck().getMaxRowCount(); // Float.isFinite()
+
+        if(!Float.isFinite(scrollPosition)) scrollPosition = 0;
+
+        return Math.round(j + (95f * scrollPosition));
     }
 
     //----------
 
     @Redirect(method = "mouseScrolled", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/CreativeInventoryScreen$CreativeScreenHandler;scrollItems(F)V"))
     private void useLineCountScrolling1(CreativeInventoryScreen.CreativeScreenHandler instance, float position, double mouseX, double mouseY, double amount){
-        this.calculateScrollLines(this.currentRowPosition, (int) amount);
+        this.calculateScrollLines(this.currentRowPosition, (float) amount);
     }
 
     @Redirect(method = "mouseDragged", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/CreativeInventoryScreen$CreativeScreenHandler;scrollItems(F)V"))
     private void useLineCountScrolling2(CreativeInventoryScreen.CreativeScreenHandler instance, float position){
-        this.currentRowPosition = (int)(this.scrollPosition * this.getHandlerDuck().getMaxRowCount());
+        this.currentRowPosition = this.scrollPosition * this.getHandlerDuck().getMaxRowCount();
 
         this.calculateScrollLines(currentRowPosition, 0);
     }
@@ -237,16 +230,10 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
     //----------
 
     @Unique
-    private void calculateScrollLines(int currentRowPosition, int amount){
-        int adjustedRowPosition = currentRowPosition - amount;
+    private void calculateScrollLines(float currentRowPosition, float amount){
+        float adjustedRowPosition = MathHelper.clamp(currentRowPosition - amount, 0, getHandlerDuck().getMaxRowCount());
 
-        if(adjustedRowPosition < 0) {
-            adjustedRowPosition = 0;
-        } else if(adjustedRowPosition > getHandlerDuck().getMaxRowCount()) {
-            adjustedRowPosition = getHandlerDuck().getMaxRowCount();
-        }
-
-        this.getHandlerDuck().scrollItems(adjustedRowPosition);
+        this.getHandlerDuck().scrollItems(Math.round(adjustedRowPosition));
 
         this.currentRowPosition = adjustedRowPosition;
     }
@@ -300,8 +287,9 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
             for(int k = 0; k < 5; ++k) {
                 for(int l = 0; l < 9; ++l) {
                     int m = l + ((k + positionOffset) * 9);
+
                     if (m >= 0 && m < this.filteredEntryList.size()) {
-                        ((CondensedInventory)CreativeInventoryScreen.INVENTORY).setStack(l + k * 9, this.filteredEntryList.get(m));
+                        ((CondensedInventory)CreativeInventoryScreen.INVENTORY).setEntryStack(l + k * 9, this.filteredEntryList.get(m));
                     } else {
                         ((CondensedInventory)CreativeInventoryScreen.INVENTORY).setStack(l + k * 9, ItemStack.EMPTY);
                     }

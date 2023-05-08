@@ -5,26 +5,45 @@
     "text.autoconfig.condensed_creative.category.debug_info": "Debug Info",
     "text.autoconfig.condensed_creative.category.client": "Client",
 
-    "text.autoconfig.condensed_creative.option.enableDefaultCCGroups": "Enable Builtin Entries",
-    "text.autoconfig.condensed_creative.option.enableDefaultCCGroups.@Tooltip": "Adds some Condensed Entries for certain internal minecraft Tags",
 
-    "text.autoconfig.condensed_creative.option.enableTagPreviewForEntries": "Enable Tag Tooltip",
-    "text.autoconfig.condensed_creative.option.enableTagPreviewForEntries.@Tooltip": "Show Tag for the Condensed Entry",
+    "text.autoconfig.condensed_creative.option.defaultCCGroups": "Enable Builtin Entries",
+    "text.autoconfig.condensed_creative.option.defaultCCGroups.@Tooltip": "Adds some Condensed Entries for certain internal minecraft Tags",
 
-    "text.autoconfig.condensed_creative.option.enableDebugIdentifiersForEntries": "Enable Internal Identifier Tooltip",
-    "text.autoconfig.condensed_creative.option.enableDebugIdentifiersForEntries.@Tooltip": "Show Identifier for the Condensed Entry",
+    "text.autoconfig.condensed_creative.option.defaultEntriesConfig": "Builtin Per Entry Config",
+    "text.autoconfig.condensed_creative.option.defaultEntriesConfig.@Tooltip": "Gives the ability to disable certain sections of Builtin Entries",
 
-    "text.autoconfig.condensed_creative.option.enableEntryRefreshButton": "Enable Entry Refresh Button",
-    "text.autoconfig.condensed_creative.option.enableEntryRefreshButton.@Tooltip": "Useful if something else is having issues being rendered behind within the creative screen as this button is more for debugging",
+    "text.autoconfig.condensed_creative.option.defaultEntriesConfig.enchantmentBooks": "Enchantment Books",
+    "text.autoconfig.condensed_creative.option.defaultEntriesConfig.enchantmentBooks.@Tooltip": "Controls how Enchantment books will be partitioned as a condensed Entry",
 
-    "text.autoconfig.condensed_creative.option.enableEntryBackgroundColor": "Enable Entry Background Coloring",
-    "text.autoconfig.condensed_creative.option.enableEntryBackgroundColor.@Tooltip": "Would not recommend having this and outlines disabled as it will be hard to see the condensed entries.",
+    "text.autoconfig.condensed_creative.option.defaultEntriesConfig.tippedArrows": "Tipped Arrows",
+    "text.autoconfig.condensed_creative.option.defaultEntriesConfig.tippedArrows.@Tooltip": "Controls how Tipped Arrows will be partitioned as a condensed Entry",
 
-    "text.autoconfig.condensed_creative.option.enableEntryBorderColor": "Enable Entry Border Coloring",
-    "text.autoconfig.condensed_creative.option.enableEntryBorderColor.@Tooltip": "Would not recommend having this and backgrounds disabled as it will be hard to see the condensed entries.",
+    "text.autoconfig.condensed_creative.option.defaultEntriesConfig.potions": "Potions",
+    "text.autoconfig.condensed_creative.option.defaultEntriesConfig.potions.@Tooltip": "Controls how Potions will be partitioned as a condensed Entry",
 
-    "text.autoconfig.condensed_creative.option.condensedEntryBorderColor": "Entry Outline Color",
-    "text.autoconfig.condensed_creative.option.condensedEntryBorderColor.@Tooltip": "Such a color should contain a Alpha value.",
+
+    "text.autoconfig.condensed_creative.option.entryRefreshButton": "Enable Entry Refresh Button",
+    "text.autoconfig.condensed_creative.option.entryRefreshButton.@Tooltip": "Useful if something else is having issues being rendered behind within the creative screen as this button is more for debugging",
+
+    "text.autoconfig.condensed_creative.option.entryBackgroundColor": "Enable Entry Background Coloring",
+    "text.autoconfig.condensed_creative.option.entryBackgroundColor.@Tooltip": "Would not recommend having this and outlines disabled as it will be hard to see the condensed entries.",
+
+    "text.autoconfig.condensed_creative.option.entryBorderColor": "Enable Entry Border Coloring",
+    "text.autoconfig.condensed_creative.option.entryBorderColor.@Tooltip": "Would not recommend having this and backgrounds disabled as it will be hard to see the condensed entries.",
+
+    "text.autoconfig.condensed_creative.option.condensedEntryBorderColor": "Condensed Entry Border Coloring",
+    "text.autoconfig.condensed_creative.option.condensedEntryBorderColor.@Tooltip": "Such a color is used when the Entry is open and gives the ability to change the exact color if needed",
+
+    "text.autoconfig.condensed_creative.option.rotationPreview": "Enable Condensed Entry Rotation Preview",
+    "text.autoconfig.condensed_creative.option.rotationPreview.@Tooltip": "Enables the random rotation for the Icon of a Condensed Item Entry",
+
+
+    "text.autoconfig.condensed_creative.option.tagPreviewForEntries": "Enable Tag Tooltip",
+    "text.autoconfig.condensed_creative.option.tagPreviewForEntries.@Tooltip": "Show Tag for the Condensed Entry",
+
+    "text.autoconfig.condensed_creative.option.debugIdentifiersForEntries": "Enable Internal Identifier Tooltip",
+    "text.autoconfig.condensed_creative.option.debugIdentifiersForEntries.@Tooltip": "Show Identifier for the Condensed Entry",
+
 
     "itemGroup.condensed_creative.test": "Condensed Creative",
     "itemGroup.condensed_creative.test.tab.building_blocks": "Building Blocks",

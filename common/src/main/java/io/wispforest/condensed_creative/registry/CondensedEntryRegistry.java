@@ -6,7 +6,6 @@ import io.wispforest.condensed_creative.entry.impl.CondensedItemEntry;
 import io.wispforest.condensed_creative.util.ItemGroupHelper;
 import net.minecraft.block.Block;
 import net.minecraft.item.*;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.ApiStatus;
@@ -26,9 +25,9 @@ public final class CondensedEntryRegistry {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     /**
-     * Register your A Entry's item group using {@link CondensedItemEntry.Builder#addItemGroup(ItemGroup)}.
+     * Register your A Entry's item group using {@link CondensedItemEntry.Builder#addToItemGroup(ItemGroup)}.
      *
-     * <p>For owo ItemGroup with certain tabs use {@link CondensedItemEntry.Builder#addItemGroup(ItemGroup, int)} to specify a certain tab index.</p>
+     * <p>For owo ItemGroup with certain tabs use {@link CondensedItemEntry.Builder#addToItemGroup(ItemGroup, int)} to specify a certain tab index.</p>
      */
     public static final Map<ItemGroupHelper, List<CondensedItemEntry>> ENTRYPOINT_LOADED_ENTRIES = new HashMap<>();
 
