@@ -41,20 +41,20 @@ public class OwoCompat {
             CondensedCreative.createOwoItemGroup = () -> {
                 OwoItemGroup owoItemGroup = OwoItemGroup.builder(CondensedCreative.createID("test"), () -> Icon.of(Blocks.BEDROCK.asItem().getDefaultStack()))
                         .initializer(group -> {
-                            addTabToList(group.tabs, group, Icon.of(Blocks.BRICKS), "building_blocks", true, (enabledFeatures, entries, hasPermissions) -> {
+                            addTabToList(group.tabs, group, Icon.of(Blocks.BRICKS), "building_blocks", true, (enabledFeatures, entries) -> {
                                 ((ItemGroupAccessor) ItemGroups.BUILDING_BLOCKS)
                                         .cc$getEntryCollector()
-                                        .accept(enabledFeatures, entries, hasPermissions);
+                                        .accept(enabledFeatures, entries);
                             });
-                            addTabToList(group.tabs, group, Icon.of(Blocks.PEONY), "colored_blocks", false, (enabledFeatures, entries, hasPermissions) -> {
+                            addTabToList(group.tabs, group, Icon.of(Blocks.PEONY), "colored_blocks", false, (enabledFeatures, entries) -> {
                                 ((ItemGroupAccessor) ItemGroups.COLORED_BLOCKS)
                                         .cc$getEntryCollector()
-                                        .accept(enabledFeatures, entries, hasPermissions);
+                                        .accept(enabledFeatures, entries);
                             });
-                            addTabToList(group.tabs, group, Icon.of(Items.IRON_INGOT), "ingredients", false, (enabledFeatures, entries, hasPermissions) -> {
+                            addTabToList(group.tabs, group, Icon.of(Items.IRON_INGOT), "ingredients", false, (enabledFeatures, entries) -> {
                                 ((ItemGroupAccessor) ItemGroups.INGREDIENTS)
                                         .cc$getEntryCollector()
-                                        .accept(enabledFeatures, entries, hasPermissions);
+                                        .accept(enabledFeatures, entries);
                             });
                         }).build();
 

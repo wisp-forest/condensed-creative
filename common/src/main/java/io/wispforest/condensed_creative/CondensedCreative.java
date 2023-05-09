@@ -39,9 +39,7 @@ public class CondensedCreative implements CondensedCreativeInitializer {
     //---------------------------------------------------------------------------------------------------------
 
     public static void onInitializeClient() {
-        AutoConfig.register(CondensedCreativeConfig.class, GsonConfigSerializer::new);
-
-        MAIN_CONFIG = AutoConfig.getConfigHolder(CondensedCreativeConfig.class);
+        MAIN_CONFIG = AutoConfig.register(CondensedCreativeConfig.class, GsonConfigSerializer::new);
 
         MAIN_CONFIG.registerSaveListener((configHolder, condensedCreativeConfig) -> {
             CondensedEntryRegistry.refreshEntrypoints();
@@ -62,20 +60,6 @@ public class CondensedCreative implements CondensedCreativeInitializer {
 
     @Override
     public void onInitializeCondensedEntries(boolean refreshed) {
-//        if(CondensedCreative.isDeveloperMode()) {
-//            if(CondensedCreative.testGroup != null) {
-//                CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("test2"), Blocks.OAK_LOG, ItemTags.LOGS)
-//                        .setTitleStringFromTagKey()
-//                        .addItemGroup(CondensedCreative.testGroup, 0);
-//
-//                CondensedEntryRegistry.fromItemTag(CondensedCreative.createID("test3"), Blocks.WHITE_CARPET, ItemTags.WOOL_CARPETS)
-//                        .setTitleStringFromTagKey()
-//                        .addItemGroup(CondensedCreative.testGroup, 1);
-//            }
-//        }
-
-        if(MAIN_CONFIG.getConfig().defaultCCGroups){
-            BuiltinEntries.registerBuiltinEntries();
-        }
+        if(MAIN_CONFIG.getConfig().defaultCCGroups) BuiltinEntries.registerBuiltinEntries();
     }
 }

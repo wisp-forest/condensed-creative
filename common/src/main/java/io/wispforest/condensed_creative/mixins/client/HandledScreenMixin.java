@@ -44,7 +44,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> {
         return stack;
     }
 
-    @Inject(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/ItemRenderer;renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V", shift = At.Shift.BY, by = 1))
+    @Inject(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/ItemRenderer;renderGuiItemOverlay(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V", shift = At.Shift.BY, by = 1))
     private void renderExtraIfEntry(MatrixStack matrices, Slot slot, CallbackInfo ci){
         if(((HandledScreen<T>)(Object)this) instanceof CreativeInventoryScreen && slot.inventory instanceof CondensedInventory condensedInventory){
             Entry entryStack = condensedInventory.getEntryStack(slot.getIndex());
@@ -62,9 +62,9 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> {
 
                     if(CondensedCreative.MAIN_CONFIG.getConfig().entryBackgroundColor) {
                         if (CondensedCreative.MAIN_CONFIG.getConfig().entryBorderColor) {
-                            DrawableHelper.fill(new MatrixStack(), minX, minY, maxX, maxY, backgroundColor.getColor());
+                            DrawableHelper.fill(matrices, minX, minY, maxX, maxY, backgroundColor.getColor());
                         } else {
-                            DrawableHelper.fill(new MatrixStack(), minX - 1, minY - 1, maxX + 1, maxY + 1, backgroundColor.getColor());
+                            DrawableHelper.fill(matrices, minX - 1, minY - 1, maxX + 1, maxY + 1, backgroundColor.getColor());
                         }
                     }
 
@@ -74,27 +74,27 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> {
                         Color outlineColor = Color.ofTransparent(CondensedCreative.MAIN_CONFIG.getConfig().condensedEntryBorderColor);//Color.ofRGBA(251, 255, 0, 128);
 
                         if (!isSlotAbovePartOfCondensedEntry(slot, condensedItemEntry.condensedID)) {
-                            DrawableHelper.fill(new MatrixStack(), minX - 1, minY - 1, maxX + 1, maxY - 16, outlineColor.getColor());
+                            DrawableHelper.fill(matrices, minX - 1, minY - 1, maxX + 1, maxY - 16, outlineColor.getColor());
 
-                            //DrawableHelper.fill(new MatrixStack(), minX, minY - 18, maxX, maxY - 18, Color.ofRGBA(255, 0, 0, 128).getColor());
+                            //DrawableHelper.fill(matrices, minX, minY - 18, maxX, maxY - 18, Color.ofRGBA(255, 0, 0, 128).getColor());
                         }
 
                         if (!isSlotBelowPartOfCondensedEntry(slot, condensedItemEntry.condensedID)) {
-                            DrawableHelper.fill(new MatrixStack(), minX - 1, minY + 16, maxX + 1, maxY + 1, outlineColor.getColor());
+                            DrawableHelper.fill(matrices, minX - 1, minY + 16, maxX + 1, maxY + 1, outlineColor.getColor());
 
-                            //DrawableHelper.fill(new MatrixStack(), minX, minY + 18, maxX, maxY + 18, Color.ofRGBA(0, 255, 0, 128).getColor());
+                            //DrawableHelper.fill(matrices, minX, minY + 18, maxX, maxY + 18, Color.ofRGBA(0, 255, 0, 128).getColor());
                         }
 
                         if (!isSlotRightPartOfCondensedEntry(slot, condensedItemEntry.condensedID)) {
-                            DrawableHelper.fill(new MatrixStack(), minX + 16, minY - 1, maxX + 1, maxY + 1, outlineColor.getColor());
+                            DrawableHelper.fill(matrices, minX + 16, minY - 1, maxX + 1, maxY + 1, outlineColor.getColor());
 
-                            //DrawableHelper.fill(new MatrixStack(), minX + 18, minY, maxX + 18, maxY, Color.ofRGBA(0, 0, 255, 128).getColor());
+                            //DrawableHelper.fill(matrices, minX + 18, minY, maxX + 18, maxY, Color.ofRGBA(0, 0, 255, 128).getColor());
                         }
 
                         if (!isSlotLeftPartOfCondensedEntry(slot, condensedItemEntry.condensedID)) {
-                            DrawableHelper.fill(new MatrixStack(), minX - 1, minY - 1, maxX - 16, maxY + 1, outlineColor.getColor());
+                            DrawableHelper.fill(matrices, minX - 1, minY - 1, maxX - 16, maxY + 1, outlineColor.getColor());
 
-                            //DrawableHelper.fill(new MatrixStack(), minX - 18, minY, maxX - 18, maxY, Color.ofRGBA(0, 0, 255, 128).getColor());
+                            //DrawableHelper.fill(matrices, minX - 18, minY, maxX - 18, maxY, Color.ofRGBA(0, 0, 255, 128).getColor());
                         }
                     }
 
@@ -104,11 +104,11 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> {
                 if(!condensedItemEntry.isChild) {
                     if(!CondensedItemEntry.CHILD_VISIBILITY.get(condensedItemEntry.condensedID)) {
                         RenderSystem.setShaderTexture(0, PLUS_ICON);
-                    }else {
+                    } else {
                         RenderSystem.setShaderTexture(0, MINUS_ICON);
                     }
 
-                    DrawableHelper.drawTexture(new MatrixStack(), minX, minY, ((HandledScreen)(Object)this).getZOffset() + 160, 0, 0, 16, 16, 16, 16);
+                    DrawableHelper.drawTexture(matrices, minX, minY, 160, 0, 0, 16, 16, 16, 16);
                 }
             }
         }

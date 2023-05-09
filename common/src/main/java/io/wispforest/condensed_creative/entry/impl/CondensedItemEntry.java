@@ -93,6 +93,12 @@ public class CondensedItemEntry extends ItemEntry {
 
         public final CondensedItemEntry currentEntry;
 
+        public Builder(Identifier condensedID, ItemStack defaultItemstack, Supplier<List<ItemStack>> entryListSupplier) {
+            this.currentEntry = new CondensedItemEntry(condensedID, defaultItemstack, false);
+
+            this.currentEntry.childrenSupplier = entryListSupplier;
+        }
+
         public Builder(Identifier condensedID, ItemStack defaultItemstack, Collection<ItemStack> entries) {
             this.currentEntry = new CondensedItemEntry(condensedID, defaultItemstack, false);
 

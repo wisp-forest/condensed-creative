@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -170,6 +171,32 @@ public final class CondensedEntryRegistry {
      */
     public static CondensedItemEntry.Builder fromItemStacks(Identifier identifier, ItemStack stack, Collection<ItemStack> collection){
         return new CondensedItemEntry.Builder(identifier, stack, collection);
+    }
+
+    //-----------------------------------------------
+
+    /**
+     * Method to create A {@link CondensedItemEntry} using an ItemStack List Supplier
+     *
+     * @param identifier The Entries identifier
+     * @param itemConvertible The {@link ItemConvertible} being used to place the Entry within registered {@link ItemGroup}
+     * @param entryListSupplier A supplier for a collection of ItemStacks within a List
+     * @return The created {@link CondensedItemEntry}
+     */
+    public static CondensedItemEntry.Builder ofSupplier(Identifier identifier, ItemConvertible itemConvertible, Supplier<List<ItemStack>> entryListSupplier){
+        return ofSupplier(identifier, itemConvertible.asItem().getDefaultStack(), entryListSupplier);
+    }
+
+    /**
+     * Method to create A {@link CondensedItemEntry} using an ItemStack List Supplier
+     *
+     * @param identifier The Entries identifier
+     * @param stack The {@link ItemStack} being used to place the Entry within the {@link ItemGroup}
+     * @param entryListSupplier A supplier for a collection of ItemStacks within a List
+     * @return The created {@link CondensedItemEntry}
+     */
+    public static CondensedItemEntry.Builder ofSupplier(Identifier identifier, ItemStack stack, Supplier<List<ItemStack>> entryListSupplier){
+        return new CondensedItemEntry.Builder(identifier, stack, entryListSupplier);
     }
 
     //-----------------------------------------------

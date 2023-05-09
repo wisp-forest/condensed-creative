@@ -10,23 +10,28 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentLevelEntry;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.SpawnGroup;
+import net.minecraft.entity.decoration.painting.PaintingEntity;
+import net.minecraft.entity.decoration.painting.PaintingVariant;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.*;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.registry.tag.PaintingVariantTags;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.SignType;
+import net.minecraft.util.Util;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
@@ -69,8 +74,8 @@ public class BuiltinEntries {
 //                .toggleStrictFiltering(true)
 //                .addToItemGroup(ItemGroups.BUILDING_BLOCKS);
 
-        SignType.stream().forEach(signType -> {
-            Identifier identifier = new Identifier(signType.getName());
+        WoodType.stream().forEach(signType -> {
+            Identifier identifier = new Identifier(signType.name());
 
             List<ItemStack> woodItemStacks = new ArrayList<>();
 
@@ -80,7 +85,7 @@ public class BuiltinEntries {
                 if(item != Items.AIR) woodItemStacks.add(item.getDefaultStack());
             });
 
-            if(signType == SignType.BAMBOO){
+            if(signType == WoodType.BAMBOO){
                 woodItemStacks.add(0, Items.BAMBOO_BLOCK.getDefaultStack());
                 woodItemStacks.add(1, Items.STRIPPED_BAMBOO_BLOCK.getDefaultStack());
 
@@ -142,6 +147,27 @@ public class BuiltinEntries {
                 .addToItemGroup(ItemGroups.FUNCTIONAL);
 
         CondensedEntryRegistry.of(CondensedCreative.createID("infested_blocks"), Items.OAK_SIGN, item -> item instanceof BlockItem bi && bi.getBlock() instanceof InfestedBlock)
+                .addToItemGroup(ItemGroups.FUNCTIONAL);
+
+        CondensedEntryRegistry.ofSupplier(CondensedCreative.createID("paintings"), Items.PAINTING, () -> {
+                    List<ItemStack> paintingVariantStacks = new ArrayList<>();
+
+                    Registries.PAINTING_VARIANT.streamEntries()
+                            .filter(pv -> pv.isIn(PaintingVariantTags.PLACEABLE))
+                            .sorted(Comparator.comparing(
+                                    RegistryEntry::value,
+                                    Comparator.<PaintingVariant>comparingInt(pv -> pv.getHeight() * pv.getWidth()).thenComparing(PaintingVariant::getWidth)
+                            ))
+                            .forEach(paintingVariant -> {
+                                ItemStack itemStack = new ItemStack(Items.PAINTING);
+
+                                PaintingEntity.writeVariantToNbt(itemStack.getOrCreateSubNbt("EntityTag"), paintingVariant);
+
+                                paintingVariantStacks.add(itemStack);
+                            });
+
+                    return paintingVariantStacks;
+                })
                 .addToItemGroup(ItemGroups.FUNCTIONAL);
 
         CondensedEntryRegistry.fromTag(CondensedCreative.createID("wools"), Blocks.WHITE_WOOL, ItemTags.WOOL)
@@ -302,6 +328,20 @@ public class BuiltinEntries {
 
         EntryTypeCondensing potion = CondensedCreative.MAIN_CONFIG.getConfig().defaultEntriesConfig.potions;
 
+        {
+            Set<ItemStack> set = ItemStackSet.create();
+
+            for (SuspiciousStewIngredient susStewIngr : SuspiciousStewIngredient.getAll()) {
+                set.add(Util.make(new ItemStack(Items.SUSPICIOUS_STEW), stack -> {
+                    SuspiciousStewItem.addEffectToStew(stack, susStewIngr.getEffectInStew(), susStewIngr.getEffectInStewDuration());
+                }));
+            }
+
+            List<ItemStack> stacks = List.copyOf(set);
+
+            CondensedEntryRegistry.fromItemStacks(CondensedCreative.createID("suspicious_stews"), stacks.get(0), stacks);
+        }
+
         addPotionBasedEntries(Items.POTION, ItemGroups.FOOD_AND_DRINK, 0, "Potions", potion);
         addPotionBasedEntries(Items.SPLASH_POTION, ItemGroups.FOOD_AND_DRINK, 1, "Potions", potion);
         addPotionBasedEntries(Items.LINGERING_POTION, ItemGroups.FOOD_AND_DRINK, 1, "Potions", potion);
@@ -328,7 +368,7 @@ public class BuiltinEntries {
         List<ItemStack> allEnchantmentBooks = new ArrayList<>();
 
         for (Enchantment enchantment : Registries.ENCHANTMENT) {
-            if (!targets.contains(enchantment.type)) continue;
+            if (!targets.contains(enchantment.target)) continue;
 
             List<ItemStack> enchantmentBooks = new ArrayList<>();
 
@@ -358,7 +398,7 @@ public class BuiltinEntries {
     private static void addPotionBasedEntries(Item potionBasedItem, ItemGroup targetGroup, int wordIndex, String pluralizedWord, EntryTypeCondensing entryTypeCondensing){
         if(entryTypeCondensing == EntryTypeCondensing.NONE) return;
 
-        Map<List<StatusEffect>, List<Potion>> sortedPotions = new HashMap<>();
+        Map<List<StatusEffect>, List<Potion>> sortedPotions = new LinkedHashMap<>();
 
         for (Potion potion : Registries.POTION) {
             if (potion == Potions.EMPTY) continue;
