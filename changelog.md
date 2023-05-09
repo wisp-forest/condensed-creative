@@ -1,4 +1,4 @@
-Minor update that dose some code changes to fix bugs and add more default entries
+Minor update that dose some code changes to fix bugs and add more default entries. Also updated to 1.19.4.
 
 ### Features
 - Implement default Condensed Entries for Enchantment Books, Tipped Arrows and Potions with configurability in the Mods Config
