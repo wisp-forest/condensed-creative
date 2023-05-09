@@ -351,8 +351,8 @@ public class CondensedItemEntry extends ItemEntry {
     public void getNextValue(){
         if(chosenIconStack == null) {
             int index = (CondensedCreative.MAIN_CONFIG.getConfig().rotationPreview)
-                    ? 0
-                    : new Random().nextInt(0, childrenEntry.size());
+                    ? new Random().nextInt(0, childrenEntry.size())
+                    : 0;
 
             if(index < 0 || index > childrenEntry.size()){
                 currentlyDisplayedEntry = ItemEntry.EMPTY;
