@@ -93,7 +93,7 @@ public class NbtTagHasher {
 
     private int hashCompoundTag(NbtCompound tag) {
         int i = 1;
-        for (Map.Entry<String, NbtElement> entry : ((NbtCompoundAccessor)tag).getEntries().entrySet()) {
+        for (Map.Entry<String, NbtElement> entry : ((NbtCompoundAccessor)tag).cc$getEntries().entrySet()) {
             if (shouldHash(entry.getKey())) {
                 i = i * 31 + (Objects.hashCode(entry.getKey()) ^ hashTag(entry.getValue()));
             }

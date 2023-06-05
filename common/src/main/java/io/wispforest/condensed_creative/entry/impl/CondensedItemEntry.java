@@ -10,6 +10,7 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.text.Text;
@@ -223,6 +224,10 @@ public class CondensedItemEntry extends ItemEntry {
             return addToItemGroup(itemGroup, -1);
         }
 
+        public CondensedItemEntry addToItemGroup(RegistryKey<ItemGroup> itemGroup){
+            return addToItemGroup(itemGroup, -1);
+        }
+
         /**
          * Used to add the {@link CondensedItemEntry} to a certain {@link ItemGroup} with tab index support if using a {@link io.wispforest.owo.itemgroup.OwoItemGroup} with tabs
          */
@@ -230,7 +235,16 @@ public class CondensedItemEntry extends ItemEntry {
             return addToItemGroup(ItemGroupHelper.of(itemGroup, tabIndex), true);
         }
 
+        public CondensedItemEntry addToItemGroup(RegistryKey<ItemGroup> itemGroup, int tabIndex){
+            return addToItemGroup(ItemGroupHelper.of(itemGroup, tabIndex), true);
+        }
+
         public List<CondensedItemEntry> addToItemGroups(ItemGroup ...groups){
+            return this.addToItemGroups(true, Arrays.stream(groups).map(group -> ItemGroupHelper.of(group, 0)).toArray(ItemGroupHelper[]::new));
+        }
+
+        @SafeVarargs
+        public final List<CondensedItemEntry> addToItemGroups(RegistryKey<ItemGroup>... groups){
             return this.addToItemGroups(true, Arrays.stream(groups).map(group -> ItemGroupHelper.of(group, 0)).toArray(ItemGroupHelper[]::new));
         }
 
@@ -240,7 +254,7 @@ public class CondensedItemEntry extends ItemEntry {
             CondensedItemEntry.Builder builder = this;
 
             for(ItemGroupHelper helper : helpers){
-                condensedItemEntries.add(builder.addToItemGroup(helper, true));
+                condensedItemEntries.add(builder.addToItemGroup(helper, addToMainEntriesMap));
 
                 builder = builder.copy();
             }

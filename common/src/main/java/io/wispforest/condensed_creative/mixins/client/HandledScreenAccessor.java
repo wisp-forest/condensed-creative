@@ -10,5 +10,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface HandledScreenAccessor {
 
     @Accessor("focusedSlot")
-    @Nullable Slot getFocusedSlot();
+    @Nullable Slot cc$getFocusedSlot();
 }

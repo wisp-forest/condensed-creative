@@ -38,18 +38,18 @@ dependencies {
 
     modImplementation "io.wispforest:owo-lib:${rootProject.owo_version}"
 
-    modLocalRuntime("maven.modrinth:ferrite-core:${rootProject.ferrite_core}-fabric")
-    modLocalRuntime("maven.modrinth:starlight:${rootProject.starlight}")
-
-    //modLocalRuntime("maven.modrinth:lithium:${rootProject.lithium}")
-
-    modLocalRuntime("maven.modrinth:sodium:${rootProject.sodium}")
-
-    implementation 'org.joml:joml:1.10.2'
-    modLocalRuntime 'org.joml:joml:1.10.2'
-
-    modCompileOnly("com.terraformersmc:modmenu:${rootProject.modmenu}")
-    modLocalRuntime("com.terraformersmc:modmenu:${rootProject.modmenu}")
+//    modLocalRuntime("maven.modrinth:ferrite-core:${rootProject.ferrite_core}-fabric")
+//    modLocalRuntime("maven.modrinth:starlight:${rootProject.starlight}")
+//
+//    //modLocalRuntime("maven.modrinth:lithium:${rootProject.lithium}")
+//
+//    modLocalRuntime("maven.modrinth:sodium:${rootProject.sodium}")
+//
+//    implementation 'org.joml:joml:1.10.2'
+//    modLocalRuntime 'org.joml:joml:1.10.2'
+//
+//    modCompileOnly("com.terraformersmc:modmenu:${rootProject.modmenu}")
+//    modLocalRuntime("com.terraformersmc:modmenu:${rootProject.modmenu}")
 }
 
 processResources {

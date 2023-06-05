@@ -11,10 +11,12 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.tag.TagKey;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Function;
 
 public class OwoCompat {
 
@@ -41,18 +43,20 @@ public class OwoCompat {
             CondensedCreative.createOwoItemGroup = () -> {
                 OwoItemGroup owoItemGroup = OwoItemGroup.builder(CondensedCreative.createID("test"), () -> Icon.of(Blocks.BEDROCK.asItem().getDefaultStack()))
                         .initializer(group -> {
+                            Function<RegistryKey<ItemGroup>, ItemGroup> func = Registries.ITEM_GROUP::get;
+
                             addTabToList(group.tabs, group, Icon.of(Blocks.BRICKS), "building_blocks", true, (enabledFeatures, entries) -> {
-                                ((ItemGroupAccessor) ItemGroups.BUILDING_BLOCKS)
+                                ((ItemGroupAccessor) func.apply(ItemGroups.BUILDING_BLOCKS))
                                         .cc$getEntryCollector()
                                         .accept(enabledFeatures, entries);
                             });
                             addTabToList(group.tabs, group, Icon.of(Blocks.PEONY), "colored_blocks", false, (enabledFeatures, entries) -> {
-                                ((ItemGroupAccessor) ItemGroups.COLORED_BLOCKS)
+                                ((ItemGroupAccessor) func.apply(ItemGroups.COLORED_BLOCKS))
                                         .cc$getEntryCollector()
                                         .accept(enabledFeatures, entries);
                             });
                             addTabToList(group.tabs, group, Icon.of(Items.IRON_INGOT), "ingredients", false, (enabledFeatures, entries) -> {
-                                ((ItemGroupAccessor) ItemGroups.INGREDIENTS)
+                                ((ItemGroupAccessor) func.apply(ItemGroups.INGREDIENTS))
                                         .cc$getEntryCollector()
                                         .accept(enabledFeatures, entries);
                             });

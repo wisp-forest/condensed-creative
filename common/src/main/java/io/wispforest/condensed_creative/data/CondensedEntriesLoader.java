@@ -11,6 +11,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.resource.JsonDataLoader;
@@ -23,6 +24,7 @@ import org.slf4j.Logger;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class CondensedEntriesLoader extends JsonDataLoader {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -32,11 +34,11 @@ public class CondensedEntriesLoader extends JsonDataLoader {
     private static final Map<Identifier, CondensedItemEntry.Builder> LOCAL_ENTRIES = new HashMap<>();
     private static boolean checkLocalEntries = false;
 
-    private static final List<ItemGroup> BLACKLISTED_ITEM_GROUPS = List.of(
+    private static final List<ItemGroup> BLACKLISTED_ITEM_GROUPS = Stream.of(
             ItemGroups.HOTBAR,
             ItemGroups.SEARCH,
             ItemGroups.OPERATOR
-    );
+    ).map(Registries.ITEM_GROUP::get).toList();
 
     public CondensedEntriesLoader() {
         super(GSON, "condensed_entries");

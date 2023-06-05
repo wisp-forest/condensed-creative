@@ -10,6 +10,6 @@ import java.util.Map;
 @Mixin(NbtCompound.class)
 public interface NbtCompoundAccessor {
 
-    @Accessor Map<String, NbtElement> getEntries();
+    @Accessor("entries") Map<String, NbtElement> cc$getEntries();
 
 }

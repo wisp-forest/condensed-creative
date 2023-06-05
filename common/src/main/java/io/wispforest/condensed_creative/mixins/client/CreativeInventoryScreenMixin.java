@@ -20,6 +20,7 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
@@ -36,6 +37,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,8 +51,6 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
     @Shadow private static ItemGroup selectedTab;
 
     @Shadow private float scrollPosition;
-
-    @Shadow protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY){}
 
     @Shadow protected abstract void setSelectedTab(ItemGroup group);
 
@@ -90,9 +90,9 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
 
     //------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-    @Inject(method = "renderTooltip(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/item/ItemStack;II)V", at = @At("HEAD"), cancellable = true)
-    private void testToReplaceTooltipText(MatrixStack matrices, ItemStack stack, int x, int y, CallbackInfo ci){
-        Slot slot = ((HandledScreenAccessor)this).getFocusedSlot();
+    @Inject(method = "getTooltipFromItem", at = @At("HEAD"), cancellable = true)
+    private void testToReplaceTooltipText(ItemStack stack, CallbackInfoReturnable<List<Text>> cir){
+        Slot slot = ((HandledScreenAccessor)this).cc$getFocusedSlot();
 
         if(slot != null && slot.inventory instanceof CondensedInventory inv
                 && ItemEntry.areStacksEqual(slot.getStack(), stack)
@@ -102,9 +102,7 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
 
             entry.getParentTooltipText(tooltipData, this.client.player, this.client.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.BASIC);
 
-            this.renderTooltip(matrices, tooltipData, stack.getTooltipData(), x, y);
-
-            ci.cancel();
+            cir.setReturnValue(tooltipData);
         }
     }
 
@@ -130,7 +128,7 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
     private void setSelectedTab$addStacksToEntryList(ItemGroup group, CallbackInfo ci){
         this.handler.itemList.forEach(stack -> getHandlerDuck().addToDefaultEntryList(stack));
 
-        if(group != ItemGroups.HOTBAR) validItemGroupForCondensedEntries = true;
+        if(group != Registries.ITEM_GROUP.get(ItemGroups.HOTBAR)) validItemGroupForCondensedEntries = true;
     }
 
     //-------------
@@ -202,7 +200,7 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
 
     //----------
 
-    @ModifyArg(method = "drawBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/CreativeInventoryScreen;drawTexture(Lnet/minecraft/client/util/math/MatrixStack;IIIIII)V", ordinal = 1), index = 2)
+    @ModifyArg(method = "drawBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 1), index = 2)
     private int changePosForScrollBar(int y){
         int j = this.y + 18;
 

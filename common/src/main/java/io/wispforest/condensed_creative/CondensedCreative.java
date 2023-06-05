@@ -27,7 +27,7 @@ public class CondensedCreative implements CondensedCreativeInitializer {
     public static ItemGroup testGroup = null;
     public static Supplier<ItemGroup> createOwoItemGroup = () -> null;
 
-    public static Predicate<ItemGroup> isOwoItemGroup = itemGroup -> false;
+    public static Predicate<ItemGroup> isOwoItemGroup = itemGroupKey -> false;
     public static Function<ItemGroup, Integer> getTabIndexFromOwoGroup = o -> -1;
     public static Function<ItemGroup, Integer> getMaxTabCount = o -> 1;
 

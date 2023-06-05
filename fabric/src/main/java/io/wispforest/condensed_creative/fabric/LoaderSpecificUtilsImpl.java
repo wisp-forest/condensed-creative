@@ -4,6 +4,7 @@ import io.wispforest.condensed_creative.LoaderSpecificUtils;
 import io.wispforest.condensed_creative.registry.CondensedCreativeInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public class LoaderSpecificUtilsImpl {
     }
 
     public static Identifier getIdentifierFromGroup(ItemGroup group){
-        return group.getId();
+        return Registries.ITEM_GROUP.getId(group);
     }
 
     public static Identifier convertBetweenLoaderId(Identifier identifier){

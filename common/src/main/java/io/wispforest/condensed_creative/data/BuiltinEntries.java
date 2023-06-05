@@ -324,7 +324,9 @@ public class BuiltinEntries {
                 .toggleStrictFiltering(true)
                 .addToItemGroup(ItemGroups.TOOLS);
 
-        addPotionBasedEntries(Items.TIPPED_ARROW, ItemGroups.COMBAT, 0, "Arrows", CondensedCreative.MAIN_CONFIG.getConfig().defaultEntriesConfig.tippedArrows);
+        ItemGroup combat = Registries.ITEM_GROUP.get(ItemGroups.COMBAT);
+
+        addPotionBasedEntries(Items.TIPPED_ARROW, combat, 0, "Arrows", CondensedCreative.MAIN_CONFIG.getConfig().defaultEntriesConfig.tippedArrows);
 
         EntryTypeCondensing potion = CondensedCreative.MAIN_CONFIG.getConfig().defaultEntriesConfig.potions;
 
@@ -342,9 +344,11 @@ public class BuiltinEntries {
             CondensedEntryRegistry.fromItemStacks(CondensedCreative.createID("suspicious_stews"), stacks.get(0), stacks);
         }
 
-        addPotionBasedEntries(Items.POTION, ItemGroups.FOOD_AND_DRINK, 0, "Potions", potion);
-        addPotionBasedEntries(Items.SPLASH_POTION, ItemGroups.FOOD_AND_DRINK, 1, "Potions", potion);
-        addPotionBasedEntries(Items.LINGERING_POTION, ItemGroups.FOOD_AND_DRINK, 1, "Potions", potion);
+        ItemGroup foodAndDrink = Registries.ITEM_GROUP.get(ItemGroups.FOOD_AND_DRINK);
+
+        addPotionBasedEntries(Items.POTION, foodAndDrink, 0, "Potions", potion);
+        addPotionBasedEntries(Items.SPLASH_POTION, foodAndDrink, 1, "Potions", potion);
+        addPotionBasedEntries(Items.LINGERING_POTION, foodAndDrink, 1, "Potions", potion);
 
         //-------------------------------
 
