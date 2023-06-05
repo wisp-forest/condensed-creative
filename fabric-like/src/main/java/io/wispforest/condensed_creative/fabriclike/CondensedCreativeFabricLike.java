@@ -19,21 +19,25 @@ public class CondensedCreativeFabricLike {
 
         //Work around for differing folder paths with the Debug pack loading in Common
         if(FabricLoader.getInstance().isDevelopmentEnvironment()) {
-            ModContainer modContainer = FabricLoader.getInstance().getModContainer("condensed_creative").get();
+            try {
+                ModContainer modContainer = FabricLoader.getInstance().getModContainer("condensed_creative").get();
 
-            Path mainDevFolder = modContainer.getRootPaths().get(0).getParent().getParent().getParent().getParent();
+                Path mainDevFolder = modContainer.getRootPaths().get(0).getParent().getParent().getParent().getParent();
 
-            DebugModContainer container = new DebugModContainer(FabricLoader.getInstance().getModContainer("condensed_creative").get());
+                DebugModContainer container = new DebugModContainer(FabricLoader.getInstance().getModContainer("condensed_creative").get());
 
-            container.addAdditionalRootPath(mainDevFolder.resolve("common\\build\\resources\\main"));
+                container.addAdditionalRootPath(mainDevFolder.resolve("common\\build\\resources\\main"));
 
-            boolean success = ResourceManagerHelper.registerBuiltinResourcePack(
-                    CondensedCreative.createID("dev_pack"),
-                    container,
-                    ResourcePackActivationType.NORMAL
-            );
+                boolean success = ResourceManagerHelper.registerBuiltinResourcePack(
+                        CondensedCreative.createID("dev_pack"),
+                        container,
+                        ResourcePackActivationType.NORMAL
+                );
 
-            if (!success) System.out.println("WEE WOO WEE WOO WEE WOO");
+                if (!success) System.out.println("WEE WOO WEE WOO WEE WOO");
+            } catch (Exception ignore){
+                System.out.println("IGNORE (Condensed Creative Internal Debug Error): It seems that the Debug Pack has not been loaded!");
+            }
         }
     }
 }
