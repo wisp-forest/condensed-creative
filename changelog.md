@@ -1,13 +1,10 @@
-Minor update that dose some code changes to fix bugs and add more default entries. Also updated to 1.19.4.
+Update to 1.20 and some very minor changes.
 
 ### Features
-- Implement default Condensed Entries for Enchantment Books, Tipped Arrows and Potions with configurability in the Mods Config
-- New Config option to disable Condensed Entries Random Icon Rotation
+- Add some new entries that correspond with the new additions in 1.20
 
 ### Fixes
-- Fix bug with scrolling leading to the inability to smooth scroll at all
+- Fix issue with ItemStack Hashing causing entries not to be removed when processing the ItemGroup
 
 ### API
-- Refactors and under the hood changes to certain functions within Condensed Item Entries
-- Add Debug Datapack as a template for others exploring the datapack option for such
-
+- Add support for ItemGroup Registry Key when assigning to groups
