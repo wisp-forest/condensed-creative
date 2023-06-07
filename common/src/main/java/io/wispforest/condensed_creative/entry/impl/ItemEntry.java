@@ -1,7 +1,9 @@
 package io.wispforest.condensed_creative.entry.impl;
 
 import io.wispforest.condensed_creative.entry.Entry;
+import io.wispforest.condensed_creative.mixins.ItemStackSetAccessor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemStackSet;
 
 public class ItemEntry implements Entry {
 
@@ -48,18 +50,14 @@ public class ItemEntry implements Entry {
     }
 
     public static int hashcodeOfStack(ItemStack stack){
-        int hash = Long.hashCode(nbtTagHasher.hashStack(stack));
-
-        hash = hash * 31 + System.identityHashCode(stack.getItem());
-
-        return hash;
+        return ItemStackSetAccessor.cc$getHashCode(stack);
     }
 
     @Override
     public boolean equals(Object obj) {
         if(obj instanceof Entry) {
             return Entry.compareEntries(this, (Entry) obj);
-        }else{
+        } else {
             return super.equals(obj);
         }
     }

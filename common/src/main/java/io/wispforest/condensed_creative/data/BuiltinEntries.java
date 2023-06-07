@@ -5,6 +5,7 @@ import io.wispforest.condensed_creative.CondensedCreative;
 import io.wispforest.condensed_creative.compat.EntryTypeCondensing;
 import io.wispforest.condensed_creative.entry.impl.CondensedItemEntry;
 import io.wispforest.condensed_creative.registry.CondensedEntryRegistry;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.block.*;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentLevelEntry;
@@ -331,17 +332,16 @@ public class BuiltinEntries {
         EntryTypeCondensing potion = CondensedCreative.MAIN_CONFIG.getConfig().defaultEntriesConfig.potions;
 
         {
-            Set<ItemStack> set = ItemStackSet.create();
+            Set<ItemStack> stacks = ItemStackSet.create();
 
             for (SuspiciousStewIngredient susStewIngr : SuspiciousStewIngredient.getAll()) {
-                set.add(Util.make(new ItemStack(Items.SUSPICIOUS_STEW), stack -> {
+                stacks.add(Util.make(new ItemStack(Items.SUSPICIOUS_STEW), stack -> {
                     SuspiciousStewItem.addEffectToStew(stack, susStewIngr.getEffectInStew(), susStewIngr.getEffectInStewDuration());
                 }));
             }
 
-            List<ItemStack> stacks = List.copyOf(set);
-
-            CondensedEntryRegistry.fromItemStacks(CondensedCreative.createID("suspicious_stews"), stacks.get(0), stacks);
+            CondensedEntryRegistry.fromItemStacks(CondensedCreative.createID("suspicious_stews"), stacks.iterator().next(), stacks)
+                    .addToItemGroup(ItemGroups.FOOD_AND_DRINK);
         }
 
         ItemGroup foodAndDrink = Registries.ITEM_GROUP.get(ItemGroups.FOOD_AND_DRINK);
@@ -360,6 +360,14 @@ public class BuiltinEntries {
         ).addToItemGroup(ItemGroups.INGREDIENTS);
 
         addEnchantmentEntries();
+
+        CondensedEntryRegistry.fromTag(CondensedCreative.createID("pottery_sherds"), Items.ANGLER_POTTERY_SHERD, ItemTags.DECORATED_POT_SHERDS)
+                .addToItemGroup(ItemGroups.INGREDIENTS);
+
+        CondensedEntryRegistry.of(CondensedCreative.createID("templates"), Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE, i -> i instanceof SmithingTemplateItem)
+                .addToItemGroup(ItemGroups.INGREDIENTS);
+
+        //---------------------
     }
 
     private static void addEnchantmentEntries(){

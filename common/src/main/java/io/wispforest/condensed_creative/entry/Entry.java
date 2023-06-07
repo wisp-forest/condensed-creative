@@ -1,12 +1,9 @@
 package io.wispforest.condensed_creative.entry;
 
 import io.wispforest.condensed_creative.entry.impl.ItemEntry;
-import io.wispforest.condensed_creative.util.NbtTagHasher;
 import net.minecraft.item.ItemStack;
 
 public interface Entry {
-
-    NbtTagHasher nbtTagHasher = NbtTagHasher.ofIgnoreCount();
 
     Entry EMPTY_ENTRY = new ItemEntry(ItemStack.EMPTY);
 
