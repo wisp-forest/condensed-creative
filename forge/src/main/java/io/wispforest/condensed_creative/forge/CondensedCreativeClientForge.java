@@ -29,8 +29,6 @@ public class CondensedCreativeClientForge {
             ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
                 () -> new ConfigScreenHandler.ConfigScreenFactory(
                     (client, parent) -> AutoConfig.getConfigScreen(CondensedCreativeConfig.class, parent).get()));
-
-
         });
     }
 

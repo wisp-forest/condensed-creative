@@ -54,24 +54,24 @@ shadowJar {
     exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
-    classifier "forge-dev-shadow"
+    archiveClassifier.set  "forge-dev-shadow"
 }
 
 remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier "forge"
+    archiveClassifier.set  "forge"
 }
 
 jar {
-    classifier "forge-dev"
+    archiveClassifier.set  "forge-dev"
 }
 
 sourcesJar {
     def commonSources = project(":common").sourcesJar
     dependsOn commonSources
     from commonSources.archiveFile.map { zipTree(it) }
-    classifier "forge-sources"
+    archiveClassifier.set  "forge-sources"
 }
 
 components.java {

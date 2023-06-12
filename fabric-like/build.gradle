@@ -12,7 +12,7 @@ dependencies {
     // Remove the next line if you don't want to depend on the API
     //modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
 
-    compileClasspath(project(path: ":common", configuration: "namedElements")) { transitive false }
+    api(project(path: ":common", configuration: "namedElements")) { transitive false }
 
     modImplementation("me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config}"){
         exclude(group: "net.fabricmc.fabric-api")

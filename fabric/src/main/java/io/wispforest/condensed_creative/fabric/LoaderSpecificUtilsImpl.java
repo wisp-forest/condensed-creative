@@ -14,12 +14,4 @@ public class LoaderSpecificUtilsImpl {
     public static List<CondensedCreativeInitializer> getEntryPoints(){
         return FabricLoader.getInstance().getEntrypoints("condensed_creative", CondensedCreativeInitializer.class);
     }
-
-    public static Identifier getIdentifierFromGroup(ItemGroup group){
-        return Registries.ITEM_GROUP.getId(group);
-    }
-
-    public static Identifier convertBetweenLoaderId(Identifier identifier){
-        return LoaderSpecificUtils.identifierLoaderMap.inverse().getOrDefault(identifier, identifier);
-    }
 }

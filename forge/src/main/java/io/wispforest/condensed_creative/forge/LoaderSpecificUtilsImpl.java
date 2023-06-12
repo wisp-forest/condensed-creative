@@ -43,20 +43,4 @@ public class LoaderSpecificUtilsImpl {
 
         return condensedCreativeInitializers;
     }
-
-    public static Identifier getIdentifierFromGroup(ItemGroup group){
-        Identifier identifier = CreativeModeTabRegistry.getName(group);
-
-        if(identifier == null) {
-            LOGGER.warn("[CondensedCreative] There was a attempt to get a Identifier for a given ItemGroup but was found to be null: [Group: {}]", group.getDisplayName().toString());
-
-            return new Identifier("invalid", "invalid");
-        }
-
-        return identifier;
-    }
-
-    public static Identifier convertBetweenLoaderId(Identifier identifier){
-        return LoaderSpecificUtils.identifierLoaderMap.getOrDefault(identifier, identifier);
-    }
 }

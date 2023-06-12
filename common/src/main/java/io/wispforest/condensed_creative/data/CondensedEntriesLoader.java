@@ -105,10 +105,10 @@ public class CondensedEntriesLoader extends JsonDataLoader {
         List<CondensedItemEntry> entries = new ArrayList<>();
 
         for(Map.Entry<String, JsonElement> itemGroupEntries : jsonMap.entrySet()){
-            Identifier itemGroupId = LoaderSpecificUtils.convertBetweenLoaderId(new Identifier(itemGroupEntries.getKey()));
+            Identifier itemGroupId = new Identifier(itemGroupEntries.getKey());
 
             Optional<ItemGroup> itemGroup = itemGroups.stream()
-                    .filter(group -> Objects.equals(LoaderSpecificUtils.getIdentifierFromGroup(group), itemGroupId)).findFirst();
+                    .filter(group -> Objects.equals(Registries.ITEM_GROUP.getId(group), itemGroupId)).findFirst();
 
             if(itemGroup.isEmpty()){
                 LOGGER.error("[CondensedEntryLoader]: A Invaild Itemgroup name was given so no Entries are loaded from it: [FileID: {}, GroupID: {}]", id, itemGroupId);
