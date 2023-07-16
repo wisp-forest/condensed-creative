@@ -36,7 +36,7 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
-    modImplementation "io.wispforest:owo-lib:${rootProject.owo_version}"
+    modCompileOnly modLocalRuntime("io.wispforest:owo-lib:${rootProject.owo_version}")
 
 //    modLocalRuntime("maven.modrinth:ferrite-core:${rootProject.ferrite_core}-fabric")
 //    modLocalRuntime("maven.modrinth:starlight:${rootProject.starlight}")
