@@ -87,7 +87,7 @@ public class BuiltinEntries {
             });
 
             if(woodItemStacks.isEmpty()){
-                LOGGER.warn("[CondensedCreative]: Attempted to create a builtin entry for the given WoodType [{}] but was unable to find the registry entries!", signType);
+                LOGGER.warn("[CondensedCreative]: Attempted to create a builtin entry for the given WoodType [WoodType: {}, BlockSetType: {}] but was unable to find the registry entries!", signType.name(), signType.setType().name());
 
                 return;
             }
