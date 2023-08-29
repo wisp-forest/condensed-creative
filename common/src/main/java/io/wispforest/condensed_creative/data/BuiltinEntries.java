@@ -86,6 +86,12 @@ public class BuiltinEntries {
                 if(item != Items.AIR) woodItemStacks.add(item.getDefaultStack());
             });
 
+            if(woodItemStacks.isEmpty()){
+                LOGGER.warn("[CondensedCreative]: Attempted to create a builtin entry for the given WoodType [{}] but was unable to find the registry entries!", signType);
+
+                return;
+            }
+
             if(signType == WoodType.BAMBOO){
                 woodItemStacks.add(0, Items.BAMBOO_BLOCK.getDefaultStack());
                 woodItemStacks.add(1, Items.STRIPPED_BAMBOO_BLOCK.getDefaultStack());
