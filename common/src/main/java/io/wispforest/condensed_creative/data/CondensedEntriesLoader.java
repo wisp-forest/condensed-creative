@@ -4,6 +4,7 @@ import com.google.gson.*;
 import com.mojang.logging.LogUtils;
 import io.wispforest.condensed_creative.CondensedCreative;
 import io.wispforest.condensed_creative.LoaderSpecificUtils;
+import io.wispforest.condensed_creative.compat.ItemGroupVariantHandler;
 import io.wispforest.condensed_creative.entry.impl.CondensedItemEntry;
 import io.wispforest.condensed_creative.registry.CondensedEntryRegistry;
 import io.wispforest.condensed_creative.util.ItemGroupHelper;
@@ -107,15 +108,18 @@ public class CondensedEntriesLoader extends JsonDataLoader {
         for(Map.Entry<String, JsonElement> itemGroupEntries : jsonMap.entrySet()){
             Identifier itemGroupId = new Identifier(itemGroupEntries.getKey());
 
-            Optional<ItemGroup> itemGroup = itemGroups.stream()
+            Optional<ItemGroup> possibleItemGroup = itemGroups.stream()
                     .filter(group -> Objects.equals(Registries.ITEM_GROUP.getId(group), itemGroupId)).findFirst();
 
-            if(itemGroup.isEmpty()){
+            if(possibleItemGroup.isEmpty()){
                 LOGGER.error("[CondensedEntryLoader]: A Invaild Itemgroup name was given so no Entries are loaded from it: [FileID: {}, GroupID: {}]", id, itemGroupId);
                 continue;
             }
 
-            Function<Integer, ItemGroupHelper> builder = integer -> new ItemGroupHelper(itemGroup.get(), integer);
+            var itemGroup = possibleItemGroup.get();
+            var handler = ItemGroupVariantHandler.getHandler(itemGroup);
+
+            Function<Integer, ItemGroupHelper> builder = integer -> new ItemGroupHelper(itemGroup, integer);
 
             if(itemGroupEntries.getValue() instanceof JsonObject) {
                 for (Map.Entry<String, JsonElement> innerJson : ((JsonObject) itemGroupEntries.getValue()).entrySet()) {
@@ -124,15 +128,15 @@ public class CondensedEntriesLoader extends JsonDataLoader {
                     try {
                         int tabIndex = Integer.parseInt(entryKey);
 
-                        if(!(CondensedCreative.isOwoItemGroup.test(itemGroup.get()))){
-                            LOGGER.error("[CondensedEntryLoader]: Tab Index's are only supported with OwoItemGroups: [FileID: {}, GroupID: {}]", id, itemGroupId);
+                        if(handler == null){
+                            LOGGER.error("[CondensedEntryLoader]: Tab Index's are only supported implemented ItemGroupVariantHandler's!: [FileID: {}, GroupID: {}]", id, itemGroupId);
                             continue;
                         }
 
-                        int totalTabCount = CondensedCreative.getMaxTabCount.apply(itemGroup.get());
+                        int totalTabCount = handler.getMaxTabs(itemGroup);
 
                         if(tabIndex > totalTabCount || tabIndex < 0){
-                            LOGGER.error("[CondensedEntryLoader]: The given Tab Index is out of the range for the given owoItemGroup: [FileID: {}, GroupID: {}, Tab: {}]", id, itemGroupId, tabIndex);
+                            LOGGER.error("[CondensedEntryLoader]: The given Tab Index is out of the range for the given Tabbed ItemGroupVariant!: [FileID: {}, GroupID: {}, VariantType: {}, Tab: {}]", id, itemGroupId, handler.getIdentifier(), tabIndex);
                             continue;
                         }
 
@@ -190,7 +194,7 @@ public class CondensedEntriesLoader extends JsonDataLoader {
             Item item;
 
             try {
-                item = JsonHelper.getItem(jsonObject, "base_item");
+                item = JsonHelper.getItem(jsonObject, "base_item").value();
             } catch (JsonSyntaxException e){
                 LOGGER.warn("[CondensedEntryLoader]: The Base Item for a given entry was found to be malformed in some way: [FileID: {}, EntryID: {}]", fileID, key);
                 LOGGER.warn(e.getMessage());
@@ -211,7 +215,7 @@ public class CondensedEntriesLoader extends JsonDataLoader {
             } else if (jsonObject.has("items")) {
                 List<Item> items = new ArrayList<>();
 
-                JsonHelper.getArray(jsonObject, "items").forEach(jsonElement -> items.add(JsonHelper.asItem(jsonElement, jsonElement.getAsString())));
+                JsonHelper.getArray(jsonObject, "items").forEach(jsonElement -> items.add(JsonHelper.asItem(jsonElement, jsonElement.getAsString()).value()));
 
                 builder = CondensedEntryRegistry.fromItems(entryId, item, items);
             } else {

@@ -22,9 +22,7 @@ public class CondensedCreativeClientForge {
     @SubscribeEvent
     public static void setupClient(final FMLClientSetupEvent event){
         event.enqueueWork(() -> {
-            CondensedCreative.DEBUG_ENV = !FMLEnvironment.production;
-
-            CondensedCreative.onInitializeClient();
+            CondensedCreative.onInitializeClient(!FMLEnvironment.production);
 
             ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
                 () -> new ConfigScreenHandler.ConfigScreenFactory(

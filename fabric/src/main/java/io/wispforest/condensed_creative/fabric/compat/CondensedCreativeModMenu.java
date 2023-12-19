@@ -1,4 +1,4 @@
-package io.wispforest.condensed_creative.fabriclike.compat;
+package io.wispforest.condensed_creative.fabric.compat;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;

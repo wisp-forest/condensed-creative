@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import io.wispforest.condensed_creative.CondensedCreative;
 import io.wispforest.condensed_creative.compat.EntryTypeCondensing;
 import io.wispforest.condensed_creative.entry.impl.CondensedItemEntry;
+import io.wispforest.condensed_creative.registry.CondensedCreativeInitializer;
 import io.wispforest.condensed_creative.registry.CondensedEntryRegistry;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.block.*;
@@ -41,7 +42,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public class BuiltinEntries {
+@CondensedCreativeInitializer.InitializeCondensedEntries
+public class BuiltinEntries implements CondensedCreativeInitializer {
 
     private static final Logger LOGGER = LogUtils.getLogger();
 
@@ -70,7 +72,10 @@ public class BuiltinEntries {
             SpawnGroup.UNDERGROUND_WATER_CREATURE
     );
 
-    public static void registerBuiltinEntries(){
+    @Override
+    public void registerCondensedEntries(boolean refreshed) {
+        if(!CondensedCreative.getConfig().defaultCCGroups) return;
+
 //        CondensedEntryRegistry.fromTag(CondensedCreative.createID("logs"), Blocks.OAK_LOG, ItemTags.LOGS)
 //                .toggleStrictFiltering(true)
 //                .addToItemGroup(ItemGroups.BUILDING_BLOCKS);
@@ -120,23 +125,21 @@ public class BuiltinEntries {
                 Map.entry("quartz", Items.QUARTZ_BLOCK),
                 Map.entry("copper", Items.COPPER_BLOCK));
 
-        stoneTypes.forEach((stoneType, startingItem) -> {
-            Identifier identifier = new Identifier(stoneType);
+        stoneTypes.forEach((type, startingItem) -> {
+            Identifier identifier = new Identifier(type);
 
             List<ItemStack> stoneItemStacks = new ArrayList<>();
 
             Registries.BLOCK.getIds().forEach(identifier1 -> {
-                String blockPath = identifier1.getPath();
+                String path = identifier1.getPath();
 
-                if(identifier1.getNamespace().equals("minecraft") && blockPath.contains(stoneType)){
-                    List<String> listOfMatches = stoneTypes.keySet().stream().filter((stoneType1) ->
-                            blockPath.contains(stoneType1)
-                                    && !stoneType1.equals(stoneType)
-                                    && stoneType1.contains(stoneType)
-                    ).toList();
+                if(!identifier1.getNamespace().equals("minecraft") || !path.contains(type)) return;
 
-                    if(listOfMatches.isEmpty()) stoneItemStacks.add(Registries.ITEM.get(identifier1).getDefaultStack());
-                }
+                List<String> listOfMatches = stoneTypes.keySet().stream()
+                        .filter((type1) -> path.contains(type1) && !type1.equals(type) && type1.contains(type))
+                        .toList();
+
+                if(listOfMatches.isEmpty()) stoneItemStacks.add(Registries.ITEM.get(identifier1).getDefaultStack());
             });
 
             if (!stoneItemStacks.isEmpty()) {
@@ -145,7 +148,7 @@ public class BuiltinEntries {
                         .setEntryOrder(CondensedItemEntry.EntryOrder.ITEMGROUP_ORDER)
                         .addToItemGroup(ItemGroups.BUILDING_BLOCKS);
             } else {
-                LOGGER.warn("The given material Type [{}] seems to have not matched anything!", stoneType);
+                LOGGER.warn("The given material Type [{}] seems to have not matched anything!", type);
             }
         });
 
@@ -187,26 +190,22 @@ public class BuiltinEntries {
 
         CondensedEntryRegistry.of(CondensedCreative.createID("concrete"), Blocks.WHITE_CONCRETE,
                 (item) -> {
-                    if(item instanceof BlockItem){
-                        String itemPath = Registries.ITEM.getId(item).getPath();
+                    if(!(item instanceof BlockItem))return false;
 
-                        return itemPath.contains("concrete") && !itemPath.contains("powder");
-                    }
+                    String itemPath = Registries.ITEM.getId(item).getPath();
 
-                    return false;
+                    return itemPath.contains("concrete") && !itemPath.contains("powder");
                 })
                 .toggleStrictFiltering(true)
                 .addToItemGroup(ItemGroups.COLORED_BLOCKS);
 
         CondensedEntryRegistry.of(CondensedCreative.createID("concrete_powder"), Blocks.WHITE_CONCRETE_POWDER,
                 (item) -> {
-                    if(item instanceof BlockItem) {
-                        String itemPath = Registries.ITEM.getId(item).getPath();
+                    if(!(item instanceof BlockItem)) return false;
 
-                        return itemPath.contains("concrete") && itemPath.contains("powder");
-                    }
+                    String itemPath = Registries.ITEM.getId(item).getPath();
 
-                    return false;
+                    return itemPath.contains("concrete") && itemPath.contains("powder");
                 })
                 .toggleStrictFiltering(true)
                 .addToItemGroup(ItemGroups.COLORED_BLOCKS);
@@ -333,16 +332,16 @@ public class BuiltinEntries {
 
         ItemGroup combat = Registries.ITEM_GROUP.get(ItemGroups.COMBAT);
 
-        addPotionBasedEntries(Items.TIPPED_ARROW, combat, 0, "Arrows", CondensedCreative.MAIN_CONFIG.getConfig().defaultEntriesConfig.tippedArrows);
+        addPotionBasedEntries(Items.TIPPED_ARROW, combat, 0, "Arrows", CondensedCreative.getConfig().defaultEntriesConfig.tippedArrows);
 
-        EntryTypeCondensing potion = CondensedCreative.MAIN_CONFIG.getConfig().defaultEntriesConfig.potions;
+        EntryTypeCondensing potion = CondensedCreative.getConfig().defaultEntriesConfig.potions;
 
         {
             Set<ItemStack> stacks = ItemStackSet.create();
 
             for (SuspiciousStewIngredient susStewIngr : SuspiciousStewIngredient.getAll()) {
                 stacks.add(Util.make(new ItemStack(Items.SUSPICIOUS_STEW), stack -> {
-                    SuspiciousStewItem.addEffectToStew(stack, susStewIngr.getEffectInStew(), susStewIngr.getEffectInStewDuration());
+                    SuspiciousStewItem.addEffectsToStew(stack, susStewIngr.getStewEffects());
                 }));
             }
 
@@ -377,7 +376,7 @@ public class BuiltinEntries {
     }
 
     private static void addEnchantmentEntries(){
-        EntryTypeCondensing entryTypeCondensing = CondensedCreative.MAIN_CONFIG.getConfig().defaultEntriesConfig.enchantmentBooks;
+        EntryTypeCondensing entryTypeCondensing = CondensedCreative.getConfig().defaultEntriesConfig.enchantmentBooks;
 
         if(entryTypeCondensing == EntryTypeCondensing.NONE) return;
 

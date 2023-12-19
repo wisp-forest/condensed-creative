@@ -1,6 +1,6 @@
 package io.wispforest.condensed_creative.util;
 
-import io.wispforest.condensed_creative.CondensedCreative;
+import io.wispforest.condensed_creative.compat.ItemGroupVariantHandler;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
@@ -12,14 +12,12 @@ public record ItemGroupHelper(ItemGroup group, int tab) {
 
         if(group == null) throw new NullPointerException("A ItemGroup helper was attempted to be created with a RegistryKey that was not found within the ItemGroup Registry! [Key: " + groupKey.toString() + "]");
 
-        return new ItemGroupHelper(group, CondensedCreative.isOwoItemGroup.test(group) ? Math.max(tab, 0) : 0);
+        return of(group, tab);
     }
 
     public static ItemGroupHelper of(ItemGroup group, int tab) {
-        return new ItemGroupHelper(group, CondensedCreative.isOwoItemGroup.test(group) ? Math.max(tab, 0) : 0);
-    }
+        var handler = ItemGroupVariantHandler.getHandler(group);
 
-    public boolean isOwoItemGroup(){
-        return CondensedCreative.isOwoItemGroup.test(group);
+        return new ItemGroupHelper(group, handler != null && handler.isVariant(group) ? Math.max(tab, 0) : 0);
     }
 }

@@ -2,8 +2,6 @@ plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
-//archivesBaseName = archivesBaseName + "-Fabric"
-
 architectury {
     platformSetupLoomIde()
     fabric()
@@ -29,14 +27,15 @@ dependencies {
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
-    common(project(path: ":fabric-like", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":fabric-like", configuration: "transformProductionFabric")) { transitive false }
 
     modImplementation("me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config}"){
         exclude(group: "net.fabricmc.fabric-api")
     }
 
     modCompileOnly modLocalRuntime("io.wispforest:owo-lib:${rootProject.owo_version}")
+
+    modCompileOnly("com.terraformersmc:modmenu:${rootProject.modmenu}")
+    modLocalRuntime("com.terraformersmc:modmenu:${rootProject.modmenu}")
 
 //    modLocalRuntime("maven.modrinth:ferrite-core:${rootProject.ferrite_core}-fabric")
 //    modLocalRuntime("maven.modrinth:starlight:${rootProject.starlight}")
@@ -47,9 +46,6 @@ dependencies {
 //
 //    implementation 'org.joml:joml:1.10.2'
 //    modLocalRuntime 'org.joml:joml:1.10.2'
-//
-//    modCompileOnly("com.terraformersmc:modmenu:${rootProject.modmenu}")
-//    modLocalRuntime("com.terraformersmc:modmenu:${rootProject.modmenu}")
 }
 
 processResources {
@@ -64,7 +60,7 @@ shadowJar {
     exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
-    //archiveClassifier "fabric-dev-shadow"
+    archiveClassifier.set "dev-shadow"
 }
 
 remapJar {

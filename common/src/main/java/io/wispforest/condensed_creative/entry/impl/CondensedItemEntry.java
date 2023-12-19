@@ -229,7 +229,7 @@ public class CondensedItemEntry extends ItemEntry {
         }
 
         /**
-         * Used to add the {@link CondensedItemEntry} to a certain {@link ItemGroup} with tab index support if using a {@link io.wispforest.owo.itemgroup.OwoItemGroup} with tabs
+         * Used to add the {@link CondensedItemEntry} to a certain {@link ItemGroup} with tab index support if using a Supported ItemGroup Variant with tabs
          */
         public CondensedItemEntry addToItemGroup(ItemGroup itemGroup, int tabIndex){
             return addToItemGroup(ItemGroupHelper.of(itemGroup, tabIndex), true);
@@ -370,7 +370,7 @@ public class CondensedItemEntry extends ItemEntry {
 
     public void getNextValue(){
         if(chosenIconStack == null) {
-            int index = (CondensedCreative.MAIN_CONFIG.getConfig().rotationPreview)
+            int index = (CondensedCreative.getConfig().rotationPreview)
                     ? new Random().nextInt(0, childrenEntry.size())
                     : 0;
 
@@ -418,11 +418,11 @@ public class CondensedItemEntry extends ItemEntry {
             tooltipData.add(descriptionText);
         }
 
-        if(tagKey != null && CondensedCreative.MAIN_CONFIG.getConfig().tagPreviewForEntries){
+        if(tagKey != null && CondensedCreative.getConfig().tagPreviewForEntries){
             tooltipData.add(Text.of("Tag: #" + tagKey.id().toString()).copy().formatted(Formatting.GRAY));
         }
 
-        if(CondensedCreative.MAIN_CONFIG.getConfig().debugIdentifiersForEntries) {
+        if(CondensedCreative.getConfig().debugIdentifiersForEntries) {
             tooltipData.add(Text.of(""));
 
             tooltipData.add(Text.of("EntryID: " + condensedID.toString()).copy().formatted(Formatting.GRAY));

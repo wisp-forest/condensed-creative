@@ -201,20 +201,21 @@ public final class CondensedEntryRegistry {
 
     //-----------------------------------------------
 
-    public static List<CondensedItemEntry> getEntryList(ItemGroupHelper itemGroupHelper){
+    public static List<CondensedItemEntry> getEntryList(ItemGroupHelper... itemGroupHelpers){
         List<CondensedItemEntry> entries = new ArrayList<>();
 
-        if(ENTRYPOINT_LOADED_ENTRIES.containsKey(itemGroupHelper)){
-            entries.addAll(ENTRYPOINT_LOADED_ENTRIES.get(itemGroupHelper));
-        }
+        for (ItemGroupHelper itemGroupHelper : itemGroupHelpers) {
+            if(ENTRYPOINT_LOADED_ENTRIES.containsKey(itemGroupHelper)){
+                entries.addAll(ENTRYPOINT_LOADED_ENTRIES.get(itemGroupHelper));
+            }
 
-        if(RESOURCE_LOADED_ENTRIES.containsKey(itemGroupHelper)) {
-            entries.addAll(RESOURCE_LOADED_ENTRIES.get(itemGroupHelper));
+            if(RESOURCE_LOADED_ENTRIES.containsKey(itemGroupHelper)) {
+                entries.addAll(RESOURCE_LOADED_ENTRIES.get(itemGroupHelper));
+            }
         }
 
         return entries;
     }
-
 
     @ApiStatus.Internal
     @ApiStatus.Experimental

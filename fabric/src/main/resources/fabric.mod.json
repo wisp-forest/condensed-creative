@@ -19,10 +19,10 @@
       "io.wispforest.condensed_creative.fabric.CondensedCreativeFabric"
     ],
     "condensed_creative": [
-      "io.wispforest.condensed_creative.CondensedCreative"
+      "io.wispforest.condensed_creative.data.BuiltinEntries"
     ],
     "modmenu": [
-      "io.wispforest.condensed_creative.fabriclike.compat.CondensedCreativeModMenu"
+      "io.wispforest.condensed_creative.fabric.compat.CondensedCreativeModMenu"
     ]
   },
   "mixins": [

@@ -1,46 +1,29 @@
-package io.wispforest.condensed_creative.fabriclike.compat.owo;
+package io.wispforest.condensed_creative.fabric.compat.owo;
 
 import io.wispforest.condensed_creative.CondensedCreative;
+import io.wispforest.condensed_creative.compat.ItemGroupVariantHandler;
+import io.wispforest.condensed_creative.fabric.CondensedCreativeFabric;
 import io.wispforest.condensed_creative.mixins.ItemGroupAccessor;
 import io.wispforest.owo.itemgroup.Icon;
 import io.wispforest.owo.itemgroup.OwoItemGroup;
 import io.wispforest.owo.itemgroup.gui.ItemGroupTab;
 import net.minecraft.block.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.tag.TagKey;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Function;
 
 public class OwoCompat {
 
-    private static OwoItemGroup itemGroup;
-
     public static void init(){
-        CondensedCreative.isOwoItemGroup = itemGroup -> itemGroup instanceof OwoItemGroup;
-        CondensedCreative.getTabIndexFromOwoGroup = itemGroup -> {
-            if (itemGroup instanceof OwoItemGroup) {
-                return ((OwoItemGroup)itemGroup).getSelectedTabIndex();
-            }
-
-            return -1;
-        };
-        CondensedCreative.getMaxTabCount = group -> {
-            if (group instanceof OwoItemGroup) {
-                return ((OwoItemGroup)group).tabs.size();
-            }
-
-            return 1;
-        };
+        ItemGroupVariantHandler.register(new OwoItemGroupHandler());
 
         if (CondensedCreative.isDeveloperMode()) {
-            CondensedCreative.createOwoItemGroup = () -> {
+            CondensedCreativeFabric.createOwoItemGroup = () -> {
                 OwoItemGroup owoItemGroup = OwoItemGroup.builder(CondensedCreative.createID("test"), () -> Icon.of(Blocks.BEDROCK.asItem().getDefaultStack()))
                         .initializer(group -> {
                             Function<RegistryKey<ItemGroup>, ItemGroup> func = Registries.ITEM_GROUP::get;

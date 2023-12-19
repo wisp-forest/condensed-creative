@@ -20,10 +20,23 @@ import io.wispforest.condensed_creative.CondensedCreative;
 public interface CondensedCreativeInitializer {
 
     /**
+     * Deprecated: Override {@link CondensedCreativeInitializer#registerCondensedEntries} instead!
+     */
+    @Deprecated
+    default void onInitializeCondensedEntries(boolean refreshed){}
+
+    /**
      * This happens during the Clientside Loading for {@link CondensedCreative#onInitializeClient} and
      * recommend implementing this in a separate class not touched by any of your code to prevent class loading problems
      */
-    void onInitializeCondensedEntries(boolean refreshed);
+    default void registerCondensedEntries(boolean refreshed){
+        onInitializeCondensedEntries(refreshed);
+    }
+
+    /**
+     * Proper place to register any Handlers for ItemGroup variants that have tabs within scuh
+     */
+    default void registerItemGroupVariantHandlers(){}
 
     /**
      * Used for the Forge Loader ONLY!

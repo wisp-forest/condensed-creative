@@ -1,6 +1,7 @@
 package io.wispforest.condensed_creative.mixins.client;
 
 import io.wispforest.condensed_creative.CondensedCreative;
+import io.wispforest.condensed_creative.compat.ItemGroupVariantHandler;
 import io.wispforest.condensed_creative.ducks.CreativeInventoryScreenHandlerDuck;
 import io.wispforest.condensed_creative.entry.Entry;
 import io.wispforest.condensed_creative.entry.impl.CondensedItemEntry;
@@ -8,19 +9,21 @@ import io.wispforest.condensed_creative.entry.impl.ItemEntry;
 import io.wispforest.condensed_creative.registry.CondensedEntryRegistry;
 import io.wispforest.condensed_creative.util.CondensedInventory;
 import io.wispforest.condensed_creative.util.ItemGroupHelper;
+import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
@@ -39,8 +42,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 
 @Mixin(CreativeInventoryScreen.class)
@@ -56,7 +58,9 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
 
     //-------------
 
-    @Unique private static final Identifier refreshButtonIcon = CondensedCreative.createID("textures/gui/refresh_button.png");
+    @Shadow @Final private Set<TagKey<Item>> searchResultTags;
+    @Unique private static final Identifier refreshButtonIconUnfocused = CondensedCreative.createID("refresh_button_unfocused");
+    @Unique private static final Identifier refreshButtonIconFocused = CondensedCreative.createID("refresh_button_focused");
 
     @Unique private boolean validItemGroupForCondensedEntries = false;
 
@@ -76,10 +80,13 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
 
     @Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/PlayerScreenHandler;addListener(Lnet/minecraft/screen/ScreenHandlerListener;)V", shift = At.Shift.BY, by = 2))
     private void addButtonRender(CallbackInfo ci){
-        if(!CondensedCreative.MAIN_CONFIG.getConfig().entryRefreshButton) return;
+        if(!CondensedCreative.getConfig().entryRefreshButton) return;
 
-        ClickableWidget widget = new TexturedButtonWidget(this.x + 200, this.y + 140, 16, 16, 0, 0, 16, refreshButtonIcon, 32, 32,
-                button -> { if (CondensedEntryRegistry.refreshEntrypoints()) setSelectedTab(this.selectedTab); },
+        ClickableWidget widget = new TexturedButtonWidget(this.x + 200, this.y + 140, 16, 16, new ButtonTextures(refreshButtonIconUnfocused, refreshButtonIconFocused),
+                button -> {
+                    CondensedEntryRegistry.refreshEntrypoints();
+                    setSelectedTab(this.selectedTab);
+                },
                 ScreenTexts.EMPTY
         );
 
@@ -153,12 +160,19 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
 
     @Inject(method = "setSelectedTab", at = @At(value = "JUMP", opcode = Opcodes.IF_ACMPNE, ordinal = 2))
     private void filterEntriesAndAddCondensedEntries(ItemGroup group, CallbackInfo ci){
-        ItemGroupHelper itemGroupHelper = ItemGroupHelper.of(group,
-                CondensedCreative.isOwoItemGroup.test(group) ? CondensedCreative.getTabIndexFromOwoGroup.apply(group) : 0);
+        var handler = ItemGroupVariantHandler.getHandler(group);
+
+        Collection<Integer> possibleTabs = Set.of(0);
+
+        if(handler != null && handler.isVariant(group)) possibleTabs = handler.getSelectedTabs(group);
+
+        ItemGroupHelper[] helpers = possibleTabs.stream()
+                .map(tab -> ItemGroupHelper.of(group, tab))
+                .toArray(ItemGroupHelper[]::new);
 
         if (!validItemGroupForCondensedEntries) return;
 
-        for (CondensedItemEntry condensedItemEntry : CondensedEntryRegistry.getEntryList(itemGroupHelper)) {
+        for (CondensedItemEntry condensedItemEntry : CondensedEntryRegistry.getEntryList(helpers)) {
             int i = this.getHandlerDuck().getDefaultEntryList().indexOf(Entry.of(condensedItemEntry.getEntryStack()));
 
             condensedItemEntry.initializeChildren(this.getHandlerDuck().getDefaultEntryList());
@@ -200,7 +214,7 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
 
     //----------
 
-    @ModifyArg(method = "drawBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 1), index = 2)
+    @ModifyArg(method = "drawBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V"), index = 2)
     private int changePosForScrollBar(int y){
         int j = this.y + 18;
 

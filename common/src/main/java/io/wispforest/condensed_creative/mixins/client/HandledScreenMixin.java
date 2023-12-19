@@ -29,15 +29,13 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> {
 
     @ModifyVariable(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/slot/Slot;getStack()Lnet/minecraft/item/ItemStack;", ordinal = 0, shift = At.Shift.BY, by = 2))
     private ItemStack changeDisplayedStackIfParent(ItemStack stack, DrawContext matrices, Slot slot){
-        if(slot.inventory instanceof CondensedInventory condensedInventory){
-            if(condensedInventory.getEntryStack(slot.id) instanceof CondensedItemEntry condensedItemEntry && !condensedItemEntry.isChild){
-                if (MinecraftClient.getInstance().world.getTime() - condensedItemEntry.lastTick > 40) {
-                    condensedItemEntry.getNextValue();
-                    condensedItemEntry.lastTick = MinecraftClient.getInstance().world.getTime();
-                }
-
-                return condensedItemEntry.getDisplayStack();
+        if(slot.inventory instanceof CondensedInventory inv && inv.getEntryStack(slot.id) instanceof CondensedItemEntry entry && !entry.isChild){
+            if (MinecraftClient.getInstance().world.getTime() - entry.lastTick > 40) {
+                entry.getNextValue();
+                entry.lastTick = MinecraftClient.getInstance().world.getTime();
             }
+
+            return entry.getDisplayStack();
         }
 
         return stack;
@@ -45,67 +43,56 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> {
 
     @Inject(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawItemInSlot(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V", shift = At.Shift.BY, by = 1))
     private void renderExtraIfEntry(DrawContext context, Slot slot, CallbackInfo ci){
-        if(((HandledScreen<T>)(Object)this) instanceof CreativeInventoryScreen && slot.inventory instanceof CondensedInventory condensedInventory){
-            Entry entryStack = condensedInventory.getEntryStack(slot.getIndex());
+        if(!(((Object) this) instanceof CreativeInventoryScreen && slot.inventory instanceof CondensedInventory inv)) return;
 
-            if(entryStack instanceof CondensedItemEntry condensedItemEntry) {
-                int minX = slot.x;
-                int minY = slot.y;
+        Entry entryStack = inv.getEntryStack(slot.getIndex());
 
-                int maxX = minX + 16;
-                int maxY = minY + 16;
+        if(!(entryStack instanceof CondensedItemEntry entry)) return;
 
-                if(CondensedItemEntry.CHILD_VISIBILITY.get(condensedItemEntry.condensedID)) {
+        int minX = slot.x;
+        int minY = slot.y;
 
-                    Color backgroundColor = Color.ofTransparent(0x7F111111);//Color.ofRGBA(186, 186, 186, 255);
+        int maxX = minX + 16;
+        int maxY = minY + 16;
 
-                    if(CondensedCreative.MAIN_CONFIG.getConfig().entryBackgroundColor) {
-                        if (CondensedCreative.MAIN_CONFIG.getConfig().entryBorderColor) {
-                            context.fill(minX, minY, maxX, maxY, backgroundColor.getColor());
-                        } else {
-                            context.fill(minX - 1, minY - 1, maxX + 1, maxY + 1, backgroundColor.getColor());
-                        }
-                    }
+        if(CondensedItemEntry.CHILD_VISIBILITY.get(entry.condensedID)) {
+            Color backgroundColor = Color.ofTransparent(0x7F111111);//Color.ofRGBA(186, 186, 186, 255);
 
-                    if(CondensedCreative.MAIN_CONFIG.getConfig().entryBorderColor) {
-                        RenderSystem.enableBlend();
+            if(CondensedCreative.getConfig().entryBackgroundColor) {
+                var offset = CondensedCreative.getConfig().entryBorderColor ? 0 : 1;
 
-                        Color outlineColor = Color.ofTransparent(CondensedCreative.MAIN_CONFIG.getConfig().condensedEntryBorderColor);//Color.ofRGBA(251, 255, 0, 128);
+                context.fill(minX - offset, minY - offset, maxX + offset, maxY + offset, backgroundColor.getColor());
+            }
 
-                        if (!isSlotAbovePartOfCondensedEntry(slot, condensedItemEntry.condensedID)) {
-                            context.fill(minX - 1, minY - 1, maxX + 1, maxY - 16, outlineColor.getColor());
+            if(CondensedCreative.getConfig().entryBorderColor) {
+                RenderSystem.enableBlend();
 
-                            //DrawableHelper.fill(matrices, minX, minY - 18, maxX, maxY - 18, Color.ofRGBA(255, 0, 0, 128).getColor());
-                        }
+                Color outlineColor = Color.ofTransparent(CondensedCreative.getConfig().condensedEntryBorderColor);//Color.ofRGBA(251, 255, 0, 128);
 
-                        if (!isSlotBelowPartOfCondensedEntry(slot, condensedItemEntry.condensedID)) {
-                            context.fill(minX - 1, minY + 16, maxX + 1, maxY + 1, outlineColor.getColor());
-
-                            //DrawableHelper.fill(matrices, minX, minY + 18, maxX, maxY + 18, Color.ofRGBA(0, 255, 0, 128).getColor());
-                        }
-
-                        if (!isSlotRightPartOfCondensedEntry(slot, condensedItemEntry.condensedID)) {
-                            context.fill(minX + 16, minY - 1, maxX + 1, maxY + 1, outlineColor.getColor());
-
-                            //DrawableHelper.fill(matrices, minX + 18, minY, maxX + 18, maxY, Color.ofRGBA(0, 0, 255, 128).getColor());
-                        }
-
-                        if (!isSlotLeftPartOfCondensedEntry(slot, condensedItemEntry.condensedID)) {
-                            context.fill(minX - 1, minY - 1, maxX - 16, maxY + 1, outlineColor.getColor());
-
-                            //DrawableHelper.fill(matrices, minX - 18, minY, maxX - 18, maxY, Color.ofRGBA(0, 0, 255, 128).getColor());
-                        }
-                    }
-
-                    RenderSystem.disableBlend();
+                if (!isSlotAbovePartOfCondensedEntry(slot, entry.condensedID)) {
+                    context.fill(minX - 1, minY - 1, maxX + 1, maxY - 16, outlineColor.getColor());
                 }
 
-                if(!condensedItemEntry.isChild) {
-                    Identifier id = !CondensedItemEntry.CHILD_VISIBILITY.get(condensedItemEntry.condensedID) ? PLUS_ICON : MINUS_ICON;
+                if (!isSlotBelowPartOfCondensedEntry(slot, entry.condensedID)) {
+                    context.fill(minX - 1, minY + 16, maxX + 1, maxY + 1, outlineColor.getColor());
+                }
 
-                    context.drawTexture(id, minX, minY, 160, 0, 0, 16, 16, 16, 16);
+                if (!isSlotRightPartOfCondensedEntry(slot, entry.condensedID)) {
+                    context.fill(minX + 16, minY - 1, maxX + 1, maxY + 1, outlineColor.getColor());
+                }
+
+                if (!isSlotLeftPartOfCondensedEntry(slot, entry.condensedID)) {
+                    context.fill(minX - 1, minY - 1, maxX - 16, maxY + 1, outlineColor.getColor());
                 }
             }
+
+            RenderSystem.disableBlend();
+        }
+
+        if(!entry.isChild) {
+            Identifier id = !CondensedItemEntry.CHILD_VISIBILITY.get(entry.condensedID) ? PLUS_ICON : MINUS_ICON;
+
+            context.drawTexture(id, minX, minY, 160, 0, 0, 16, 16, 16, 16);
         }
     }
 
@@ -129,9 +116,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> {
 
     @Unique
     public boolean isSlotLeftPartOfCondensedEntry(Slot slot, Identifier condensedID){
-        if(((slot.id) % 9 == 0)){
-            return false;
-        }
+        if(((slot.id) % 9 == 0)) return false;
 
         int leftSlotIndex = slot.getIndex() - 1;
 
@@ -142,9 +127,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> {
 
     @Unique
     public boolean isSlotRightPartOfCondensedEntry(Slot slot, Identifier condensedID){
-        if(((slot.id) % 9 == 8)){
-            return false;
-        }
+        if(((slot.id) % 9 == 8)) return false;
 
         int rightSlotIndex = slot.getIndex() + 1;
 
