@@ -228,8 +228,8 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
     //----------
 
     @Redirect(method = "mouseScrolled", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/CreativeInventoryScreen$CreativeScreenHandler;scrollItems(F)V"))
-    private void useLineCountScrolling1(CreativeInventoryScreen.CreativeScreenHandler instance, float position, double mouseX, double mouseY, double amount){
-        this.calculateScrollLines(this.currentRowPosition, (float) amount);
+    private void useLineCountScrolling1(CreativeInventoryScreen.CreativeScreenHandler instance, float position, double mouseX, double mouseY, double horizontalAmount, double verticalAmount){
+        this.calculateScrollLines(this.currentRowPosition, (float) verticalAmount);
     }
 
     @Redirect(method = "mouseDragged", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/CreativeInventoryScreen$CreativeScreenHandler;scrollItems(F)V"))
