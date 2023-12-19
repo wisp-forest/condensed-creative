@@ -6,7 +6,6 @@ import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.recipe.RecipeMatcher;
 import net.minecraft.util.collection.DefaultedList;

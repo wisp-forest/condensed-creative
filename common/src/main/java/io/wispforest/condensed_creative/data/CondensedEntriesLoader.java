@@ -3,7 +3,6 @@ package io.wispforest.condensed_creative.data;
 import com.google.gson.*;
 import com.mojang.logging.LogUtils;
 import io.wispforest.condensed_creative.CondensedCreative;
-import io.wispforest.condensed_creative.LoaderSpecificUtils;
 import io.wispforest.condensed_creative.compat.ItemGroupVariantHandler;
 import io.wispforest.condensed_creative.entry.impl.CondensedItemEntry;
 import io.wispforest.condensed_creative.registry.CondensedEntryRegistry;

@@ -1,21 +1,13 @@
 package io.wispforest.condensed_creative;
 
 import io.wispforest.condensed_creative.compat.CondensedCreativeConfig;
-import io.wispforest.condensed_creative.data.BuiltinEntries;
 import io.wispforest.condensed_creative.registry.CondensedCreativeInitializer;
 import io.wispforest.condensed_creative.registry.CondensedEntryRegistry;
-import it.unimi.dsi.fastutil.ints.IntSet;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 public class CondensedCreative {
 
