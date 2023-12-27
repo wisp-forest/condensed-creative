@@ -1,1 +1,1 @@
-Condensed Creative 3.1.3 adds fix for crash relating to wood type and some dev stuff as well
+Condensed Creative 3.2.0 is updated for minecraft 1.20.2 and has some minor-ish api changes allowing for the handling of other Tab based Itemgroups mods
