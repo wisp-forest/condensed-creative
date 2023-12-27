@@ -33,7 +33,9 @@ public class CondensedCreative {
 
         for(CondensedCreativeInitializer initializer : LoaderSpecificUtils.getEntryPoints()){
             initializer.registerItemGroupVariantHandlers();
+        }
 
+        for(CondensedCreativeInitializer initializer : LoaderSpecificUtils.getEntryPoints()){
             initializer.registerCondensedEntries(false);
         }
     }

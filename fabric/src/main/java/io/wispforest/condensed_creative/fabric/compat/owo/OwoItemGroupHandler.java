@@ -9,11 +9,10 @@ import net.minecraft.util.Identifier;
 
 import java.util.Collection;
 
-public class OwoItemGroupHandler extends ItemGroupVariantHandler {
+public class OwoItemGroupHandler extends ItemGroupVariantHandler<OwoItemGroup> {
 
-    @Override
-    public boolean isVariant(ItemGroup group) {
-        return group instanceof OwoItemGroup;
+    public OwoItemGroupHandler() {
+        super(OwoItemGroup.class, CondensedCreative.createID("owo_item_group_handler"));
     }
 
     @Override
@@ -24,10 +23,5 @@ public class OwoItemGroupHandler extends ItemGroupVariantHandler {
     @Override
     public int getMaxTabs(ItemGroup group) {
         return (group instanceof OwoItemGroup owoItemGroup) ? owoItemGroup.tabs.size() : 1;
-    }
-
-    @Override
-    public Identifier getIdentifier() {
-        return CondensedCreative.createID("owo_item_group_handler");
     }
 }
