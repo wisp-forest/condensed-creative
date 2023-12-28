@@ -1,4 +1,4 @@
-package io.wispforest.condensed_creative.forge;
+package io.wispforest.condensed_creative.neoforge;
 
 import com.mojang.logging.LogUtils;
 import io.wispforest.condensed_creative.registry.CondensedCreativeInitializer;

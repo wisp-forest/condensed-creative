@@ -243,7 +243,7 @@ public class CondensedEntriesLoader extends JsonDataLoader {
                         builder.setTitleFromTag();
                     }
                 } else {
-                    Text text = Text.Serializer.fromJson(element);
+                    Text text = Text.Serialization.fromJsonTree(element);
 
                     builder.setTitle(text);
                 }
@@ -257,7 +257,7 @@ public class CondensedEntriesLoader extends JsonDataLoader {
             JsonElement element = jsonObject.get("description");
 
             try {
-                Text text = Text.Serializer.fromJson(element);
+                Text text = Text.Serialization.fromJsonTree(element);
 
                 builder.setDescription(text);
             } catch (JsonParseException e){

@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[49,)"
+loaderVersion = "[1,)"
 issueTrackerURL = "https://github.com/wisp-forest/condensed-creative/issues"
 license = "MIT license"
 
@@ -12,10 +12,21 @@ description = '''
 A Mod that allows for Modders to Condense there many blocks into Bedrock like Item Entry's!
 '''
 logoFile = "icon.png"
+[[mixins]]
+config = 'condensedCreativeCommon.mixins.json'
+[[mixins]]
+config = 'condensedCreativeForge.mixins.json'
+
+[[dependencies.condensed_creative]]
+modId = "neoforge"
+required = true
+versionRange = "[20,)"
+ordering = "NONE"
+side = "BOTH"
 
 [[dependencies.condensed_creative]]
 modId = "minecraft"
-mandatory = true
+required = true
 versionRange = "[1.20,)"
 ordering = "NONE"
 side = "BOTH"
