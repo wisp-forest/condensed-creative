@@ -16,7 +16,7 @@ import net.neoforged.neoforge.client.ConfigScreenHandler;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 
 @Mod.EventBusSubscriber(modid = CondensedCreative.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-public class CondensedCreativeClientForge {
+public class CondensedCreativeClientNeoforge {
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
